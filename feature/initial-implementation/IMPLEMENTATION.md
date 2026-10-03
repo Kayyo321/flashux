@@ -8,12 +8,12 @@
 ### 1.2. Purpose & Rufus Parity Role
 The primary objective of this feature is to establish the complete foundational architecture for **Flashux**—the high-performance, native Linux equivalent of Rufus built strictly in **pure C (ISO C11)**. 
 
-Prior to this feature, Linux lacked a unified, native tool offering full parity with Rufus: users relied either on simple raw block imagers (`dd`, Balena Etcher) that cannot repartition, format, or configure bootloaders, or fragmented distribution-specific utilities. Flashux resolves this by providing:
+Prior to Flashux, Linux users lacked a unified, native tool offering full parity with Rufus: users relied either on simple raw block imagers (`dd`, Balena Etcher) that cannot repartition, format, or configure bootloaders, or fragmented distribution-specific utilities. Flashux resolves this by providing:
 1. **`libflashux`**: A core, modular static library encapsulating device enumeration, drive safety classification, partition management, filesystem creation, image flashing, and verification.
 2. **`flashux-cli`**: A versatile command-line and terminal UI executable supporting both an interactive curses/ncurses dashboard and a scriptable non-interactive batch mode emitting structured JSON.
 3. **`flashux-gui`**: A modern, native graphical interface built with GTK 4 and `libadwaita`, faithfully replicating the ergonomic, single-window workflow of Rufus (target drive selection, boot selection, partition schemes, filesystem choice, cluster sizing, advanced bypasses, real-time progress, and bad sector checks).
 4. **`flashux-helper`**: A privileged backend daemon executed via Polkit (`pkexec`) communicating over a local UNIX domain socket, enforcing strict privilege separation so that the GUI and CLI run without root privileges.
-5. **Meson Build System**: A fast, deterministic build definition compiling with strict C11 compiler flags (`-Wall -Wextra -Wpedantic -Werror -std=c11`) and zero external language dependencies.
+5. **Meson Build System**: A fast, deterministic build definition compiling with strict C11 compiler flags (`-Wall -Wextra -Wpedantic -Werror -Wformat=2 -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -std=c11 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64`) and zero external language dependencies.
 
 ---
 
@@ -73,7 +73,7 @@ flashux/
 ├── include/
 │   └── flashux/
 │       ├── core.h              # Context, logging, error codes, versioning
-│       ├── device.h            # Device discovery, geometry, safety validation
+│       ├── device.h            # Device discovery, geometry, safety validation, locks
 │       ├── flasher.h           # Flash engine configuration, progress, state machine
 │       ├── format.h            # Filesystem formatting types and interfaces
 │       ├── partition.h         # MBR and GPT partition table generation
@@ -87,6 +87,9 @@ flashux/
 │   │   ├── logging.c           # Thread-safe logging subsystem
 │   │   ├── device.c            # Device discovery and safety filter implementation
 │   │   ├── flasher.c           # Flash validation and progress orchestrator
+│   │   ├── format.c            # Filesystem formatting backend dispatchers
+│   │   ├── partition.c         # MBR/GPT partition table binary layout generator
+│   │   ├── checksum.c          # Checksum hashing engine implementation
 │   │   └── ipc_client.c        # Client-side UNIX domain socket IPC transport
 │   ├── cli/
 │   │   ├── main.c              # CLI entry point and signal routing
@@ -98,20 +101,31 @@ flashux/
 │   │   ├── app_window.c        # Main application window (Rufus UI layout)
 │   │   ├── device_selector.c   # Device dropdown and udev hotplug update listener
 │   │   ├── progress_view.c     # Thread-safe progress bar and speed display
-│   │   └── dialogs.c           # Confirmation modals, warnings, and error dialogs
+│   │   ├── dialogs.c           # Confirmation modals, warnings, and error dialogs
+│   │   └── win_dialog.c        # Rufus Windows user experience customization modal
 │   ├── helper/
 │   │   ├── helper_main.c       # Privileged daemon entry point and socket listener
 │   │   ├── ipc_protocol.h      # Binary IPC message wire format and opcodes
-│   │   └── polkit_auth.c       # Peer credential verification (SO_PEERCRED)
+│   │   ├── polkit_auth.c       # Peer credential verification (SO_PEERCRED)
+│   │   ├── privileged_ops.c    # Privileged write, partition, format execution
+│   │   └── mount_ops.c         # Partition unmounting and exclusive drive locking
 │   └── common/
 │       └── string_compat.h     # Bounded safe string copy and utility functions
 ├── tests/
 │   ├── test_core.c             # Context and logging unit tests
 │   ├── test_device.c           # Mock device parsing and system disk safety tests
 │   ├── test_cli_args.c         # Command-line parser regression tests
-│   └── test_flasher.c          # Options validation and progress math tests
+│   ├── test_flasher.c          # Options validation and progress math tests
+│   ├── test_format.c           # Format options and cluster size validation tests
+│   ├── test_partition.c        # MBR/GPT partition binary layout synthesis tests
+│   └── test_ipc.c              # Binary IPC header and message serialization tests
 └── meson.build                 # Top-level Meson build definition
 ```
+
+### 2.3. Component Interaction & Boundary Separation
+- **Unprivileged Frontend**: `flashux-gui` (GTK4/libadwaita) and `flashux-cli` (ncurses/JSON) run strictly within the desktop user session. They perform read-only actions (device enumeration via udev, ISO metadata probing, checksum verification) and configure `flashux_flash_options_t`.
+- **Core Library (`libflashux`)**: Enforces state validation, safety invariants, logging, and metrics computation. When a write operation is initiated, `libflashux` establishes an IPC connection to `flashux-helper`.
+- **Privileged Backend (`flashux-helper`)**: Minimal daemon spawned via `pkexec` or systemd. It verifies the client credentials using `SO_PEERCRED` and Polkit, acquires an exclusive lock on the block device (`flock`/`O_EXCL`), cleanly unmounts active partitions, and executes the low-level flashing, partitioning, and formatting operations.
 
 ---
 
@@ -357,7 +371,128 @@ typedef void (*flashux_progress_cb)(
 #endif /* FLASHUX_FLASHER_H */
 ```
 
-### 3.4. Privileged IPC Wire Protocol (`src/helper/ipc_protocol.h`)
+### 3.4. Filesystem Formatting Types (`include/flashux/format.h`)
+
+```c
+#ifndef FLASHUX_FORMAT_H
+#define FLASHUX_FORMAT_H
+
+#include "flashux/core.h"
+#include "flashux/flasher.h"
+
+/**
+ * @brief Configuration parameters for formatting a target partition.
+ */
+typedef struct {
+    char partition_path[64];        /* e.g., "/dev/sdb1" */
+    flashux_fs_type_t fs_type;      /* FAT32, NTFS, exFAT, ext4 */
+    char volume_label[128];         /* Filesystem label */
+    uint32_t cluster_size;          /* Cluster size in bytes (0 for default) */
+    bool quick_format;              /* Fast format vs full zeroing */
+} flashux_format_options_t;
+
+#endif /* FLASHUX_FORMAT_H */
+```
+
+### 3.5. Partition Table Generation Types (`include/flashux/partition.h`)
+
+```c
+#ifndef FLASHUX_PARTITION_H
+#define FLASHUX_PARTITION_H
+
+#include "flashux/core.h"
+#include "flashux/flasher.h"
+
+/**
+ * @brief Single partition entry layout.
+ */
+typedef struct {
+    uint8_t partition_number;       /* 1-based partition index */
+    uint64_t start_lba;             /* Starting sector (LBA) */
+    uint64_t sector_count;          /* Size in sectors */
+    flashux_fs_type_t fs_type;      /* Type for partition code / GUID mapping */
+    bool is_bootable;               /* Active flag for MBR / EFI flag for GPT */
+    char label[64];                 /* Partition name / label */
+    char type_guid[37];             /* GPT partition type GUID string */
+} flashux_partition_entry_t;
+
+/**
+ * @brief Full partition layout definition for a target drive.
+ */
+typedef struct {
+    char device_path[64];           /* e.g., "/dev/sdb" */
+    flashux_partition_scheme_t scheme; /* MBR, GPT, or Hybrid */
+    uint32_t sector_size;           /* 512 or 4096 */
+    uint64_t total_sectors;         /* Disk capacity in sectors */
+    size_t entry_count;             /* Number of partitions */
+    flashux_partition_entry_t entries[16]; /* Array of partition definitions */
+} flashux_partition_table_t;
+
+#endif /* FLASHUX_PARTITION_H */
+```
+
+### 3.6. Cryptographic Checksum Types (`include/flashux/checksum.h`)
+
+```c
+#ifndef FLASHUX_CHECKSUM_H
+#define FLASHUX_CHECKSUM_H
+
+#include "flashux/core.h"
+
+/**
+ * @brief Bitflags for requested hash algorithms.
+ */
+typedef enum {
+    FLASHUX_CHECKSUM_MD5    = (1 << 0),
+    FLASHUX_CHECKSUM_SHA1   = (1 << 1),
+    FLASHUX_CHECKSUM_SHA256 = (1 << 2),
+    FLASHUX_CHECKSUM_SHA512 = (1 << 3)
+} flashux_checksum_type_t;
+
+/**
+ * @brief Checksum calculation results in hex string representations.
+ */
+typedef struct {
+    char md5[33];
+    char sha1[41];
+    char sha256[65];
+    char sha512[129];
+} flashux_checksum_result_t;
+
+#endif /* FLASHUX_CHECKSUM_H */
+```
+
+### 3.7. Command-Line Interface Types (`src/cli/cli_args.h`)
+
+```c
+#ifndef FLASHUX_CLI_ARGS_H
+#define FLASHUX_CLI_ARGS_H
+
+#include "flashux/flasher.h"
+
+/**
+ * @brief Parsed command-line flags and runtime options.
+ */
+typedef struct {
+    bool interactive;               /* curses TUI mode */
+    bool batch_mode;                /* Non-interactive JSON output */
+    bool list_devices;              /* Enumerate devices and exit */
+    bool include_fixed;             /* Include non-removable drives */
+    char image_path[512];           /* Image path */
+    char device_path[64];           /* Target device */
+    char volume_label[128];         /* Label */
+    flashux_flash_mode_t mode;      /* Flash mode */
+    flashux_partition_scheme_t part_scheme;
+    flashux_target_system_t target_sys;
+    flashux_fs_type_t fs_type;
+    uint32_t bad_blocks_passes;     /* Surface scan passes */
+    bool dry_run;                   /* Test mode */
+} flashux_cli_options_t;
+
+#endif /* FLASHUX_CLI_ARGS_H */
+```
+
+### 3.8. Privileged IPC Wire Protocol (`src/helper/ipc_protocol.h`)
 
 Communication between unprivileged client (`flashux-cli` or `flashux-gui`) and privileged daemon (`flashux-helper`) is conducted over a UNIX domain socket (`/run/flashux/helper.sock`) using fixed-header binary messages.
 
@@ -374,8 +509,9 @@ Communication between unprivileged client (`flashux-cli` or `flashux-gui`) and p
 typedef enum {
     FLASHUX_IPC_CMD_PING             = 0x01,
     FLASHUX_IPC_CMD_SCAN_DEVICES     = 0x02,
-    FLASHUX_IPC_CMD_START_FLASH      = 0x03,
-    FLASHUX_IPC_CMD_CANCEL_FLASH     = 0x04,
+    FLASHUX_IPC_CMD_UNMOUNT_DEVICE   = 0x03,
+    FLASHUX_IPC_CMD_START_FLASH      = 0x04,
+    FLASHUX_IPC_CMD_CANCEL_FLASH     = 0x05,
     FLASHUX_IPC_MSG_PROGRESS_UPDATE  = 0x10,
     FLASHUX_IPC_MSG_LOG_EVENT        = 0x11,
     FLASHUX_IPC_MSG_OPERATION_RESULT = 0x20
@@ -398,7 +534,7 @@ typedef struct {
 
 ## 4. API Function Signatures & Interfaces
 
-### 4.1. Core Context Lifecycle (`include/flashux/core.h`)
+### 4.1. Core Context Lifecycle & Logging (`include/flashux/core.h`)
 
 ```c
 /**
@@ -414,7 +550,7 @@ flashux_error_t flashux_context_new(flashux_context_t **ctx_out);
 /**
  * @brief Free a Flashux context and release all associated resources.
  *
- * @param[in,out] ctx Context to free; safely handles NULL. Pointer is cleared.
+ * @param[in,out] ctx Context to free; safely handles NULL. Pointer is cleared to NULL.
  */
 void flashux_context_free(flashux_context_t **ctx);
 
@@ -440,9 +576,31 @@ void flashux_context_set_logger(
  * @return Static null-terminated string description.
  */
 const char *flashux_strerror(flashux_error_t err);
+
+/**
+ * @brief Structured logging helper for Flashux subsystems.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] level Severity level.
+ * @param[in] format Printf-style format string.
+ */
+void flashux_log(
+    flashux_context_t *ctx,
+    flashux_log_level_t level,
+    const char *format,
+    ...
+);
+
+/**
+ * @brief Convenience logging wrappers conforming to AGENTS.md §2.3.
+ */
+void flashux_log_error(flashux_context_t *ctx, const char *format, ...);
+void flashux_log_warn(flashux_context_t *ctx, const char *format, ...);
+void flashux_log_info(flashux_context_t *ctx, const char *format, ...);
+void flashux_log_debug(flashux_context_t *ctx, const char *format, ...);
 ```
 
-### 4.2. Storage Device Probing & Safety Validation (`include/flashux/device.h`)
+### 4.2. Storage Device Probing, Locking & Unmounting (`include/flashux/device.h`)
 
 ```c
 /**
@@ -466,7 +624,7 @@ flashux_error_t flashux_device_list_scan(
 /**
  * @brief Free an enumerated device linked list.
  *
- * @param[in,out] list Pointer to head of device list.
+ * @param[in,out] list Pointer to head of device list. Safely set to NULL.
  */
 void flashux_device_list_free(flashux_device_t **list);
 
@@ -487,6 +645,43 @@ bool flashux_device_is_safe_target(
     const flashux_device_t *device,
     char *reason_buffer,
     size_t buffer_size
+);
+
+/**
+ * @brief Acquire exclusive advisory / kernel lock on target block device.
+ *
+ * Opens device node with O_EXCL and acquires flock() lock.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] device Device to lock.
+ * @param[out] lock_fd_out Pointer to receive file descriptor holding the lock.
+ * @return FLASHUX_SUCCESS on success, negative error code if busy or locked.
+ */
+flashux_error_t flashux_device_lock(
+    flashux_context_t *ctx,
+    const flashux_device_t *device,
+    int *lock_fd_out
+);
+
+/**
+ * @brief Release block device lock and close descriptor.
+ *
+ * @param[in,out] lock_fd Pointer to open lock file descriptor. Safely sets to -1.
+ */
+void flashux_device_unlock(int *lock_fd);
+
+/**
+ * @brief Automatically unmount all mounted child partitions of a target drive.
+ *
+ * Queries mount tables and safely invokes umount2() via libmount.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] device Target device whose partitions must be unmounted.
+ * @return FLASHUX_SUCCESS on success, negative error code if any partition remains busy.
+ */
+flashux_error_t flashux_unmount_device_partitions(
+    flashux_context_t *ctx,
+    const flashux_device_t *device
 );
 ```
 
@@ -539,6 +734,162 @@ flashux_error_t flashux_flash_start_async(
 flashux_error_t flashux_flash_cancel(flashux_context_t *ctx);
 ```
 
+### 4.4. Filesystem Formatting API (`include/flashux/format.h`)
+
+```c
+/**
+ * @brief Formats a target partition with the specified filesystem.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] options Formatting parameters (filesystem type, label, cluster size).
+ * @return FLASHUX_SUCCESS on success, negative error code on failure.
+ */
+flashux_error_t flashux_format_partition(
+    flashux_context_t *ctx,
+    const flashux_format_options_t *options
+);
+```
+
+### 4.5. Partition Table Synthesis API (`include/flashux/partition.h`)
+
+```c
+/**
+ * @brief Writes an MBR or GPT partition table layout to target block device.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] table Partition table configuration and partition entries.
+ * @return FLASHUX_SUCCESS on success, negative error code on failure.
+ */
+flashux_error_t flashux_partition_table_create(
+    flashux_context_t *ctx,
+    const flashux_partition_table_t *table
+);
+```
+
+### 4.6. Cryptographic Checksum API (`include/flashux/checksum.h`)
+
+```c
+/**
+ * @brief Calculate cryptographic hashes for a disk image file.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] file_path Absolute path to image file.
+ * @param[in] checksum_flags Bitwise combination of flashux_checksum_type_t.
+ * @param[out] result_out Struct receiving hex string hashes.
+ * @return FLASHUX_SUCCESS on success, negative error code on failure.
+ */
+flashux_error_t flashux_checksum_file(
+    flashux_context_t *ctx,
+    const char *file_path,
+    uint32_t checksum_flags,
+    flashux_checksum_result_t *result_out
+);
+```
+
+### 4.7. Command-Line Interface Functions (`src/cli/cli_args.h`, `main.c`)
+
+```c
+/**
+ * @brief Parse command-line arguments using getopt_long.
+ *
+ * @param[in] argc Argument count.
+ * @param[in] argv Argument vector.
+ * @param[out] opts Struct populated with parsed CLI flags.
+ * @return 0 on success, negative integer or exit code on parsing failure.
+ */
+int flashux_cli_parse_args(int argc, char **argv, flashux_cli_options_t *opts);
+
+/**
+ * @brief Run interactive ncurses terminal dashboard.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] opts Runtime options.
+ * @return 0 on normal exit, non-zero on error.
+ */
+int flashux_cli_run_interactive(flashux_context_t *ctx, const flashux_cli_options_t *opts);
+
+/**
+ * @brief Run non-interactive scriptable batch mode emitting structured JSON.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] opts Runtime options.
+ * @return 0 on successful flash, non-zero on error.
+ */
+int flashux_cli_run_batch(flashux_context_t *ctx, const flashux_cli_options_t *opts);
+```
+
+### 4.8. Graphical User Interface Lifecycle (`src/gui/app_window.h`)
+
+```c
+/**
+ * @brief Create and run GTK 4 / libadwaita application.
+ *
+ * @param[in] argc Argument count.
+ * @param[in] argv Argument vector.
+ * @return Application exit code.
+ */
+int flashux_gui_app_run(int argc, char **argv);
+```
+
+### 4.9. Privileged Helper Daemon & IPC Client Transport (`src/core/ipc_client.h`, `src/helper/helper_main.h`)
+
+```c
+typedef struct flashux_ipc_client flashux_ipc_client_t;
+
+/**
+ * @brief Connect to the privileged helper daemon over UNIX domain socket.
+ *
+ * @param[in] ctx Flashux context.
+ * @param[in] socket_path Path to UNIX domain socket.
+ * @param[out] client_out Allocated client connection instance.
+ * @return FLASHUX_SUCCESS on success, FLASHUX_ERR_IPC on failure.
+ */
+flashux_error_t flashux_ipc_client_connect(
+    flashux_context_t *ctx,
+    const char *socket_path,
+    flashux_ipc_client_t **client_out
+);
+
+/**
+ * @brief Disconnect and free IPC client resources.
+ *
+ * @param[in,out] client Pointer to client instance. Set to NULL on release.
+ */
+void flashux_ipc_client_disconnect(flashux_ipc_client_t **client);
+
+/**
+ * @brief Send an IPC command packet to the helper daemon.
+ *
+ * @param[in] client Connected client instance.
+ * @param[in] cmd Command message type opcode.
+ * @param[in] payload Data buffer to send.
+ * @param[in] payload_len Length of payload in bytes.
+ * @return FLASHUX_SUCCESS on success, negative error code on socket error.
+ */
+flashux_error_t flashux_ipc_client_send_cmd(
+    flashux_ipc_client_t *client,
+    flashux_ipc_msg_type_t cmd,
+    const void *payload,
+    size_t payload_len
+);
+
+/**
+ * @brief Receive next message packet from helper daemon.
+ *
+ * @param[in] client Connected client instance.
+ * @param[out] header_out Fixed header buffer.
+ * @param[out] payload_buffer Buffer to receive payload.
+ * @param[in] max_payload_len Capacity of payload_buffer.
+ * @return FLASHUX_SUCCESS on success, negative error code on socket error.
+ */
+flashux_error_t flashux_ipc_client_recv_msg(
+    flashux_ipc_client_t *client,
+    flashux_ipc_header_t *header_out,
+    void *payload_buffer,
+    size_t max_payload_len
+);
+```
+
 ---
 
 ## 5. System APIs, Kernel Interfaces & Algorithms
@@ -572,7 +923,80 @@ For raw disk flashing:
 
 ---
 
-## 6. Error Handling & Failure Modes
+## 6. Control Flow & State Transitions
+
+### 6.1. Flashing Pipeline State Machine
+
+The flash execution engine advances through explicit, deterministic states managed by `flashux_stage_t`. Any failure or cancellation triggers an immediate jump to `FLASHUX_STAGE_FAILED` or cooperative termination:
+
+```
+ [ FLASHUX_STAGE_IDLE ]
+           |
+           | User initiates flash (valid options)
+           v
+ [ FLASHUX_STAGE_VERIFYING_LOCK ]  ---> (Lock failed / busy) ---> [ FLASHUX_STAGE_FAILED ]
+           |
+           v
+ [ FLASHUX_STAGE_UNMOUNTING ]      ---> (Partition busy)     ---> [ FLASHUX_STAGE_FAILED ]
+           |
+           v
+ [ FLASHUX_STAGE_ZEROING_HEADER ]  ---> (I/O write error)    ---> [ FLASHUX_STAGE_FAILED ]
+           |
+           v
+ [ FLASHUX_STAGE_BAD_BLOCKS ] (Optional passes)
+           |
+           v
+ [ FLASHUX_STAGE_PARTITIONING ]    ---> (Partition error)    ---> [ FLASHUX_STAGE_FAILED ]
+           |
+           v
+ [ FLASHUX_STAGE_FORMATTING ]      ---> (mkfs error)         ---> [ FLASHUX_STAGE_FAILED ]
+           |
+           v
+ [ FLASHUX_STAGE_WRITING ] <------+
+           |                      | Streaming Direct I/O
+           +----------------------+ Loop
+           |
+           v
+ [ FLASHUX_STAGE_SYNCING ]         ---> (Cache flush error)  ---> [ FLASHUX_STAGE_FAILED ]
+           |
+           v
+ [ FLASHUX_STAGE_VERIFYING_READ ]  ---> (Checksum mismatch)  ---> [ FLASHUX_STAGE_FAILED ]
+           |
+           v
+ [ FLASHUX_STAGE_COMPLETED ]
+```
+
+### 6.2. Application Privilege Escalation & IPC Flow
+
+```
+Frontend (GUI/CLI)               Polkit/pkexec               flashux-helper
+       |                               |                            |
+       | 1. Launch / Connect           |                            |
+       |------------------------------>|                            |
+       |                               | 2. Spawn with root privs   |
+       |                               |--------------------------->|
+       |                               |                            | 3. Open AF_UNIX socket
+       |                               |                            |    listen(/run/flashux/helper.sock)
+       | 4. Connect to socket          |                            |
+       |----------------------------------------------------------->|
+       |                               |                            | 5. SO_PEERCRED check
+       |                               |                            |    Verify Polkit action
+       | 6. FLASHUX_IPC_CMD_START_FLASH                             |
+       |----------------------------------------------------------->|
+       |                               |                            | 7. flock(dev, O_EXCL)
+       |                               |                            | 8. umount2(partitions)
+       |                               |                            | 9. Execute write engine
+       | 10. FLASHUX_IPC_MSG_PROGRESS_UPDATE (stream)               |
+       |<-----------------------------------------------------------|
+       |                               |                            | 11. sync & verify
+       | 12. FLASHUX_IPC_MSG_OPERATION_RESULT                       |
+       |<-----------------------------------------------------------|
+       |                               |                            | 13. Close & exit
+```
+
+---
+
+## 7. Error Handling & Failure Modes / Edge Cases
 
 | Failure Scenario | Detection Mechanism | Remediation & Recovery Strategy |
 | :--- | :--- | :--- |
@@ -582,19 +1006,53 @@ For raw disk flashing:
 | **Corrupted Image / Bad Sector** | ISO parsing fails checksum or read error occurs during surface scan. | Report bad sector LBA offset; prompt user whether to abort or mark sector list; clean up context. |
 | **Out of Memory** | `malloc`/`posix_memalign` returns `NULL`. | Immediate unwinding of call stack; free all partial allocations; return `FLASHUX_ERR_NO_MEMORY`. |
 | **Privilege Escalation Rejected** | User cancels Polkit password prompt or `pkexec` fails. | Gracefully return `FLASHUX_ERR_PERMISSION_DENIED`; inform user that root privileges are required to write block devices. |
+| **Read-Only Storage Media** | Block node attributes indicate write-protection or `EROFS`. | Detect via `is_read_only` in `flashux_device_t`; reject flash operation prior to starting. |
+| **Insufficient Target Capacity** | Image byte size exceeds physical device `size_bytes`. | Validate in `flashux_flash_validate_options()`; emit error before partitioning or writing. |
 
 ---
 
-## 7. Security & Boundary Considerations
+## 8. Security & Boundary Considerations
 
 1. **Pure C11 Defensive Standards**:
    - Zero tolerance for `strcpy`, `strcat`, `sprintf`, `gets`.
-   - All string formatting uses `snprintf` with target buffer sizeof constraints and explicit termination guarantees.
+   - All string formatting uses `snprintf` with target buffer sizeof constraints and explicit null termination.
    - Pointers set to `NULL` immediately after `free()`.
+   - Memory allocation checks: every `malloc`, `calloc`, or `posix_memalign` return value is checked immediately.
 2. **Path Sanitization**:
-   - Device paths restricted strictly to `/dev/` prefixes; directory traversal sequences (`..`) rejected.
+   - Device paths restricted strictly to canonical `/dev/` paths; directory traversal sequences (`..`) rejected.
    - Image file paths verified with `access(R_OK)` before passing to write engine.
 3. **Privilege Demarcation**:
    - GUI and CLI processes run under the invoking user's unprivileged desktop session.
    - All destructive disk access is confined to `flashux-helper`.
-   - IPC messages are validated against strict payload bounds before decoding.
+   - IPC messages are validated against strict payload bounds (`payload_len <= 65536`) before decoding.
+
+---
+
+## 9. Testing & Verification Plan
+
+### 9.1. Non-Destructive Testing Strategy
+To uphold **Host Disk Safety** as mandated in `AGENTS.md` §1.5, developers and automated agents must **never** run commands or tests that write to host physical disks (`/dev/sd*`, `/dev/nvme*`). All destructive and block-level testing must be performed against:
+1. **Sparse Disk Images**: Formatted files created via `truncate -s 4G test_disk.img`.
+2. **Linux Loop Devices**: Managed via `losetup -fP test_disk.img` enabling multi-partition testing.
+3. **Memory Ramdisks**: `tmpfs` mounts providing ultra-fast, isolated virtual target devices.
+
+### 9.2. Unit Testing Suite (`tests/`)
+- `tests/test_core.c`: Verify context allocation, logger dispatching, and error string translation.
+- `tests/test_device.c`: Mock sysfs block trees to test device parsing, geometry calculation, and host system drive detection.
+- `tests/test_cli_args.c`: Validate command-line argument combinations, mutual exclusivity rules, and invalid input rejection.
+- `tests/test_flasher.c`: Test options validation, speed moving-average math, and ETA calculation algorithms.
+- `tests/test_format.c`: Test filesystem type selection, cluster size boundaries, and label sanitization.
+- `tests/test_partition.c`: Validate MBR partition sector offset calculations and GPT header CRC32 checksums using mock buffers.
+- `tests/test_ipc.c`: Test IPC header encoding, packet framing, and boundary overflow protection.
+
+### 9.3. Memory Sanitization & Static Analysis
+- **AddressSanitizer & UndefinedBehaviorSanitizer**: Compiled with `-fsanitize=address,undefined` to trap out-of-bounds access, use-after-free, and integer overflow.
+- **Valgrind Verification**: All unit test binaries must pass cleanly with zero leaks:
+  `valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./build/tests/test_all`
+- **Compiler Warnings**: Strictly enforced zero warnings with `-Wall -Wextra -Wpedantic -Werror`.
+
+### 9.4. Host Platform Limitations (macOS)
+Because this development environment is hosted on macOS:
+- Linux kernel-specific APIs (`libudev`, `libblkid`, `libmount`, `/sys/block`, `losetup`, Polkit) cannot be executed natively.
+- Code development proceeds with modular abstraction layers and mock data harnesses.
+- As explicitly instructed, the progress tracker (`TRACKER.md`) **will remain under 100%** until full integration testing is performed on a native Linux kernel target.
