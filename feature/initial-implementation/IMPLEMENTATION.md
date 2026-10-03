@@ -1069,9 +1069,12 @@ The initial foundation implements the public models above with these defensive r
 - IPC uses explicit little-endian byte encoding rather than casting packed C structures. Payloads
   are bounded to 65,536 bytes; paths and options are serialized field by field. Peer authorization
   is checked for every privileged connection; arbitrary shell strings are never executed.
-- Raw flashing supports ordinary uncompressed raw files initially. ISO extraction, Windows To Go,
-  FreeDOS, decompression, Windows registry modification, and persistence execution belong to later
-  roadmap milestones. Their options are visible but rejected before destructive work when unsupported.
+- Raw flashing accepts ordinary images and gzip, xz, bzip2, zstd, or single-file ZIP streams through
+  native libarchive. Only one unencrypted regular entry is accepted; entry paths are never extracted.
+  A complete, cancellable decode measures capacity before unmounting and again under the disk lock.
+  Writes and readback verification reopen bounded streams; no whole-image allocation is used.
+  ISO extraction, Windows To Go, FreeDOS, Windows registry modification, persistence, and bad-block
+  execution remain later roadmap milestones and are rejected before destructive work.
 - Formatting and partition operations validate their complete inputs before opening targets. The
   privileged helper revalidates device identity and safety. Only sparse regular files are used by
   automated tests; host physical disks are never write-tested.
@@ -1082,3 +1085,57 @@ The initial foundation implements the public models above with these defensive r
   checks, and Valgrind remain explicit outstanding checks until actually run. ASan/UBSan portable
   verification does not substitute for them. The tracker logs its own latest commit as `HEAD` to
   avoid impossible recursive self-hash bookkeeping; the next update resolves that hash.
+
+### 10.1. Implemented Safety and Ownership Details
+
+- Public worker lifecycle adds `flashux_flash_wait()` and `flashux_flash_is_running()`. Callers join
+  completed jobs before reusing the context. One caller owns each join; destruction and concurrent
+  external joins are not supported. GUI progress is coalesced on the GLib main context; worker
+  callbacks never touch GTK. Modal jobs retain an immutable options snapshot and an owning parent
+  reference. Asynchronous chooser responses look up state through the retained window.
+- `expected_disk_sequence` records `BLKGETDISKSEQ` at review/start time. The helper compares it before
+  unmounting and on the exclusively opened descriptor before writing. Missing identity support fails
+  closed. Parent-disk checks also guard standalone partition and formatter APIs.
+- The root helper accepts frontend-owned source descriptors via `SCM_RIGHTS`, checks file identity,
+  independently revalidates paths and disk safety, and authenticates each connection using the actual
+  peer PID/UID. Frontends launch only the configured installed helper through fixed `pkexec` argv.
+  No environment-expanded shell command is used for writes, formatting, or privilege escalation.
+- IPC version 1 has a 16-byte little-endian header, bounded payloads, monotonically increasing
+  command sequences, and close-on-error framing. Options occupy 880 bytes: disk sequence at offset
+  808, reserved zero bytes from 816. Progress occupies 168 bytes, including explicit little-endian
+  IEEE 754 binary64 instantaneous speed at offset 32; percentage and average speed are derived.
+  Nonfinite and negative rates are rejected. Disconnect and cancellation synchronize partial writes.
+- Filesystem tools receive a validated partition descriptor as `/proc/self/fd/3` with explicit argv
+  and a minimal environment. Full formatting zeroes the complete target in bounded chunks before
+  running mkfs; quick formatting skips that zero pass. Missing tools fail before zeroing. Formatting
+  remains a library capability, separate from raw-image jobs that preserve source disk layout.
+- Partition tables use explicit byte layout and CRC32. GPT has primary/backup headers and 128 entries,
+  UUID variant/version bits in disk byte order, and 1 MiB partition alignment. Native block geometry
+  must match the declared table. FAT boot partitions default to ESP; other types use Linux/basic-data
+  GUIDs unless a custom GUID is supplied. Initial GPT names are limited to ASCII.
+- Source descriptors are checked for identity, length, and nanosecond mtime/ctime changes. Buffers,
+  descriptors, device snapshots, IPC clients, GUI sources, and worker joins each have explicit owners.
+  The decoder uses built-in library filters; external decompressor process fallbacks are rejected.
+
+### 10.2. Verification Scope and Reproduction
+
+The build now installs all specified executables, public headers, a static core library with
+pkg-config metadata, the desktop launcher, and a prefix-correct Polkit policy. README documents
+Ubuntu and macOS dependency setup, installation, CLI behavior, sanitizers, and sparse-file testing.
+The Linux CI workflow exercises strict builds, all default suites including native GTK under Xvfb,
+ASan/UBSan with leak detection, ten core/CLI Valgrind suites, and install staging. It never accesses
+host block devices for writes.
+
+The manually built `tests/test_helper` sends only PING over the actual helper socket. It has been
+run in an isolated Ubuntu 24.04 ARM64 container with the generated policy installed, a system D-Bus,
+and Polkit: a root peer was allowed and an inactive `nobody` peer was denied. This is not a test of
+an interactive desktop agent or a privileged disk write. Full mounted-loop-device and desktop
+integration remains an explicit requirement before 100% completion.
+
+Native GTK tests use the test accessibility backend, close dialogs through the native window
+lifecycle, assert all test windows are destroyed, and close display/font backend caches after tests.
+All eleven default Linux suites pass ASan/UBSan with leak detection enabled and no suppressions.
+The ten non-GUI suites pass Valgrind with every leak kind treated as an error. The additional GUI
+Valgrind run reports diagnostics in the distribution's librsvg/GIO dependencies; it does not yet
+establish a clean complete GUI Valgrind result. This remains tracked separately from the passing
+native GUI and sanitizer checks, rather than being suppressed or claimed complete.
