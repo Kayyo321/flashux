@@ -274,4 +274,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `e19522b` | test(gui): tear down native test backends without suppressions | Explicit native test-backend teardown and closed-window assertions | GUI test uses the GTK test accessibility backend instead of disabling ownership-bearing contexts |
 | `ca0ac79` | docs(tracker): record tear down native test backends without suppressions | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `afa890d` | docs(ipc): describe the explicit progress speed encoding | Accurate progress wire-format comment | Removed obsolete comment implying all floating metrics are derived |
-| `HEAD` | docs(tracker): record describe the explicit progress speed encoding | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `fbe3acb` | docs(tracker): record describe the explicit progress speed encoding | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `a6c1745` | fix(build): install lowercase flashux pkg-config module | Explicit flashux.pc package filename | Corrected the generated module name from the human-readable display name |
+| `HEAD` | docs(tracker): record install lowercase flashux pkg-config module | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
