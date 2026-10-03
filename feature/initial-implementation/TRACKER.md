@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 61.82%**
+**Overall Progress: 63.75%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -60,7 +60,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 7. Unit Testing & Verification Harness
 - [X] 7.1 Implement core context and logging unit tests in `tests/test_core.c` [100%]
-- [ ] 7.2 Implement mock device enumeration and system disk protection tests in `tests/test_device.c` [0%]
+- [ ] 7.2 Implement mock device enumeration and system disk protection tests in `tests/test_device.c` [85%]
 - [ ] 7.3 Implement CLI argument parsing and validation tests in `tests/test_cli_args.c` [0%]
 - [ ] 7.4 Implement progress calculation and cancellation tests in `tests/test_flasher.c` [0%]
 - [ ] 7.5 Implement filesystem formatting parameter and cluster tests in `tests/test_format.c` [0%]
@@ -164,4 +164,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `d370b46` | feat(cli): route signals and frontend execution modes | CLI executable and SIGINT/SIGTERM lifecycle handling | Meson installs flashux-cli; help smoke check passes |
 | `cadbb54` | docs(tracker): record route signals and frontend execution modes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `416e23c` | fix(device): fail closed on malformed sysfs geometry | Strict sysfs geometry parser and safe defaults | Enumeration uses checked geometry including 512-byte sysfs unit conversion |
-| `HEAD` | docs(tracker): record fail closed on malformed sysfs geometry | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `5352eb0` | docs(tracker): record fail closed on malformed sysfs geometry | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `0a5225a` | test(device): exercise malformed sysfs and protected snapshots | Mock sysfs geometry and synthetic disk safety regressions | Device tests run without opening real block nodes |
+| `HEAD` | docs(tracker): record exercise malformed sysfs and protected snapshots | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
