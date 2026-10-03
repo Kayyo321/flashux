@@ -136,4 +136,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `b887083` | feat(ipc): connect authenticated helper clients with timeouts | IPC client lifecycle, command transport and bounded response handling | Core build includes client transport |
 | `63a61cf` | docs(tracker): record connect authenticated helper clients with timeouts | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `abba1ee` | feat(progress): calculate bounded throughput and smoothed ETA | Progress metric calculation and monotonic clock abstraction | Metrics use checked counters and bounded ETA |
-| `HEAD` | docs(tracker): record calculate bounded throughput and smoothed ETA | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `4aebc9d` | docs(tracker): record calculate bounded throughput and smoothed ETA | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `a2bda15` | feat(flasher): define observable asynchronous completion ownership | Doxygen-documented wait and running-query API; join ownership state | Context model now tracks in-progress joins |
+| `HEAD` | docs(tracker): record define observable asynchronous completion ownership | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
