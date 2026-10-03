@@ -15,8 +15,8 @@
 static bool related_device(dev_t mounted, dev_t target)
 {
     bool protected = true;
-    (void)flashux_device_topology_contains("/sys", major(mounted), minor(mounted),
-                                          major(target), minor(target), &protected);
+    (void)flashux_device_topology_contains("/sys", major(mounted), minor(mounted), major(target),
+                                           minor(target), &protected);
     return protected;
 }
 
@@ -29,8 +29,12 @@ static bool system_device(dev_t target)
     char source[512];
     for (size_t i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
         if (stat(paths[i], &st) != 0) {
-            if (i == 0 || errno != ENOENT) { return true; }
-        } else if (related_device(st.st_dev, target)) { return true; }
+            if (i == 0 || errno != ENOENT) {
+                return true;
+            }
+        } else if (related_device(st.st_dev, target)) {
+            return true;
+        }
     }
     swap = fopen("/proc/swaps", "r");
     if (swap == NULL) {
@@ -80,7 +84,9 @@ static flashux_error_t scan_partitions(struct udev *udev, struct udev_device *di
     struct udev_list_entry *entry;
     struct libmnt_table *mounts = mnt_new_table_from_file("/proc/self/mountinfo");
     if (mounts == NULL) {
-        if (scan != NULL) { udev_enumerate_unref(scan); }
+        if (scan != NULL) {
+            udev_enumerate_unref(scan);
+        }
         return FLASHUX_ERR_IO;
     }
     if (scan == NULL) {
@@ -94,9 +100,10 @@ static flashux_error_t scan_partitions(struct udev *udev, struct udev_device *di
         mnt_free_table(mounts);
         return FLASHUX_ERR_IO;
     }
-    udev_list_entry_foreach(entry, udev_enumerate_get_list_entry(scan)) {
-        struct udev_device *node = udev_device_new_from_syspath(udev,
-            udev_list_entry_get_name(entry));
+    udev_list_entry_foreach(entry, udev_enumerate_get_list_entry(scan))
+    {
+        struct udev_device *node =
+            udev_device_new_from_syspath(udev, udev_list_entry_get_name(entry));
         const char *type = node == NULL ? NULL : udev_device_get_devtype(node);
         if (type != NULL && strcmp(type, "partition") == 0) {
             flashux_partition_t *part = calloc(1, sizeof(*part));
@@ -106,16 +113,15 @@ static flashux_error_t scan_partitions(struct udev *udev, struct udev_device *di
                 mnt_free_table(mounts);
                 return FLASHUX_ERR_NO_MEMORY;
             }
-            copy_property(part->node_path, sizeof(part->node_path),
-                          udev_device_get_devnode(node));
+            copy_property(part->node_path, sizeof(part->node_path), udev_device_get_devnode(node));
             part->start_sector = read_number(node, "start");
             part->sector_count = read_number(node, "size");
             copy_property(part->fs_type, sizeof(part->fs_type),
                           udev_device_get_property_value(node, "ID_FS_TYPE"));
             copy_property(part->label, sizeof(part->label),
                           udev_device_get_property_value(node, "ID_FS_LABEL"));
-            struct libmnt_fs *mounted = mnt_table_find_devno(mounts,
-                udev_device_get_devnum(node), MNT_ITER_FORWARD);
+            struct libmnt_fs *mounted =
+                mnt_table_find_devno(mounts, udev_device_get_devnum(node), MNT_ITER_FORWARD);
             if (mounted != NULL) {
                 const char *target = mnt_fs_get_target(mounted);
                 part->is_mounted = true;
@@ -155,7 +161,7 @@ void flashux_device_list_free(flashux_device_t **list)
 }
 
 bool flashux_device_is_safe_target(flashux_context_t *ctx, const flashux_device_t *device,
-                                  char *reason_buffer, size_t buffer_size)
+                                   char *reason_buffer, size_t buffer_size)
 {
     const char *reason = "";
     (void)ctx;
@@ -179,7 +185,7 @@ bool flashux_device_is_safe_target(flashux_context_t *ctx, const flashux_device_
 }
 
 flashux_error_t flashux_device_list_scan(flashux_context_t *ctx, bool include_fixed,
-                                        flashux_device_t **list_out)
+                                         flashux_device_t **list_out)
 {
     if (ctx == NULL || list_out == NULL) {
         return FLASHUX_ERR_INVALID_ARG;
@@ -202,9 +208,10 @@ flashux_error_t flashux_device_list_scan(flashux_context_t *ctx, bool include_fi
     if (udev_enumerate_scan_devices(scan) < 0) {
         result = FLASHUX_ERR_IO;
     } else {
-        udev_list_entry_foreach(entry, udev_enumerate_get_list_entry(scan)) {
-            struct udev_device *node = udev_device_new_from_syspath(udev,
-                udev_list_entry_get_name(entry));
+        udev_list_entry_foreach(entry, udev_enumerate_get_list_entry(scan))
+        {
+            struct udev_device *node =
+                udev_device_new_from_syspath(udev, udev_list_entry_get_name(entry));
             const char *type = node == NULL ? NULL : udev_device_get_devtype(node);
             if (type == NULL || strcmp(type, "disk") != 0) {
                 if (node != NULL) {
@@ -239,14 +246,18 @@ flashux_error_t flashux_device_list_scan(flashux_context_t *ctx, bool include_fi
             device->is_system_drive = system_device(udev_device_get_devnum(node));
             device->bus_type = usb ? FLASHUX_BUS_USB : FLASHUX_BUS_UNKNOWN;
             const char *name = udev_device_get_sysname(node);
-            if (name == NULL) { name = ""; }
+            if (name == NULL) {
+                name = "";
+            }
             if (strncmp(name, "loop", 4) == 0 || strncmp(name, "dm-", 3) == 0 ||
                 strncmp(name, "vd", 2) == 0 || strncmp(name, "md", 2) == 0) {
                 device->bus_type = FLASHUX_BUS_VIRTUAL;
-            } else if (strncmp(name, "nvme", 4) == 0) { device->bus_type = FLASHUX_BUS_NVME; }
-            else if (strncmp(name, "mmcblk", 6) == 0) { device->bus_type = FLASHUX_BUS_SD_MMC; }
-            else if (!usb && bus != NULL &&
-                (strcmp(bus, "ata") == 0 || strcmp(bus, "scsi") == 0)) {
+            } else if (strncmp(name, "nvme", 4) == 0) {
+                device->bus_type = FLASHUX_BUS_NVME;
+            } else if (strncmp(name, "mmcblk", 6) == 0) {
+                device->bus_type = FLASHUX_BUS_SD_MMC;
+            } else if (!usb && bus != NULL &&
+                       (strcmp(bus, "ata") == 0 || strcmp(bus, "scsi") == 0)) {
                 device->bus_type = FLASHUX_BUS_SCSI_SATA;
             }
             device->next = *list_out;

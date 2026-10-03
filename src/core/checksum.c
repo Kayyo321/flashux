@@ -61,8 +61,8 @@ cleanup:
 }
 
 flashux_error_t flashux_checksum_file(flashux_context_t *ctx, const char *file_path,
-                                     uint32_t checksum_flags,
-                                     flashux_checksum_result_t *result_out)
+                                      uint32_t checksum_flags,
+                                      flashux_checksum_result_t *result_out)
 {
     struct hash_job jobs[4] = {0};
     pthread_t workers[4];

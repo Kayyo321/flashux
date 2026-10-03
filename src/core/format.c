@@ -16,15 +16,14 @@
 #include <errno.h>
 #endif
 
-flashux_error_t flashux_format_validate(const flashux_format_options_t *options,
-                                       char label[128])
+flashux_error_t flashux_format_validate(const flashux_format_options_t *options, char label[128])
 {
     if (options == NULL || label == NULL ||
         memchr(options->partition_path, '\0', sizeof(options->partition_path)) == NULL ||
         memchr(options->volume_label, '\0', sizeof(options->volume_label)) == NULL ||
         strncmp(options->partition_path, "/dev/", 5) != 0 ||
-        strstr(options->partition_path, "..") != NULL ||
-        options->fs_type < FLASHUX_FS_FAT16 || options->fs_type > FLASHUX_FS_EXT4) {
+        strstr(options->partition_path, "..") != NULL || options->fs_type < FLASHUX_FS_FAT16 ||
+        options->fs_type > FLASHUX_FS_EXT4) {
         return FLASHUX_ERR_INVALID_ARG;
     }
     uint32_t cluster = options->cluster_size;
@@ -34,10 +33,20 @@ flashux_error_t flashux_format_validate(const flashux_format_options_t *options,
     size_t limit = 127;
     uint32_t max_cluster = 65536;
     switch (options->fs_type) {
-    case FLASHUX_FS_FAT16: case FLASHUX_FS_FAT32: limit = 11; break;
-    case FLASHUX_FS_EXFAT: limit = 15; max_cluster = 32 * 1024 * 1024; break;
-    case FLASHUX_FS_EXT4: limit = 16; max_cluster = 4096; break;
-    default: break;
+    case FLASHUX_FS_FAT16:
+    case FLASHUX_FS_FAT32:
+        limit = 11;
+        break;
+    case FLASHUX_FS_EXFAT:
+        limit = 15;
+        max_cluster = 32 * 1024 * 1024;
+        break;
+    case FLASHUX_FS_EXT4:
+        limit = 16;
+        max_cluster = 4096;
+        break;
+    default:
+        break;
     }
     if (strlen(options->volume_label) > limit || cluster > max_cluster ||
         (options->fs_type == FLASHUX_FS_EXT4 && cluster != 0 && cluster < 1024)) {
@@ -70,7 +79,7 @@ static bool format_cancelled(void *data)
 #endif
 
 flashux_error_t flashux_format_partition(flashux_context_t *ctx,
-                                        const flashux_format_options_t *options)
+                                         const flashux_format_options_t *options)
 {
     char label[128] = {0};
     flashux_error_t result = flashux_format_validate(options, label);
@@ -98,14 +107,13 @@ flashux_error_t flashux_format_partition(flashux_context_t *ctx,
         goto cleanup;
     }
     node = udev_device_new_from_devnum(udev, 'b', st.st_rdev);
-    struct udev_device *parent = node == NULL ? NULL :
-        udev_device_get_parent_with_subsystem_devtype(node, "block", "disk");
+    struct udev_device *parent =
+        node == NULL ? NULL : udev_device_get_parent_with_subsystem_devtype(node, "block", "disk");
     if (parent == NULL || udev_device_get_devnode(parent) == NULL) {
         result = FLASHUX_ERR_INVALID_ARG;
         goto cleanup;
     }
-    (void)snprintf(disk.node_path, sizeof(disk.node_path), "%s",
-                   udev_device_get_devnode(parent));
+    (void)snprintf(disk.node_path, sizeof(disk.node_path), "%s", udev_device_get_devnode(parent));
     result = flashux_device_lock(ctx, &disk, &lock_fd);
     if (result != FLASHUX_SUCCESS) {
         goto cleanup;
@@ -149,16 +157,16 @@ flashux_error_t flashux_format_partition(flashux_context_t *ctx,
     } else if (options->fs_type == FLASHUX_FS_NTFS) {
         args[argc++] = flag_fast;
     }
-    args[argc++] = options->fs_type <= FLASHUX_FS_FAT32 ? flag_fatlabel :
-        options->fs_type == FLASHUX_FS_EXFAT ? flag_exlabel : flag_label;
+    args[argc++] = options->fs_type <= FLASHUX_FS_FAT32   ? flag_fatlabel
+                   : options->fs_type == FLASHUX_FS_EXFAT ? flag_exlabel
+                                                          : flag_label;
     args[argc++] = label;
     if (options->cluster_size != 0) {
         uint32_t size = options->cluster_size;
         if (options->fs_type <= FLASHUX_FS_FAT32) {
-            const char *sector_text = udev_device_get_sysattr_value(parent,
-                "queue/logical_block_size");
-            uint32_t sector = sector_text == NULL ? 0 :
-                (uint32_t)strtoul(sector_text, NULL, 10);
+            const char *sector_text =
+                udev_device_get_sysattr_value(parent, "queue/logical_block_size");
+            uint32_t sector = sector_text == NULL ? 0 : (uint32_t)strtoul(sector_text, NULL, 10);
             if (sector == 0 || size < sector || size / sector > 128) {
                 result = FLASHUX_ERR_INVALID_ARG;
                 goto cleanup;
@@ -166,8 +174,9 @@ flashux_error_t flashux_format_partition(flashux_context_t *ctx,
             size /= sector;
         }
         (void)snprintf(size_arg, sizeof(size_arg), "%u", size);
-        args[argc++] = options->fs_type <= FLASHUX_FS_FAT32 ? flag_sectors :
-            options->fs_type == FLASHUX_FS_EXT4 ? flag_block : flag_cluster;
+        args[argc++] = options->fs_type <= FLASHUX_FS_FAT32  ? flag_sectors
+                       : options->fs_type == FLASHUX_FS_EXT4 ? flag_block
+                                                             : flag_cluster;
         args[argc++] = size_arg;
     }
     char target[] = "/proc/self/fd/3";
@@ -183,7 +192,9 @@ flashux_error_t flashux_format_partition(flashux_context_t *ctx,
     char path_env[] = "PATH=/usr/sbin:/usr/bin:/sbin:/bin";
     char locale_env[] = "LC_ALL=C";
     char *environment[] = {path_env, locale_env, NULL};
-    if (error == 0 && access(executable, X_OK) != 0) { error = errno; }
+    if (error == 0 && access(executable, X_OK) != 0) {
+        error = errno;
+    }
     if (error == 0 && !options->quick_format) {
         result = flashux_zero_fd(part_fd, format_cancelled, ctx);
         if (result != FLASHUX_SUCCESS) {
@@ -200,14 +211,20 @@ flashux_error_t flashux_format_partition(flashux_context_t *ctx,
     } else {
         int status = 0;
         pid_t waited;
-        do { waited = waitpid(child, &status, 0); } while (waited < 0 && errno == EINTR);
-        result = waited == child && WIFEXITED(status) && WEXITSTATUS(status) == 0 ?
-            FLASHUX_SUCCESS : FLASHUX_ERR_IO;
+        do {
+            waited = waitpid(child, &status, 0);
+        } while (waited < 0 && errno == EINTR);
+        result = waited == child && WIFEXITED(status) && WEXITSTATUS(status) == 0 ? FLASHUX_SUCCESS
+                                                                                  : FLASHUX_ERR_IO;
     }
 cleanup:
-    if (part_fd >= 0) { (void)close(part_fd); }
+    if (part_fd >= 0) {
+        (void)close(part_fd);
+    }
     flashux_device_unlock(&lock_fd);
-    if (node != NULL) { udev_device_unref(node); }
+    if (node != NULL) {
+        udev_device_unref(node);
+    }
     udev_unref(udev);
     if (result != FLASHUX_SUCCESS) {
         flashux_log_error(ctx, "Formatting failed: %s", flashux_strerror(result));

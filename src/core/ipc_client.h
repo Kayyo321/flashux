@@ -11,11 +11,8 @@ typedef struct flashux_ipc_client flashux_ipc_client_t;
  * @param[out] client_out Allocated client connection instance.
  * @return FLASHUX_SUCCESS on success, FLASHUX_ERR_IPC on failure.
  */
-flashux_error_t flashux_ipc_client_connect(
-    flashux_context_t *ctx,
-    const char *socket_path,
-    flashux_ipc_client_t **client_out
-);
+flashux_error_t flashux_ipc_client_connect(flashux_context_t *ctx, const char *socket_path,
+                                           flashux_ipc_client_t **client_out);
 
 /**
  * @brief Disconnect and free IPC client resources.
@@ -33,12 +30,9 @@ void flashux_ipc_client_disconnect(flashux_ipc_client_t **client);
  * @param[in] payload_len Length of payload in bytes.
  * @return FLASHUX_SUCCESS on success, negative error code on socket error.
  */
-flashux_error_t flashux_ipc_client_send_cmd(
-    flashux_ipc_client_t *client,
-    flashux_ipc_msg_type_t cmd,
-    const void *payload,
-    size_t payload_len
-);
+flashux_error_t flashux_ipc_client_send_cmd(flashux_ipc_client_t *client,
+                                            flashux_ipc_msg_type_t cmd, const void *payload,
+                                            size_t payload_len);
 
 /**
  * @brief Receive next message packet from helper daemon.
@@ -49,12 +43,9 @@ flashux_error_t flashux_ipc_client_send_cmd(
  * @param[in] max_payload_len Capacity of payload_buffer.
  * @return FLASHUX_SUCCESS on success, negative error code on socket error.
  */
-flashux_error_t flashux_ipc_client_recv_msg(
-    flashux_ipc_client_t *client,
-    flashux_ipc_header_t *header_out,
-    void *payload_buffer,
-    size_t max_payload_len
-);
+flashux_error_t flashux_ipc_client_recv_msg(flashux_ipc_client_t *client,
+                                            flashux_ipc_header_t *header_out, void *payload_buffer,
+                                            size_t max_payload_len);
 
 int flashux_ipc_client_fd(const flashux_ipc_client_t *client);
 #endif

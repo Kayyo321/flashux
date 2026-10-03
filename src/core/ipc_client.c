@@ -26,7 +26,7 @@ int flashux_ipc_client_fd(const flashux_ipc_client_t *client)
     return client == NULL ? -1 : client->fd;
 }
 flashux_error_t flashux_ipc_client_connect(flashux_context_t *ctx, const char *socket_path,
-                                          flashux_ipc_client_t **client_out)
+                                           flashux_ipc_client_t **client_out)
 {
     struct sockaddr_un address = {0};
     struct timeval timeout = {5, 0};
@@ -45,7 +45,9 @@ flashux_error_t flashux_ipc_client_connect(flashux_context_t *ctx, const char *s
     }
 #endif
     flashux_ipc_client_t *client = calloc(1, sizeof(*client));
-    if (client == NULL) { return FLASHUX_ERR_NO_MEMORY; }
+    if (client == NULL) {
+        return FLASHUX_ERR_NO_MEMORY;
+    }
     client->fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (client->fd < 0) {
         free(client);
@@ -73,8 +75,8 @@ flashux_error_t flashux_ipc_client_connect(flashux_context_t *ctx, const char *s
     return FLASHUX_SUCCESS;
 }
 flashux_error_t flashux_ipc_client_send_cmd(flashux_ipc_client_t *client,
-                                          flashux_ipc_msg_type_t cmd,
-                                          const void *payload, size_t payload_len)
+                                            flashux_ipc_msg_type_t cmd, const void *payload,
+                                            size_t payload_len)
 {
     if (client == NULL || client->fd < 0 || client->sequence == UINT32_MAX ||
         cmd < FLASHUX_IPC_CMD_PING || cmd > FLASHUX_IPC_CMD_CANCEL_FLASH) {
@@ -83,15 +85,17 @@ flashux_error_t flashux_ipc_client_send_cmd(flashux_ipc_client_t *client,
     return flashux_ipc_send(client->fd, cmd, ++client->sequence, payload, payload_len);
 }
 flashux_error_t flashux_ipc_client_recv_msg(flashux_ipc_client_t *client,
-                                          flashux_ipc_header_t *header_out,
-                                          void *payload_buffer, size_t max_payload_len)
+                                            flashux_ipc_header_t *header_out, void *payload_buffer,
+                                            size_t max_payload_len)
 {
-    if (client == NULL || header_out == NULL) { return FLASHUX_ERR_INVALID_ARG; }
-    flashux_error_t result = flashux_ipc_receive(client->fd, header_out,
-                                               payload_buffer, max_payload_len);
-    if (result == FLASHUX_SUCCESS && (header_out->sequence_id == 0 ||
-        header_out->sequence_id > client->sequence ||
-        header_out->msg_type < FLASHUX_IPC_MSG_PROGRESS_UPDATE)) {
+    if (client == NULL || header_out == NULL) {
+        return FLASHUX_ERR_INVALID_ARG;
+    }
+    flashux_error_t result =
+        flashux_ipc_receive(client->fd, header_out, payload_buffer, max_payload_len);
+    if (result == FLASHUX_SUCCESS &&
+        (header_out->sequence_id == 0 || header_out->sequence_id > client->sequence ||
+         header_out->msg_type < FLASHUX_IPC_MSG_PROGRESS_UPDATE)) {
         result = FLASHUX_ERR_IPC;
     }
     if (result != FLASHUX_SUCCESS) {

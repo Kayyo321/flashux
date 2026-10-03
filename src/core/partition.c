@@ -35,8 +35,7 @@ uint32_t flashux_crc32(const unsigned char *data, size_t size)
     }
     return ~crc;
 }
-static flashux_error_t write_at(int fd, const unsigned char *data, size_t size,
-                                uint64_t offset)
+static flashux_error_t write_at(int fd, const unsigned char *data, size_t size, uint64_t offset)
 {
     while (size > 0) {
         ssize_t count = pwrite(fd, data, size, (off_t)offset);
@@ -83,7 +82,7 @@ static bool parse_guid(const char *text, unsigned char *out)
         }
         bytes[index++] = (unsigned char)value;
     }
-    static const unsigned order[] = {3,2,1,0,5,4,7,6,8,9,10,11,12,13,14,15};
+    static const unsigned order[] = {3, 2, 1, 0, 5, 4, 7, 6, 8, 9, 10, 11, 12, 13, 14, 15};
     for (unsigned i = 0; i < 16; ++i) {
         out[i] = bytes[order[i]];
     }
@@ -92,14 +91,18 @@ static bool parse_guid(const char *text, unsigned char *out)
 static uint8_t mbr_type(flashux_fs_type_t type)
 {
     switch (type) {
-    case FLASHUX_FS_FAT16: return 0x0e;
-    case FLASHUX_FS_FAT32: return 0x0c;
-    case FLASHUX_FS_EXT4: return 0x83;
-    default: return 0x07;
+    case FLASHUX_FS_FAT16:
+        return 0x0e;
+    case FLASHUX_FS_FAT32:
+        return 0x0c;
+    case FLASHUX_FS_EXT4:
+        return 0x83;
+    default:
+        return 0x07;
     }
 }
-static void mbr_entry(unsigned char *entry, uint8_t type, uint64_t start,
-                       uint64_t count, bool bootable)
+static void mbr_entry(unsigned char *entry, uint8_t type, uint64_t start, uint64_t count,
+                      bool bootable)
 {
     entry[0] = bootable ? 0x80 : 0;
     entry[1] = entry[5] = 0xfe;
@@ -108,9 +111,9 @@ static void mbr_entry(unsigned char *entry, uint8_t type, uint64_t start,
     put32(entry + 8, (uint32_t)start);
     put32(entry + 12, count > UINT32_MAX ? UINT32_MAX : (uint32_t)count);
 }
-static void gpt_header(unsigned char *out, uint64_t current, uint64_t backup,
-                       uint64_t first, uint64_t last, uint64_t array_lba,
-                       const unsigned char *guid, uint32_t array_crc)
+static void gpt_header(unsigned char *out, uint64_t current, uint64_t backup, uint64_t first,
+                       uint64_t last, uint64_t array_lba, const unsigned char *guid,
+                       uint32_t array_crc)
 {
     memcpy(out, "EFI PART", 8);
     put32(out + 8, 0x00010000);
@@ -139,8 +142,7 @@ flashux_error_t flashux_partition_write_fd(int fd, const flashux_partition_table
         (table->sector_size != 512 && table->sector_size != 4096) ||
         table->scheme < FLASHUX_PARTITION_SCHEME_MBR ||
         table->scheme > FLASHUX_PARTITION_SCHEME_HYBRID ||
-        table->total_sectors > (uint64_t)INT64_MAX / table->sector_size ||
-        fstat(fd, &st) != 0) {
+        table->total_sectors > (uint64_t)INT64_MAX / table->sector_size || fstat(fd, &st) != 0) {
         return FLASHUX_ERR_INVALID_ARG;
     }
     uint64_t array_sectors = sizeof(entries) / table->sector_size;
@@ -148,10 +150,10 @@ flashux_error_t flashux_partition_write_fd(int fd, const flashux_partition_table
     if (table->total_sectors <= 2 * array_sectors + 3) {
         return FLASHUX_ERR_INVALID_ARG;
     }
-    uint64_t last = table->scheme == FLASHUX_PARTITION_SCHEME_MBR ?
-        table->total_sectors - 1 : table->total_sectors - array_sectors - 2;
-    if (S_ISREG(st.st_mode) && ((uint64_t)st.st_size <
-        table->total_sectors * table->sector_size)) {
+    uint64_t last = table->scheme == FLASHUX_PARTITION_SCHEME_MBR
+                        ? table->total_sectors - 1
+                        : table->total_sectors - array_sectors - 2;
+    if (S_ISREG(st.st_mode) && ((uint64_t)st.st_size < table->total_sectors * table->sector_size)) {
         return FLASHUX_ERR_INVALID_ARG;
     }
     if (!S_ISREG(st.st_mode)) {
@@ -169,8 +171,8 @@ flashux_error_t flashux_partition_write_fd(int fd, const flashux_partition_table
     }
     for (size_t i = 0; i < table->entry_count; ++i) {
         const flashux_partition_entry_t *part = &table->entries[i];
-        if (part->partition_number == 0 || part->partition_number > 16 ||
-            part->start_lba < first || part->sector_count == 0 || part->start_lba > last ||
+        if (part->partition_number == 0 || part->partition_number > 16 || part->start_lba < first ||
+            part->sector_count == 0 || part->start_lba > last ||
             part->sector_count - 1 > last - part->start_lba ||
             part->start_lba % (1048576 / table->sector_size) != 0 ||
             memchr(part->label, '\0', sizeof(part->label)) == NULL ||
@@ -196,15 +198,17 @@ flashux_error_t flashux_partition_write_fd(int fd, const flashux_partition_table
             if (part->partition_number > 4) {
                 return FLASHUX_ERR_INVALID_ARG;
             }
-            mbr_entry(mbr + 446 + 16 * (part->partition_number - 1),
-                      mbr_type(part->fs_type), part->start_lba, part->sector_count,
-                      part->is_bootable);
+            mbr_entry(mbr + 446 + 16 * (part->partition_number - 1), mbr_type(part->fs_type),
+                      part->start_lba, part->sector_count, part->is_bootable);
         } else {
             unsigned char *entry = entries + 128 * (part->partition_number - 1);
-            const char *guid = part->type_guid[0] != '\0' ? part->type_guid :
-                (part->is_bootable && part->fs_type <= FLASHUX_FS_FAT32 ? "c12a7328-f81f-11d2-ba4b-00a0c93ec93b" :
-                 part->fs_type == FLASHUX_FS_EXT4 ? "0fc63daf-8483-4772-8e79-3d69d8477de4" :
-                 "ebd0a0a2-b9e5-4433-87c0-68b6b72699c7");
+            const char *guid =
+                part->type_guid[0] != '\0'
+                    ? part->type_guid
+                    : (part->is_bootable && part->fs_type <= FLASHUX_FS_FAT32
+                           ? "c12a7328-f81f-11d2-ba4b-00a0c93ec93b"
+                       : part->fs_type == FLASHUX_FS_EXT4 ? "0fc63daf-8483-4772-8e79-3d69d8477de4"
+                                                          : "ebd0a0a2-b9e5-4433-87c0-68b6b72699c7");
             if (!parse_guid(guid, entry) || RAND_bytes(entry + 16, 16) != 1) {
                 return FLASHUX_ERR_INVALID_ARG;
             }
@@ -242,22 +246,30 @@ flashux_error_t flashux_partition_write_fd(int fd, const flashux_partition_table
         gpt_header(backup, table->total_sectors - 1, 1, first, last,
                    table->total_sectors - 1 - array_sectors, disk_guid, crc);
         result = write_at(fd, entries, sizeof(entries), 2 * table->sector_size);
-        if (result != FLASHUX_SUCCESS) { return result; }
+        if (result != FLASHUX_SUCCESS) {
+            return result;
+        }
         result = write_at(fd, entries, sizeof(entries),
                           (table->total_sectors - 1 - array_sectors) * table->sector_size);
-        if (result != FLASHUX_SUCCESS) { return result; }
+        if (result != FLASHUX_SUCCESS) {
+            return result;
+        }
         result = write_at(fd, primary, table->sector_size, table->sector_size);
-        if (result != FLASHUX_SUCCESS) { return result; }
+        if (result != FLASHUX_SUCCESS) {
+            return result;
+        }
         result = write_at(fd, backup, table->sector_size,
                           (table->total_sectors - 1) * table->sector_size);
-        if (result != FLASHUX_SUCCESS) { return result; }
+        if (result != FLASHUX_SUCCESS) {
+            return result;
+        }
     }
     result = write_at(fd, mbr, table->sector_size, 0);
     return result == FLASHUX_SUCCESS && fsync(fd) != 0 ? FLASHUX_ERR_IO : result;
 }
 
 flashux_error_t flashux_partition_table_create(flashux_context_t *ctx,
-                                              const flashux_partition_table_t *table)
+                                               const flashux_partition_table_t *table)
 {
     flashux_device_t device = {0};
     int fd = -1;

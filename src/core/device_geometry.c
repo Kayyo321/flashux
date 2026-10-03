@@ -10,17 +10,29 @@ static bool attribute(const char *path, const char *key, uint64_t *value)
     char text[128];
     char *end;
     int length = snprintf(filename, sizeof(filename), "%s/%s", path, key);
-    if (length < 0 || (size_t)length >= sizeof(filename)) { return false; }
+    if (length < 0 || (size_t)length >= sizeof(filename)) {
+        return false;
+    }
     FILE *file = fopen(filename, "r");
-    if (file == NULL) { return false; }
+    if (file == NULL) {
+        return false;
+    }
     bool valid = fgets(text, sizeof(text), file) != NULL && !ferror(file);
     (void)fclose(file);
-    if (!valid || text[0] < '0' || text[0] > '9') { return false; }
+    if (!valid || text[0] < '0' || text[0] > '9') {
+        return false;
+    }
     errno = 0;
     unsigned long long parsed = strtoull(text, &end, 10);
-    if (errno != 0) { return false; }
-    while (isspace((unsigned char)*end)) { ++end; }
-    if (*end != '\0') { return false; }
+    if (errno != 0) {
+        return false;
+    }
+    while (isspace((unsigned char)*end)) {
+        ++end;
+    }
+    if (*end != '\0') {
+        return false;
+    }
     *value = (uint64_t)parsed;
     return true;
 }
@@ -31,7 +43,9 @@ flashux_error_t flashux_device_geometry_from_sysfs(const char *path, flashux_dev
     uint64_t physical;
     uint64_t read_only;
     uint64_t removable;
-    if (path == NULL || device == NULL) { return FLASHUX_ERR_INVALID_ARG; }
+    if (path == NULL || device == NULL) {
+        return FLASHUX_ERR_INVALID_ARG;
+    }
     device->size_bytes = 0;
     device->logical_sector_sz = 0;
     device->phys_sector_sz = 0;

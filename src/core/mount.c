@@ -14,7 +14,7 @@
 #endif
 
 flashux_error_t flashux_device_lock(flashux_context_t *ctx, const flashux_device_t *device,
-                                   int *lock_fd_out)
+                                    int *lock_fd_out)
 {
     if (ctx == NULL || device == NULL || lock_fd_out == NULL ||
         memchr(device->node_path, 0, sizeof(device->node_path)) == NULL) {
@@ -28,9 +28,8 @@ flashux_error_t flashux_device_lock(flashux_context_t *ctx, const flashux_device
     struct stat before;
     struct stat opened;
     flashux_error_t result;
-    if (realpath(device->node_path, canonical) == NULL ||
-        strncmp(canonical, "/dev/", 5) != 0 || stat(canonical, &before) != 0 ||
-        !S_ISBLK(before.st_mode)) {
+    if (realpath(device->node_path, canonical) == NULL || strncmp(canonical, "/dev/", 5) != 0 ||
+        stat(canonical, &before) != 0 || !S_ISBLK(before.st_mode)) {
         return FLASHUX_ERR_INVALID_ARG;
     }
     result = flashux_device_list_scan(ctx, true, &list);
@@ -52,8 +51,8 @@ flashux_error_t flashux_device_lock(flashux_context_t *ctx, const flashux_device
     if (fd < 0) {
         return FLASHUX_ERR_DEVICE_BUSY;
     }
-    if (fstat(fd, &opened) != 0 || !S_ISBLK(opened.st_mode) ||
-        opened.st_rdev != before.st_rdev || flock(fd, LOCK_EX | LOCK_NB) != 0) {
+    if (fstat(fd, &opened) != 0 || !S_ISBLK(opened.st_mode) || opened.st_rdev != before.st_rdev ||
+        flock(fd, LOCK_EX | LOCK_NB) != 0) {
         (void)close(fd);
         return FLASHUX_ERR_DEVICE_BUSY;
     }
@@ -74,7 +73,7 @@ void flashux_device_unlock(int *lock_fd)
 }
 
 flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
-                                                 const flashux_device_t *device)
+                                                  const flashux_device_t *device)
 {
     if (ctx == NULL || device == NULL || device->is_system_drive ||
         memchr(device->node_path, 0, sizeof(device->node_path)) == NULL) {
@@ -84,11 +83,16 @@ flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
     flashux_device_t *fresh = NULL;
     char canonical[4096];
     flashux_error_t scan_result = flashux_device_list_scan(ctx, true, &fresh);
-    if (scan_result != FLASHUX_SUCCESS) { return scan_result; }
+    if (scan_result != FLASHUX_SUCCESS) {
+        return scan_result;
+    }
     const flashux_device_t *validated = NULL;
     if (realpath(device->node_path, canonical) != NULL) {
         for (flashux_device_t *item = fresh; item != NULL; item = item->next) {
-            if (strcmp(item->node_path, canonical) == 0) { validated = item; break; }
+            if (strcmp(item->node_path, canonical) == 0) {
+                validated = item;
+                break;
+            }
         }
     }
     if (!flashux_device_is_safe_target(ctx, validated, NULL, 0)) {
@@ -132,7 +136,9 @@ flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
             }
             matched = matched || mounted == part_node.st_rdev;
         }
-        if (result != FLASHUX_SUCCESS) { break; }
+        if (result != FLASHUX_SUCCESS) {
+            break;
+        }
         if (matched && umount2(target, 0) != 0) {
             flashux_log_error(ctx, "Unable to unmount %s", target);
             result = FLASHUX_ERR_DEVICE_BUSY;
@@ -150,15 +156,20 @@ flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
 
 flashux_error_t flashux_device_capture_sequence(const char *path, uint64_t *sequence)
 {
-    if (path == NULL || sequence == NULL) { return FLASHUX_ERR_INVALID_ARG; }
+    if (path == NULL || sequence == NULL) {
+        return FLASHUX_ERR_INVALID_ARG;
+    }
     *sequence = 0;
 #if FLASHUX_LINUX
     struct stat st;
     int fd = open(path, O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
-    if (fd < 0) { return FLASHUX_ERR_NOT_FOUND; }
+    if (fd < 0) {
+        return FLASHUX_ERR_NOT_FOUND;
+    }
     flashux_error_t result = fstat(fd, &st) == 0 && S_ISBLK(st.st_mode) &&
-        ioctl(fd, BLKGETDISKSEQ, sequence) == 0 && *sequence != 0 ?
-        FLASHUX_SUCCESS : FLASHUX_ERR_UNSUPPORTED;
+                                     ioctl(fd, BLKGETDISKSEQ, sequence) == 0 && *sequence != 0
+                                 ? FLASHUX_SUCCESS
+                                 : FLASHUX_ERR_UNSUPPORTED;
     (void)close(fd);
     return result;
 #else
