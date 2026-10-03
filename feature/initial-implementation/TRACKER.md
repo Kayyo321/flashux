@@ -268,4 +268,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `74cf461` | chore(build): install core library pkg-config metadata | Installable pkg-config metadata for libflashux | Core library installs now expose reproducible consumer compilation flags |
 | `4e93468` | docs(tracker): record install core library pkg-config metadata | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `9942985` | test(helper): probe real Polkit peer authorization without writes | Nondestructive helper authorization smoke executable | Verified real helper allow and deny paths; active desktop authentication remains pending |
-| `HEAD` | docs(tracker): record probe real Polkit peer authorization without writes | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `67eb4e9` | docs(tracker): record probe real Polkit peer authorization without writes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `7f7e54f` | chore(tests): build the manual Linux authorization probe | Linux test_helper build target | Default unit tests remain independent of root credentials and a running Polkit daemon |
+| `HEAD` | docs(tracker): record build the manual Linux authorization probe | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
