@@ -67,3 +67,4 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 | Commit | Summary | Added | Removed / Modified |
 | :--- | :--- | :--- | :--- |
 | `0e2f289` | docs(initial-implementation): initialize architecture spec and progress tracker | `IMPLEMENTATION.md`, `TRACKER.md` | None |
+| `0b09e33` | docs(spec): fix typo in architecture diagram header | None | Corrected diagram header typo in `IMPLEMENTATION.md` |
