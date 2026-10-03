@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 88.07%**
+**Overall Progress: 88.41%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -28,7 +28,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [100%]
 - [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [85%]
-- [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [70%]
+- [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [85%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
@@ -196,4 +196,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `afef781` | fix(safety): retain kernel disk identity across confirmation and IPC | Expected disk sequence token and helper descriptor identity validation | Raw jobs reject replacement devices before any writes |
 | `f11edbf` | docs(tracker): record retain kernel disk identity across confirmation and IPC | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `b96f9f6` | fix(build): isolate toolkit headers from application diagnostics | System include treatment for toolkit dependencies | Linux GCC GUI compilation now respects application warning policy |
-| `HEAD` | docs(tracker): record isolate toolkit headers from application diagnostics | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `e0ca5f3` | docs(tracker): record isolate toolkit headers from application diagnostics | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `3b23027` | refactor(safety): make backing-disk topology independently testable | Portable sysfs ancestry traversal with bounded recursion | System-drive checks use explicit device-number topology rather than opaque udev traversal |
+| `HEAD` | docs(tracker): record make backing-disk topology independently testable | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
