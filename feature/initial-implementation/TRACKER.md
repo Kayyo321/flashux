@@ -212,4 +212,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `cb5582e` | fix(helper): distinguish locked and reviewed disk sequence variables | Verified Linux sequence validation compilation | Renamed the inner locked disk sequence variable |
 | `01d6c3e` | docs(tracker): record distinguish locked and reviewed disk sequence variables | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `801e6f6` | test(gui): release font backend caches for leak verification | Explicit test backend teardown and font dependency declarations | All nine Linux ASan/UBSan suites pass with leak detection enabled |
-| `HEAD` | docs(tracker): record release font backend caches for leak verification | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `79a3ddb` | docs(tracker): record release font backend caches for leak verification | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `e906d82` | chore(workspace): ignore local editor and Finder metadata | IDE and Finder ignore patterns | Local metadata is excluded from source control |
+| `HEAD` | docs(tracker): record ignore local editor and Finder metadata | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
