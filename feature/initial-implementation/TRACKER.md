@@ -258,4 +258,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `9f1e756` | refactor(helper): apply mandated C layout to helper sources | Consistent repository C layout in src/helper | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
 | `d4488b6` | docs(tracker): record apply mandated C layout to helper sources | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `1e6d411` | refactor(api): apply mandated C layout to api sources | Consistent repository C layout in include | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
-| `HEAD` | docs(tracker): record apply mandated C layout to api sources | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `61352aa` | docs(tracker): record apply mandated C layout to api sources | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `7b5e0b6` | refactor(wire): apply mandated C layout to wire sources | Consistent repository C layout in src/common | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
+| `HEAD` | docs(tracker): record apply mandated C layout to wire sources | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
