@@ -22,3 +22,5 @@ core_deps = [threads, crypto]
 if is_linux
   core_deps += [udev, blkid, mount]
 endif
+inc = include_directories('include', 'src', '.')
+subdir('src/core')
