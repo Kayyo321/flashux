@@ -194,4 +194,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `f5e22d0` | feat(helper): launch the installed backend through pkexec | Polkit helper launcher and child process reaping | Actual frontend jobs can request privilege authorization automatically |
 | `daf655f` | docs(tracker): record launch the installed backend through pkexec | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `afef781` | fix(safety): retain kernel disk identity across confirmation and IPC | Expected disk sequence token and helper descriptor identity validation | Raw jobs reject replacement devices before any writes |
-| `HEAD` | docs(tracker): record retain kernel disk identity across confirmation and IPC | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `f11edbf` | docs(tracker): record retain kernel disk identity across confirmation and IPC | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `b96f9f6` | fix(build): isolate toolkit headers from application diagnostics | System include treatment for toolkit dependencies | Linux GCC GUI compilation now respects application warning policy |
+| `HEAD` | docs(tracker): record isolate toolkit headers from application diagnostics | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
