@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 21.02%**
+**Overall Progress: 23.30%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -26,7 +26,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 3. Core Engine Implementation (`libflashux`)
 - [X] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [100%]
-- [ ] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [0%]
+- [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [0%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [0%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [0%]
@@ -110,4 +110,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `5b51560` | feat(core): implement owned context lifecycle | Context lifecycle, private synchronization state and libflashux target | Meson now builds and installs the core library and headers |
 | `300042f` | docs(tracker): record implement owned context lifecycle | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `08f970c` | feat(logging): validate printf arguments at call sites | Printf format attributes and complete logger wrapper Doxygen | Logging declarations now validate format and argument compatibility |
-| `HEAD` | docs(tracker): record validate printf arguments at call sites | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `986cd5d` | docs(tracker): record validate printf arguments at call sites | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `8d40a3e` | feat(logging): dispatch structured messages outside locks | Severity filtering, bounded logging callbacks and error descriptions | Core build includes the structured logging subsystem |
+| `HEAD` | docs(tracker): record dispatch structured messages outside locks | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
