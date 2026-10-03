@@ -232,4 +232,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `b5fd714` | fix(mount): match unmount targets by kernel device identity | Kernel identity comparison for every target and child partition mount | Removed reliance on mount source path equality |
 | `e51da1c` | docs(tracker): record match unmount targets by kernel device identity | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `d5ef093` | fix(image): detect source changes with nanosecond precision | Portable source identity helper for macOS and Linux timestamps | Replaced second-resolution source-change checks and added pre-write stability verification |
-| `HEAD` | docs(tracker): record detect source changes with nanosecond precision | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `d86fab4` | docs(tracker): record detect source changes with nanosecond precision | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `f3a436a` | feat(frontend): expose supported compressed image inputs | Compressed-image chooser patterns and CLI usage guidance | Removed obsolete claim that all compressed images are unsupported |
+| `HEAD` | docs(tracker): record expose supported compressed image inputs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
