@@ -208,4 +208,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `378d90f` | fix(gui): keep progress and action controls visible at normal sizes | Compact paired option rows and persistent action footer | Default window now keeps operational controls visible |
 | `ba8d69f` | docs(tracker): record keep progress and action controls visible at normal sizes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `dc27230` | fix(safety): revalidate protection and identity before unmounting | Fresh unmount safety validation and bounded device-path checks | Replacement devices are rejected before partition unmounting |
-| `HEAD` | docs(tracker): record revalidate protection and identity before unmounting | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `88547cf` | docs(tracker): record revalidate protection and identity before unmounting | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `cb5582e` | fix(helper): distinguish locked and reviewed disk sequence variables | Verified Linux sequence validation compilation | Renamed the inner locked disk sequence variable |
+| `HEAD` | docs(tracker): record distinguish locked and reviewed disk sequence variables | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
