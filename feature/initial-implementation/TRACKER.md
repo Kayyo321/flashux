@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 94.66%**
+**Overall Progress: 94.77%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -33,7 +33,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
-- [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [90%]
+- [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [95%]
 - [X] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [100%]
 
 ### 4. Command-Line Interface (`flashux-cli`)
@@ -218,4 +218,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `0f90e2b` | feat(image): decode bounded compressed image streams | Native bounded image decoder and cancellable decoded-capacity preflight | Core build now requires native libarchive with built-in compression filters |
 | `7472610` | docs(tracker): record decode bounded compressed image streams | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `ecdc0d7` | feat(helper): write and verify decoded image bytes | Decoded-capacity preflight and streaming compressed raw writes with full readback | Raw engine progress now reflects decoded bytes and resets metrics during verification |
-| `HEAD` | docs(tracker): record write and verify decoded image bytes | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `d7fec17` | docs(tracker): record write and verify decoded image bytes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `c82a62d` | feat(flasher): preflight and decode compressed dry runs | Cancellable compressed-image dry runs with decoded progress | Raw option validation delegates decoded capacity to the worker and helper |
+| `HEAD` | docs(tracker): record preflight and decode compressed dry runs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
