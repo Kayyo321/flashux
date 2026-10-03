@@ -5,7 +5,7 @@
 #include <string.h>
 #if FLASHUX_LINUX
 #include <libudev.h>
-#include <libblkid/blkid.h>
+#include <blkid.h>
 #include <sys/stat.h>
 #include <dirent.h>
 #include <sys/sysmacros.h>
