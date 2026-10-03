@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 26.48%**
+**Overall Progress: 28.07%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -29,7 +29,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [70%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [70%]
-- [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [0%]
+- [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [0%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [0%]
 - [ ] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [0%]
@@ -116,4 +116,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `e3eacdd` | feat(device): enumerate Linux disk and partition metadata | udev enumeration, partition metadata ownership and conservative safety filtering | Core target includes device discovery; native Linux paths await integration verification |
 | `d764aed` | docs(tracker): record enumerate Linux disk and partition metadata | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `c444428` | fix(device): protect stacked storage slave ancestry | Recursive sysfs slave topology inspection | Replaced descendant enumeration with actual backing-device ancestry traversal |
-| `HEAD` | docs(tracker): record protect stacked storage slave ancestry | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `bc61e10` | docs(tracker): record protect stacked storage slave ancestry | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `af33877` | feat(device): lock validated devices and unmount partitions | Exclusive device descriptors, identity validation and libmount unmount dispatcher | Unsupported hosts reject block mutation; Linux runtime verification pending |
+| `HEAD` | docs(tracker): record lock validated devices and unmount partitions | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
