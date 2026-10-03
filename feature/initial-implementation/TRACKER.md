@@ -158,4 +158,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `3fc4246` | feat(cli): present a cancellable ncurses device dashboard | Interactive device chooser, confirmation prompt and progress dashboard | Terminal-only mode fails clearly without a TTY |
 | `e05f982` | docs(tracker): record present a cancellable ncurses device dashboard | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `959abdf` | fix(device): use the pkg-config blkid include layout | Verified Linux device translation-unit compilation | Corrected blkid include path |
-| `HEAD` | docs(tracker): record use the pkg-config blkid include layout | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `2db4a03` | docs(tracker): record use the pkg-config blkid include layout | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `bf15bf0` | fix(format): check missing Linux sector attributes safely | Linux formatter translation-unit and suite verification | Added stdlib declaration and null-safe sector parsing |
+| `HEAD` | docs(tracker): record check missing Linux sector attributes safely | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
