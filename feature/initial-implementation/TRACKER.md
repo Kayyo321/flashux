@@ -252,4 +252,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `8679c27` | refactor(core): apply mandated C layout to core sources | Consistent repository C layout in src/core | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
 | `3b640f1` | docs(tracker): record apply mandated C layout to core sources | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `4bff4bf` | refactor(cli): apply mandated C layout to cli sources | Consistent repository C layout in src/cli | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
-| `HEAD` | docs(tracker): record apply mandated C layout to cli sources | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `618291d` | docs(tracker): record apply mandated C layout to cli sources | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `b879dd0` | refactor(gui): apply mandated C layout to gui sources | Consistent repository C layout in src/gui | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
+| `HEAD` | docs(tracker): record apply mandated C layout to gui sources | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
