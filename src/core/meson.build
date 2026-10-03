@@ -1,4 +1,4 @@
-core_sources = files('core.c', 'logging.c')
+core_sources = files('core.c', 'logging.c', 'device.c')
 libflashux = static_library('flashux', core_sources, include_directories: inc,
   dependencies: core_deps, install: true)
 flashux_dep = declare_dependency(link_with: libflashux, include_directories: inc,
