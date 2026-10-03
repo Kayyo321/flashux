@@ -156,4 +156,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `20d4c81` | feat(cli): emit batch progress and device records as JSON | Batch job runner, device listing and JSON output helpers | CLI support targets now include batch execution |
 | `57ce8fb` | docs(tracker): record emit batch progress and device records as JSON | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `3fc4246` | feat(cli): present a cancellable ncurses device dashboard | Interactive device chooser, confirmation prompt and progress dashboard | Terminal-only mode fails clearly without a TTY |
-| `HEAD` | docs(tracker): record present a cancellable ncurses device dashboard | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `e05f982` | docs(tracker): record present a cancellable ncurses device dashboard | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `959abdf` | fix(device): use the pkg-config blkid include layout | Verified Linux device translation-unit compilation | Corrected blkid include path |
+| `HEAD` | docs(tracker): record use the pkg-config blkid include layout | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
