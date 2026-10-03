@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 94.55%**
+**Overall Progress: 94.66%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -56,7 +56,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [85%]
 - [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [70%]
 - [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [95%]
-- [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [85%]
+- [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [90%]
 
 ### 7. Unit Testing & Verification Harness
 - [X] 7.1 Implement core context and logging unit tests in `tests/test_core.c` [100%]
@@ -216,4 +216,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `e906d82` | chore(workspace): ignore local editor and Finder metadata | IDE and Finder ignore patterns | Local metadata is excluded from source control |
 | `41e095b` | docs(tracker): record ignore local editor and Finder metadata | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `0f90e2b` | feat(image): decode bounded compressed image streams | Native bounded image decoder and cancellable decoded-capacity preflight | Core build now requires native libarchive with built-in compression filters |
-| `HEAD` | docs(tracker): record decode bounded compressed image streams | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `7472610` | docs(tracker): record decode bounded compressed image streams | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `ecdc0d7` | feat(helper): write and verify decoded image bytes | Decoded-capacity preflight and streaming compressed raw writes with full readback | Raw engine progress now reflects decoded bytes and resets metrics during verification |
+| `HEAD` | docs(tracker): record write and verify decoded image bytes | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
