@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 87.84%**
+**Overall Progress: 88.07%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -53,9 +53,9 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 6. Privileged Backend Helper & IPC Subsystem (`flashux-helper`)
 - [X] 6.1 Define binary wire protocol, message headers, and command opcodes in `src/helper/ipc_protocol.h` [100%]
-- [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [80%]
+- [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [85%]
 - [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [70%]
-- [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [90%]
+- [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [95%]
 - [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [85%]
 
 ### 7. Unit Testing & Verification Harness
@@ -190,4 +190,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `45fce38` | feat(gui): confirm an immutable reviewed job before erasing | Reviewed-job confirmation, validation errors and cancellation controls | GUI start actions now use the shared asynchronous engine; modal allocations fail safely |
 | `c203bbd` | docs(tracker): record confirm an immutable reviewed job before erasing | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `c112bfa` | chore(integration): install Polkit policy and desktop entry | Polkit action policy and native desktop launcher | Meson installation includes Linux authorization assets and GUI desktop entry |
-| `HEAD` | docs(tracker): record install Polkit policy and desktop entry | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `84199e6` | docs(tracker): record install Polkit policy and desktop entry | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `f5e22d0` | feat(helper): launch the installed backend through pkexec | Polkit helper launcher and child process reaping | Actual frontend jobs can request privilege authorization automatically |
+| `HEAD` | docs(tracker): record launch the installed backend through pkexec | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
