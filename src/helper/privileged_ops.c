@@ -1,5 +1,6 @@
 #include "privileged_ops.h"
 #include "core/progress.h"
+#include "core/image_stream.h"
 #include "core/device_internal.h"
 #include "flashux/device.h"
 #include "flashux_config.h"
@@ -52,19 +53,15 @@ flashux_error_t flashux_raw_copy(int source_fd, int target_fd, uint32_t sector,
         (uint64_t)source.st_size > (uint64_t)INT64_MAX - sector) {
         return FLASHUX_ERR_INVALID_ARG;
     }
-    uint64_t total = (uint64_t)source.st_size;
-    uint64_t padded = (total + sector - 1) / sector * sector;
+    uint64_t capacity = 0;
     if (S_ISREG(target.st_mode)) {
-        if (target.st_size < 0 || (uint64_t)target.st_size < padded) {
-            return FLASHUX_ERR_INVALID_ARG;
-        }
+        if (target.st_size < 0) { return FLASHUX_ERR_INVALID_ARG; }
+        capacity = (uint64_t)target.st_size;
     } else {
 #if FLASHUX_LINUX
-        uint64_t capacity;
         int actual_sector;
         if (!S_ISBLK(target.st_mode) || ioctl(target_fd, BLKGETSIZE64, &capacity) != 0 ||
-            ioctl(target_fd, BLKSSZGET, &actual_sector) != 0 ||
-            actual_sector != (int)sector || padded > capacity) {
+            ioctl(target_fd, BLKSSZGET, &actual_sector) != 0 || actual_sector != (int)sector) {
             return FLASHUX_ERR_INVALID_ARG;
         }
         int flags = fcntl(target_fd, F_GETFL);
@@ -75,6 +72,14 @@ flashux_error_t flashux_raw_copy(int source_fd, int target_fd, uint32_t sector,
         return FLASHUX_ERR_UNSUPPORTED;
 #endif
     }
+    if (capacity > (uint64_t)INT64_MAX) { return FLASHUX_ERR_INVALID_ARG; }
+    uint64_t total = 0;
+    result = flashux_image_decoded_size(source_fd, capacity / sector * sector, &total,
+                                        cancel, cancel_data, progress_cb, progress_data);
+    if (result != FLASHUX_SUCCESS) { return result; }
+    if (total > (uint64_t)INT64_MAX - sector ||
+        (total + sector - 1) / sector * sector > capacity) { return FLASHUX_ERR_INVALID_ARG; }
+    flashux_image_stream_t *stream = NULL;
     if (posix_memalign(&allocation, 4096, block) != 0) { return FLASHUX_ERR_NO_MEMORY; }
     if (posix_memalign(&verify_allocation, 4096, block) != 0) {
         free(allocation);
@@ -85,12 +90,15 @@ flashux_error_t flashux_raw_copy(int source_fd, int target_fd, uint32_t sector,
     unsigned char *verify = verify_allocation;
     uint64_t start = flashux_monotonic_nanos();
     uint64_t bytes = 0;
-    while (bytes < total) {
+    result = flashux_image_stream_open(source_fd, &stream);
+    while (result == FLASHUX_SUCCESS && bytes < total) {
         if (cancel != NULL && cancel(cancel_data)) { result = FLASHUX_ERR_CANCELLED; break; }
         size_t count = total - bytes < block ? (size_t)(total - bytes) : block;
         size_t aligned = (count + sector - 1) / sector * sector;
         memset(buffer, 0, aligned);
-        result = io_at(source_fd, buffer, count, (off_t)bytes, false);
+        size_t decoded = 0;
+        result = flashux_image_stream_read(stream, buffer, count, &decoded);
+        if (result == FLASHUX_SUCCESS && decoded != count) { result = FLASHUX_ERR_CORRUPT_IMAGE; }
         if (result == FLASHUX_SUCCESS) {
             result = io_at(target_fd, buffer, aligned, (off_t)bytes, true);
         }
@@ -102,6 +110,12 @@ flashux_error_t flashux_raw_copy(int source_fd, int target_fd, uint32_t sector,
         emit(&progress, FLASHUX_STAGE_WRITING, "Writing raw image", progress_cb, progress_data);
     }
     if (result == FLASHUX_SUCCESS) {
+        size_t extra = 0;
+        result = flashux_image_stream_read(stream, buffer, 1, &extra);
+        if (result == FLASHUX_SUCCESS && extra != 0) { result = FLASHUX_ERR_CORRUPT_IMAGE; }
+    }
+    flashux_image_stream_close(&stream);
+    if (result == FLASHUX_SUCCESS) {
         emit(&progress, FLASHUX_STAGE_SYNCING, "Synchronizing target", progress_cb, progress_data);
         if (fsync(target_fd) != 0) { result = FLASHUX_ERR_IO; }
 #if FLASHUX_LINUX
@@ -112,21 +126,35 @@ flashux_error_t flashux_raw_copy(int source_fd, int target_fd, uint32_t sector,
     }
     /* Verify only source bytes; final physical sector padding is deterministic zero. */
     bytes = 0;
+    memset(&progress, 0, sizeof(progress));
+    start = flashux_monotonic_nanos();
+    if (result == FLASHUX_SUCCESS) { result = flashux_image_stream_open(source_fd, &stream); }
     while (result == FLASHUX_SUCCESS && bytes < total) {
         if (cancel != NULL && cancel(cancel_data)) { result = FLASHUX_ERR_CANCELLED; break; }
         size_t count = total - bytes < block ? (size_t)(total - bytes) : block;
         size_t aligned = (count + sector - 1) / sector * sector;
-        result = io_at(source_fd, buffer, count, (off_t)bytes, false);
+        size_t decoded = 0;
+        result = flashux_image_stream_read(stream, buffer, count, &decoded);
+        if (result == FLASHUX_SUCCESS && decoded != count) { result = FLASHUX_ERR_CORRUPT_IMAGE; }
         if (result == FLASHUX_SUCCESS) {
             result = io_at(target_fd, verify, aligned, (off_t)bytes, false);
         }
         if (result == FLASHUX_SUCCESS && memcmp(buffer, verify, count) != 0) {
             result = FLASHUX_ERR_CORRUPT_IMAGE;
         }
+        uint64_t previous = bytes;
         bytes += count;
+        (void)flashux_progress_update(&progress, bytes, total,
+            flashux_monotonic_nanos() - start, previous, progress.elapsed_nanos);
         emit(&progress, FLASHUX_STAGE_VERIFYING_READ, "Verifying target readback",
              progress_cb, progress_data);
     }
+    if (result == FLASHUX_SUCCESS) {
+        size_t extra = 0;
+        result = flashux_image_stream_read(stream, buffer, 1, &extra);
+        if (result == FLASHUX_SUCCESS && extra != 0) { result = FLASHUX_ERR_CORRUPT_IMAGE; }
+    }
+    flashux_image_stream_close(&stream);
     struct stat after;
     if (result == FLASHUX_SUCCESS && (fstat(source_fd, &after) != 0 ||
         source.st_size != after.st_size || source.st_mtime != after.st_mtime ||
@@ -175,6 +203,12 @@ flashux_error_t flashux_helper_flash(flashux_context_t *ctx,
             if (result == FLASHUX_SUCCESS &&
                 (sequence != options->expected_disk_sequence || sequence == 0)) {
                 result = FLASHUX_ERR_NOT_FOUND;
+            }
+            if (result == FLASHUX_SUCCESS) {
+                uint64_t decoded = 0;
+                result = flashux_image_decoded_size(source_fd,
+                    device->size_bytes / device->logical_sector_sz * device->logical_sector_sz,
+                    &decoded, cancel, cancel_data, progress_cb, progress_data);
             }
             if (result == FLASHUX_SUCCESS) {
                 result = flashux_unmount_device_partitions(ctx, device);
