@@ -182,10 +182,10 @@ flashux_error_t flashux_helper_flash(flashux_context_t *ctx,
             if (result == FLASHUX_SUCCESS) { result = flashux_device_lock(ctx, device, &target_fd); }
             if (result == FLASHUX_SUCCESS) {
 #if FLASHUX_LINUX
-                uint64_t sequence = 0;
+                uint64_t locked_sequence = 0;
                 if (options->expected_disk_sequence == 0 ||
-                    ioctl(target_fd, BLKGETDISKSEQ, &sequence) != 0 ||
-                    sequence != options->expected_disk_sequence) { result = FLASHUX_ERR_NOT_FOUND; }
+                    ioctl(target_fd, BLKGETDISKSEQ, &locked_sequence) != 0 ||
+                    locked_sequence != options->expected_disk_sequence) { result = FLASHUX_ERR_NOT_FOUND; }
 #endif
             }
             if (result == FLASHUX_SUCCESS) {
