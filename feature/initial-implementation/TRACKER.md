@@ -3,9 +3,12 @@
 **Overall Progress: 97.61%**
 
 ## Overview
-Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
+Establish the foundational build system (Meson + Ninja), the core static library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
 
-*Note: Since execution is hosted on macOS where native Linux kernel interfaces (`libudev`, `libblkid`, `/sys/block`, `Polkit`) are unavailable, implementation will focus on modular architecture and mock-safe verification. Per project directives, the tracker will not reach 100% until integration testing on native Linux hardware is completed.*
+*Verification note: The host is macOS, and an isolated Ubuntu 24.04 ARM64 container has now
+verified native Linux builds, Xvfb GUI behavior, sanitizers, core/CLI Valgrind, helper authorization
+ping checks, and install staging. No physical host disk was written. Per specification section 9.4,
+progress remains below 100% until mounted-loop-device and desktop integration are complete.*
 
 ---
 
@@ -68,6 +71,48 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 7.7 Implement binary IPC header serialization/framing tests in `tests/test_ipc.c` [100%]
 - [X] 7.8 Verify compiler diagnostics with zero warnings under `-Wall -Wextra -Wpedantic -Werror` [100%]
 - [ ] 7.9 Verify zero memory leaks via Valgrind and AddressSanitizer [95%]
+
+---
+
+## Verification Record — 2026-10-03
+
+Overall progress is the arithmetic mean of all 44 milestone percentages, rounded to two decimal
+places. Implementation and verification are tracked together: an unchecked item has working code
+but still needs the integration evidence listed below. A passing unit fixture does not substitute
+for those native checks.
+
+| Check | Result and scope |
+| :--- | :--- |
+| Strict C11 build | macOS Clang and Ubuntu GCC 13 pass with every required flag; generated compile commands inspected |
+| Portable suites | 10/10 pass: context/logging, devices/topology, partitioning, checksums, CLI arguments, format/zeroing, raw jobs, IPC, compression, batch output |
+| Native Linux suites | 11/11 pass, including GTK widgets and modal state under Xvfb |
+| ASan/UBSan | 11/11 Linux suites pass with leak detection enabled and no suppressions |
+| Core/CLI Valgrind | 10/10 suites pass with all leak kinds treated as errors and zero error exits |
+| Additional GUI Valgrind | Unresolved distribution librsvg/GIO diagnostics, including 165 bytes definitely/indirectly lost and possible retained allocations; not claimed clean |
+| Raw/compressed images | Sparse-file writes and full decoded readback, final-sector padding, cancellation, pre-write oversize/multi-entry/truncated rejection, untouched trailing sentinel |
+| Formatter and partition fixtures | Every byte of full-zero pass verified; label/cluster boundaries and MBR/GPT CRC, backup and 512/4096-byte geometry covered |
+| IPC | Fragmented frames, malformed fields, partial disconnects, missing descriptors, descriptor ownership, buffer capacity and closed-peer sends covered |
+| Native helper/Polkit | Root-owned socket PING allowed for root and denied for inactive nobody with installed policy; no disk command sent |
+| CLI smoke checks | Real executable emits parseable finite NDJSON, handles gzip dry run, refuses unconfirmed/unsupported jobs, and completes ncurses PTY job; target hash unchanged |
+| GUI behavior | Dry-run completion, closing during a job, protected-target eligibility, modal warning cancellation and saved Windows session preferences verified; layout inspected |
+| Install staging | Core library, public headers, lowercase flashux.pc, all executables, desktop entry and prefix-correct Polkit policy installed into a temporary DESTDIR |
+| Style and prohibited routines | Checked-in clang-format validation passes; no banned string routines in source/header/test files |
+| CI | Native debug/sanitizer workflow configured and locally reproduced; hosted run status recorded separately after push |
+
+## Remaining Integration Evidence
+
+- 3.3–3.4: Confirm removable/4Kn discovery and mounted root/swap/stacked storage protection on a
+  native Linux machine with known block-device backing. Container overlay-root ancestry deliberately
+  fails closed rather than providing a safety bypass.
+- 3.5–3.7 and 6.5: Exercise unmount, exclusive lock, disk-sequence replacement detection, O_DIRECT,
+  BLKFLSBUF, BLKRRPART, and mkfs dispatch through loop devices or disposable virtual disks only.
+  Never use host physical disks. Sparse-file serialization and copy tests already pass.
+- 4.3 and 5.3–5.4/5.7: Exercise live device selection, actual hotplug, native asynchronous file chooser,
+  and destructive-confirmation cancellation/snapshot behavior with an eligible loop target.
+- 6.2–6.3: Verify installed pkexec launch and active desktop Polkit authentication, rejection and
+  timeout behavior through an actual authentication agent. Root/nobody socket checks are complete.
+- 7.9: Resolve or establish narrowly attributable upstream GUI Valgrind diagnostics. Do not replace
+  this outstanding check with a broad suppression or claim a fully clean GUI Valgrind run.
 
 ---
 
