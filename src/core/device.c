@@ -7,14 +7,13 @@
 #include <libudev.h>
 #include <libblkid/blkid.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <sys/sysmacros.h>
 
 static bool related_device(struct udev *udev, dev_t mounted, dev_t target, unsigned depth)
 {
     struct udev_device *node;
     struct udev_device *parent;
-    struct udev_enumerate *scan;
-    struct udev_list_entry *entry;
     char slaves[512];
     bool related = false;
     if (mounted == target) {
@@ -34,24 +33,31 @@ static bool related_device(struct udev *udev, dev_t mounted, dev_t target, unsig
     if (snprintf(slaves, sizeof(slaves), "%s/slaves", udev_device_get_syspath(node)) < 0) {
         related = true;
     } else {
-        scan = udev_enumerate_new(udev);
-        if (scan == NULL) {
-            related = true;
-        } else {
-            /* Walk the slave links directly; stacked devices can hide mounted disks. */
-            (void)udev_enumerate_add_match_parent(scan, node);
-            (void)udev_enumerate_scan_devices(scan);
-            udev_list_entry_foreach(entry, udev_enumerate_get_list_entry(scan)) {
-                struct udev_device *child = udev_device_new_from_syspath(udev,
-                    udev_list_entry_get_name(entry));
-                if (child != NULL) {
-                    if (udev_device_get_devnum(child) == target) {
+        DIR *directory = opendir(slaves);
+        if (directory != NULL) {
+            struct dirent *entry;
+            while ((entry = readdir(directory)) != NULL) {
+                char link[1024];
+                struct udev_device *slave;
+                if (entry->d_name[0] == '.') {
+                    continue;
+                }
+                int count = snprintf(link, sizeof(link), "%s/%s", slaves, entry->d_name);
+                if (count < 0 || (size_t)count >= sizeof(link)) {
+                    related = true;
+                    break;
+                }
+                slave = udev_device_new_from_syspath(udev, link);
+                if (slave == NULL) {
+                    related = true;
+                } else {
+                    if (related_device(udev, udev_device_get_devnum(slave), target, depth + 1)) {
                         related = true;
                     }
-                    udev_device_unref(child);
+                    udev_device_unref(slave);
                 }
             }
-            udev_enumerate_unref(scan);
+            (void)closedir(directory);
         }
     }
     udev_device_unref(node);
