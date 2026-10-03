@@ -24,3 +24,4 @@ if is_linux
 endif
 inc = include_directories('include', 'src', '.')
 subdir('src/core')
+subdir('tests')
