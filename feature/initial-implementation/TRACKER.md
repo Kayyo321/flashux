@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 71.36%**
+**Overall Progress: 73.41%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -65,7 +65,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 7.4 Implement progress calculation and cancellation tests in `tests/test_flasher.c` [100%]
 - [X] 7.5 Implement filesystem formatting parameter and cluster tests in `tests/test_format.c` [100%]
 - [X] 7.6 Implement MBR/GPT partition binary layout synthesis tests in `tests/test_partition.c` [100%]
-- [ ] 7.7 Implement binary IPC header serialization/framing tests in `tests/test_ipc.c` [0%]
+- [ ] 7.7 Implement binary IPC header serialization/framing tests in `tests/test_ipc.c` [90%]
 - [ ] 7.8 Verify compiler diagnostics with zero warnings under `-Wall -Wextra -Wpedantic -Werror` [0%]
 - [ ] 7.9 Verify zero memory leaks via Valgrind and AddressSanitizer [0%]
 
@@ -172,4 +172,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `fadff34` | test(format): check labels cluster limits and unsupported modes | Filesystem-option boundary regression tests | Validation suite runs independently of external mkfs tools |
 | `782a114` | docs(tracker): record check labels cluster limits and unsupported modes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `394762a` | test(flasher): verify sparse raw copies dry runs and cancellation | Sparse-file raw engine and asynchronous job regression tests | Progress calculations verified without physical disk access |
-| `HEAD` | docs(tracker): record verify sparse raw copies dry runs and cancellation | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `a2df7cf` | docs(tracker): record verify sparse raw copies dry runs and cancellation | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `3a73743` | test(ipc): exercise fragmented framing and descriptor ownership | Socketpair IPC framing and SCM_RIGHTS regression tests | Wire protocol tests require no privileged helper process |
+| `HEAD` | docs(tracker): record exercise fragmented framing and descriptor ownership | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
