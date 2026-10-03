@@ -148,4 +148,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `73db555` | feat(helper): authorize socket peers through Polkit | Linux SO_PEERCRED and Polkit authorization gate | Portable hosts reject privilege authorization explicitly |
 | `ce91411` | docs(tracker): record authorize socket peers through Polkit | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `0375315` | feat(helper): serve authorized jobs and cooperative cancellation | Helper executable, command loop, progress streaming and shutdown handling | Meson now installs the privileged helper in libexec |
-| `HEAD` | docs(tracker): record serve authorized jobs and cooperative cancellation | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `9f31857` | docs(tracker): record serve authorized jobs and cooperative cancellation | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `dfea08a` | feat(cli): define parsed options and explicit confirmation flags | CLI options header with customization and confirmation state | No frontend execution yet |
+| `HEAD` | docs(tracker): record define parsed options and explicit confirmation flags | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
