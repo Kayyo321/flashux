@@ -270,4 +270,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `9942985` | test(helper): probe real Polkit peer authorization without writes | Nondestructive helper authorization smoke executable | Verified real helper allow and deny paths; active desktop authentication remains pending |
 | `67eb4e9` | docs(tracker): record probe real Polkit peer authorization without writes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `7f7e54f` | chore(tests): build the manual Linux authorization probe | Linux test_helper build target | Default unit tests remain independent of root credentials and a running Polkit daemon |
-| `HEAD` | docs(tracker): record build the manual Linux authorization probe | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `7d810a1` | docs(tracker): record build the manual Linux authorization probe | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `e19522b` | test(gui): tear down native test backends without suppressions | Explicit native test-backend teardown and closed-window assertions | GUI test uses the GTK test accessibility backend instead of disabling ownership-bearing contexts |
+| `HEAD` | docs(tracker): record tear down native test backends without suppressions | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
