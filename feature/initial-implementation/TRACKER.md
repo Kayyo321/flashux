@@ -220,4 +220,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `ecdc0d7` | feat(helper): write and verify decoded image bytes | Decoded-capacity preflight and streaming compressed raw writes with full readback | Raw engine progress now reflects decoded bytes and resets metrics during verification |
 | `d7fec17` | docs(tracker): record write and verify decoded image bytes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `c82a62d` | feat(flasher): preflight and decode compressed dry runs | Cancellable compressed-image dry runs with decoded progress | Raw option validation delegates decoded capacity to the worker and helper |
-| `HEAD` | docs(tracker): record preflight and decode compressed dry runs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `5f2bbbc` | docs(tracker): record preflight and decode compressed dry runs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `5765a69` | test(image): verify compression preflight and decoded readback | Cross-platform image stream and raw-copy regression suite | Test matrix now exercises five compressed image formats and pre-write failure safety |
+| `HEAD` | docs(tracker): record verify compression preflight and decoded readback | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
