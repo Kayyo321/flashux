@@ -248,4 +248,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `131480d` | test(ipc): reject incomplete frames and missing descriptors safely | Malformed transport and descriptor lifecycle regressions | Framing verification now includes disconnect, capacity and descriptor boundary cases |
 | `6e0923d` | docs(tracker): record reject incomplete frames and missing descriptors safely | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `eb27746` | chore(style): codify repository C indentation and column limits | clang-format and EditorConfig settings matching agent guidelines | Source formatting can now be applied consistently across all C modules |
-| `HEAD` | docs(tracker): record codify repository C indentation and column limits | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `6b288a9` | docs(tracker): record codify repository C indentation and column limits | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `8679c27` | refactor(core): apply mandated C layout to core sources | Consistent repository C layout in src/core | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
+| `HEAD` | docs(tracker): record apply mandated C layout to core sources | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
