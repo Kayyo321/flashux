@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 96.36%**
+**Overall Progress: 96.59%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -65,7 +65,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 7.4 Implement progress calculation and cancellation tests in `tests/test_flasher.c` [100%]
 - [X] 7.5 Implement filesystem formatting parameter and cluster tests in `tests/test_format.c` [100%]
 - [X] 7.6 Implement MBR/GPT partition binary layout synthesis tests in `tests/test_partition.c` [100%]
-- [ ] 7.7 Implement binary IPC header serialization/framing tests in `tests/test_ipc.c` [90%]
+- [X] 7.7 Implement binary IPC header serialization/framing tests in `tests/test_ipc.c` [100%]
 - [X] 7.8 Verify compiler diagnostics with zero warnings under `-Wall -Wextra -Wpedantic -Werror` [100%]
 - [ ] 7.9 Verify zero memory leaks via Valgrind and AddressSanitizer [95%]
 
@@ -244,4 +244,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `1d66922` | fix(cli): preserve valid Unicode in batch JSON records | Bounded UTF-8 validation for structured record strings | JSON output no longer reinterprets each UTF-8 byte as a separate codepoint |
 | `88631a5` | docs(tracker): record preserve valid Unicode in batch JSON records | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `c3dce27` | test(cli): verify batch records and dry-run target preservation | Batch runner regression suite for JSON and confirmation safeguards | Batch implementation is now exercised independently of argument parsing |
-| `HEAD` | docs(tracker): record verify batch records and dry-run target preservation | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `328412d` | docs(tracker): record verify batch records and dry-run target preservation | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `131480d` | test(ipc): reject incomplete frames and missing descriptors safely | Malformed transport and descriptor lifecycle regressions | Framing verification now includes disconnect, capacity and descriptor boundary cases |
+| `HEAD` | docs(tracker): record reject incomplete frames and missing descriptors safely | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
