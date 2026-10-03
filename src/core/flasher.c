@@ -1,5 +1,6 @@
 #include "internal.h"
 #include "progress.h"
+#include "image_stream.h"
 #include "ipc_client.h"
 #include "helper_launcher.h"
 #include "device_internal.h"
@@ -57,18 +58,15 @@ flashux_error_t flashux_flash_validate_options(flashux_context_t *ctx,
         return invalid(error_message_buf, buf_size, FLASHUX_ERR_INVALID_ARG,
                        "Source must be a nonempty regular image file");
     }
-    if ((magic[0] == 0x1f && magic[1] == 0x8b) || memcmp(magic, "\xfd" "7zXZ", 5) == 0 ||
-        memcmp(magic, "BZh", 3) == 0 || memcmp(magic, "PK\003\004", 4) == 0 ||
-        memcmp(magic, "\x28\xb5\x2f\xfd", 4) == 0) {
-        return invalid(error_message_buf, buf_size, FLASHUX_ERR_UNSUPPORTED,
-                       "Compressed images are not supported by the initial raw engine");
-    }
+    bool compressed = (magic[0] == 0x1f && magic[1] == 0x8b) ||
+        memcmp(magic, "\xfd" "7zXZ", 5) == 0 || memcmp(magic, "BZh", 3) == 0 ||
+        memcmp(magic, "PK\003\004", 4) == 0 || memcmp(magic, "\x28\xb5\x2f\xfd", 4) == 0;
     if (stat(options->target_device_path, &target) != 0 ||
         (target.st_dev == image.st_dev && target.st_ino == image.st_ino)) {
         return invalid(error_message_buf, buf_size, FLASHUX_ERR_INVALID_ARG, "Invalid target identity");
     }
     if (options->dry_run && S_ISREG(target.st_mode)) {
-        return target.st_size >= image.st_size ? FLASHUX_SUCCESS :
+        return target.st_size > 0 && (compressed || target.st_size >= image.st_size) ? FLASHUX_SUCCESS :
             invalid(error_message_buf, buf_size, FLASHUX_ERR_INVALID_ARG, "Target capacity too small");
     }
     if (strncmp(options->target_device_path, "/dev/", 5) != 0 ||
@@ -85,7 +83,7 @@ flashux_error_t flashux_flash_validate_options(flashux_context_t *ctx,
             if (stat(device->node_path, &node) == 0 && node.st_rdev == target.st_rdev) {
                 if (!flashux_device_is_safe_target(ctx, device, error_message_buf, buf_size)) {
                     result = FLASHUX_ERR_SYSTEM_DISK_PROTECT;
-                } else if ((uint64_t)image.st_size > device->size_bytes) {
+                } else if (!compressed && (uint64_t)image.st_size > device->size_bytes) {
                     result = invalid(error_message_buf, buf_size, FLASHUX_ERR_INVALID_ARG,
                                      "Target capacity too small");
                 } else { result = FLASHUX_SUCCESS; }
@@ -103,32 +101,63 @@ static void report(flashux_context_t *ctx, flashux_progress_t *progress,
     (void)snprintf(progress->stage_description, sizeof(progress->stage_description), "%s", text);
     if (ctx->progress_cb != NULL) { ctx->progress_cb(progress, ctx->progress_data); }
 }
+static bool job_cancelled(void *data)
+{
+    flashux_context_t *ctx = data;
+    return atomic_load(&ctx->cancel);
+}
 static flashux_error_t dry_run(flashux_context_t *ctx, flashux_progress_t *progress)
 {
-    struct stat st;
+    struct stat source;
+    struct stat target;
     unsigned char buffer[65536];
     int fd = open(ctx->options.source_image_path, O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
     if (fd < 0) { return FLASHUX_ERR_NOT_FOUND; }
-    if (fstat(fd, &st) != 0 || !S_ISREG(st.st_mode) || st.st_size <= 0) {
+    if (fstat(fd, &source) != 0 || !S_ISREG(source.st_mode) || source.st_size <= 0 ||
+        stat(ctx->options.target_device_path, &target) != 0) {
         (void)close(fd);
         return FLASHUX_ERR_INVALID_ARG;
     }
+    uint64_t capacity = 0;
+    if (S_ISREG(target.st_mode) && target.st_size > 0) { capacity = (uint64_t)target.st_size; }
+    else {
+        flashux_device_t *list = NULL;
+        flashux_error_t scanned = flashux_device_list_scan(ctx, true, &list);
+        if (scanned == FLASHUX_SUCCESS) {
+            for (flashux_device_t *item = list; item != NULL; item = item->next) {
+                struct stat node;
+                if (stat(item->node_path, &node) == 0 && node.st_rdev == target.st_rdev &&
+                    flashux_device_is_safe_target(ctx, item, NULL, 0)) {
+                    capacity = item->size_bytes;
+                    break;
+                }
+            }
+        }
+        flashux_device_list_free(&list);
+    }
+    uint64_t total = 0;
+    flashux_error_t result = capacity == 0 ? FLASHUX_ERR_INVALID_ARG :
+        flashux_image_decoded_size(fd, capacity, &total, job_cancelled, ctx,
+                                  ctx->progress_cb, ctx->progress_data);
+    flashux_image_stream_t *stream = NULL;
+    if (result == FLASHUX_SUCCESS) { result = flashux_image_stream_open(fd, &stream); }
     uint64_t start = flashux_monotonic_nanos();
     uint64_t bytes = 0;
-    flashux_error_t result = FLASHUX_SUCCESS;
-    while (bytes < (uint64_t)st.st_size) {
+    memset(progress, 0, sizeof(*progress));
+    while (result == FLASHUX_SUCCESS) {
         if (atomic_load(&ctx->cancel)) { result = FLASHUX_ERR_CANCELLED; break; }
-        uint64_t left = (uint64_t)st.st_size - bytes;
-        size_t wanted = left < sizeof(buffer) ? (size_t)left : sizeof(buffer);
-        ssize_t count = read(fd, buffer, wanted);
-        if (count < 0 && errno == EINTR) { continue; }
-        if (count <= 0) { result = FLASHUX_ERR_IO; break; }
+        size_t count = 0;
+        result = flashux_image_stream_read(stream, buffer, sizeof(buffer), &count);
+        if (result != FLASHUX_SUCCESS || count == 0) { break; }
+        if ((uint64_t)count > total - bytes) { result = FLASHUX_ERR_CORRUPT_IMAGE; break; }
         uint64_t previous = bytes;
-        bytes += (uint64_t)count;
-        (void)flashux_progress_update(progress, bytes, (uint64_t)st.st_size,
+        bytes += count;
+        (void)flashux_progress_update(progress, bytes, total,
             flashux_monotonic_nanos() - start, previous, progress->elapsed_nanos);
-        report(ctx, progress, FLASHUX_STAGE_WRITING, "Dry run: reading source; target untouched");
+        report(ctx, progress, FLASHUX_STAGE_WRITING, "Dry run: decoding source; target untouched");
     }
+    if (result == FLASHUX_SUCCESS && bytes != total) { result = FLASHUX_ERR_CORRUPT_IMAGE; }
+    flashux_image_stream_close(&stream);
     (void)close(fd);
     return result;
 }
