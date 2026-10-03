@@ -250,4 +250,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `eb27746` | chore(style): codify repository C indentation and column limits | clang-format and EditorConfig settings matching agent guidelines | Source formatting can now be applied consistently across all C modules |
 | `6b288a9` | docs(tracker): record codify repository C indentation and column limits | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `8679c27` | refactor(core): apply mandated C layout to core sources | Consistent repository C layout in src/core | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
-| `HEAD` | docs(tracker): record apply mandated C layout to core sources | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `3b640f1` | docs(tracker): record apply mandated C layout to core sources | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `4bff4bf` | refactor(cli): apply mandated C layout to cli sources | Consistent repository C layout in src/cli | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
+| `HEAD` | docs(tracker): record apply mandated C layout to cli sources | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
