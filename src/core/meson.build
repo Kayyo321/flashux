@@ -8,4 +8,4 @@ raw_engine = static_library('flashux-raw', '../helper/privileged_ops.c',
   include_directories: inc, dependencies: flashux_dep)
 raw_dep = declare_dependency(link_with: raw_engine, dependencies: flashux_dep)
 pkgconfig = import('pkgconfig')
-pkgconfig.generate(libflashux, name: 'Flashux', description: 'Native C11 boot media foundation')
+pkgconfig.generate(libflashux, name: 'Flashux', filebase: 'flashux', description: 'Native C11 boot media foundation')
