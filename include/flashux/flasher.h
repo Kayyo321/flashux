@@ -162,4 +162,19 @@ flashux_error_t flashux_flash_start_async(
  */
 flashux_error_t flashux_flash_cancel(flashux_context_t *ctx);
 
+/**
+ * @brief Join the active operation and return its terminal result.
+ * @param[in] ctx Context whose worker should be joined.
+ * @return Job result, or FLASHUX_ERR_INVALID_ARG when no worker exists.
+ * Call from the owning thread; concurrent wait/free calls and callback destruction
+ * are unsupported. A subsequent operation may begin after this function returns.
+ */
+flashux_error_t flashux_flash_wait(flashux_context_t *ctx);
+
+/**
+ * @brief Query whether an asynchronous operation is still running.
+ * @param[in] ctx Context to inspect.
+ * @return true while the worker is active, false otherwise.
+ */
+bool flashux_flash_is_running(flashux_context_t *ctx);
 #endif /* FLASHUX_FLASHER_H */

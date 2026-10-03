@@ -12,6 +12,7 @@ struct flashux_context {
     pthread_t worker;
     bool joinable;
     bool running;
+    bool joining;
     atomic_bool cancel;
     flashux_error_t result;
     flashux_flash_options_t options;
