@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 28.07%**
+**Overall Progress: 30.34%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -59,7 +59,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [0%]
 
 ### 7. Unit Testing & Verification Harness
-- [ ] 7.1 Implement core context and logging unit tests in `tests/test_core.c` [0%]
+- [X] 7.1 Implement core context and logging unit tests in `tests/test_core.c` [100%]
 - [ ] 7.2 Implement mock device enumeration and system disk protection tests in `tests/test_device.c` [0%]
 - [ ] 7.3 Implement CLI argument parsing and validation tests in `tests/test_cli_args.c` [0%]
 - [ ] 7.4 Implement progress calculation and cancellation tests in `tests/test_flasher.c` [0%]
@@ -118,4 +118,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `c444428` | fix(device): protect stacked storage slave ancestry | Recursive sysfs slave topology inspection | Replaced descendant enumeration with actual backing-device ancestry traversal |
 | `bc61e10` | docs(tracker): record protect stacked storage slave ancestry | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `af33877` | feat(device): lock validated devices and unmount partitions | Exclusive device descriptors, identity validation and libmount unmount dispatcher | Unsupported hosts reject block mutation; Linux runtime verification pending |
-| `HEAD` | docs(tracker): record lock validated devices and unmount partitions | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `e34f502` | docs(tracker): record lock validated devices and unmount partitions | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `a3bb9be` | test(core): verify concurrent reentrant logging and ownership | Always-active test assertions and concurrent core regression executable | Meson now runs the core suite on every verification cycle |
+| `HEAD` | docs(tracker): record verify concurrent reentrant logging and ownership | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
