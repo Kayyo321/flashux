@@ -44,6 +44,7 @@ void flashux_gui_device_monitor_stop(struct flashux_gui *gui);
 void flashux_gui_update_start(struct flashux_gui *gui);
 void flashux_gui_choose_image(GtkButton *button, gpointer data);
 void flashux_gui_customizations(GtkButton *button, gpointer data);
+void flashux_gui_connect_actions(struct flashux_gui *gui);
 void flashux_gui_start(GtkButton *button, gpointer data);
 flashux_error_t flashux_gui_collect(struct flashux_gui *gui, flashux_flash_options_t *options);
 void flashux_gui_launch_options(struct flashux_gui *gui,

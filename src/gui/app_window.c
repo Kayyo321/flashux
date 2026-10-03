@@ -128,6 +128,7 @@ void flashux_gui_window_create(struct flashux_gui *gui)
     g_signal_connect(gui->browse, "clicked", G_CALLBACK(flashux_gui_choose_image), gui);
     g_signal_connect(gui->customize, "clicked", G_CALLBACK(flashux_gui_customizations), gui);
     adw_application_window_set_content(ADW_APPLICATION_WINDOW(gui->window), outer);
+    flashux_gui_connect_actions(gui);
     flashux_gui_device_monitor_start(gui);
     flashux_gui_update_start(gui);
 }

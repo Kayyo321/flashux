@@ -38,7 +38,7 @@ void flashux_gui_customizations(GtkButton *button, gpointer data)
 {
     struct flashux_gui *gui = data;
     (void)button;
-    struct customization_dialog *dialog = g_new0(struct customization_dialog, 1);
+    struct customization_dialog *dialog = g_try_new0(struct customization_dialog, 1);
     if (dialog == NULL) { return; }
     dialog->parent = g_object_ref(gui->window);
     GtkWindow *window = GTK_WINDOW(gtk_window_new());
