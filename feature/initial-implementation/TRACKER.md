@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 89.77%**
+**Overall Progress: 90.11%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -29,7 +29,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [85%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [95%]
-- [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
+- [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [85%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
@@ -206,4 +206,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `cf20b6a` | test(gui): verify dry-run completion protected selection and close | Linux GUI runtime and shutdown regression executable | Virtual-display test confirms native window lifecycle without physical disk writes |
 | `7d8ae4b` | docs(tracker): record verify dry-run completion protected selection and close | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `378d90f` | fix(gui): keep progress and action controls visible at normal sizes | Compact paired option rows and persistent action footer | Default window now keeps operational controls visible |
-| `HEAD` | docs(tracker): record keep progress and action controls visible at normal sizes | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `ba8d69f` | docs(tracker): record keep progress and action controls visible at normal sizes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `dc27230` | fix(safety): revalidate protection and identity before unmounting | Fresh unmount safety validation and bounded device-path checks | Replacement devices are rejected before partition unmounting |
+| `HEAD` | docs(tracker): record revalidate protection and identity before unmounting | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
