@@ -88,4 +88,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `cca7fb5` | docs(spec): define defensive foundation boundaries | Section 10 with IPC encoding, platform policy, lifecycle and verification rules | Clarified system disk protection and tracker self-hash bookkeeping |
 | `3d01112` | docs(tracker): record define defensive foundation boundaries | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `81fbfc2` | chore(build): establish strict C11 Meson configuration | meson.build with C11 and all required compiler flags | No production targets yet; empty scaffold configuration verified |
-| `HEAD` | docs(tracker): record establish strict C11 Meson configuration | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `8dd6bae` | docs(tracker): record establish strict C11 Meson configuration | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `4d50a3c` | chore(build): exclude generated Meson artifacts | Ignore rule for build directories | .gitignore excludes generated build artifacts |
+| `HEAD` | docs(tracker): record exclude generated Meson artifacts | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
