@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 83.75%**
+**Overall Progress: 85.80%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -48,7 +48,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 5.3 Implement dynamic device dropdown population and hotplug signal listeners in `src/gui/device_selector.c` [80%]
 - [ ] 5.4 Implement file chooser integration for ISO and raw disk images in `src/gui/app_window.c` [90%]
 - [ ] 5.5 Implement Rufus Windows user experience customization modal in `src/gui/win_dialog.c` [85%]
-- [ ] 5.6 Implement thread-safe progress bar and transfer speed updates via `g_idle_add` in `src/gui/progress_view.c` [0%]
+- [ ] 5.6 Implement thread-safe progress bar and transfer speed updates via `g_idle_add` in `src/gui/progress_view.c` [90%]
 - [ ] 5.7 Implement destructive operation confirmation modals and warning alerts in `src/gui/dialogs.c` [0%]
 
 ### 6. Privileged Backend Helper & IPC Subsystem (`flashux-helper`)
@@ -184,4 +184,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `c404966` | feat(gui): select local images through asynchronous GTK dialogs | Async local image chooser and bounded image-entry updates | Select button now populates the boot image control safely |
 | `cffc30e` | docs(tracker): record select local images through asynchronous GTK dialogs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `ece4262` | feat(gui): present session-owned Windows setup preferences | Windows customization modal and owned preference state | GUI exposes saved settings without claiming unsupported media modifications |
-| `HEAD` | docs(tracker): record present session-owned Windows setup preferences | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `821cc93` | docs(tracker): record present session-owned Windows setup preferences | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `c496ee6` | feat(gui): coalesce worker progress on the GTK main loop | Idle-dispatched progress, speed and ETA display plus async job completion | Close-time cleanup removes UI sources after joining the worker |
+| `HEAD` | docs(tracker): record coalesce worker progress on the GTK main loop | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
