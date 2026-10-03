@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 0%**
+**Overall Progress: 0.00%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -73,10 +73,17 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ## Commits in this Branch
 
+The final `HEAD` entry denotes this tracker-only commit. Its own hash cannot be embedded in its
+contents; the next tracker update replaces it with the resolved short hash. No recursive audit
+commits are created. Entries retain the additions and modifications from each detailed commit.
+
 | Commit | Summary | Added | Removed / Modified |
 | :--- | :--- | :--- | :--- |
-| `0e2f289` | docs(initial-implementation): initialize architecture spec and progress tracker | Initial technical specification (`IMPLEMENTATION.md`) and task tracker (`TRACKER.md`) | None |
-| `bc312a8` | docs(tracker): record initial documentation commit in progress tracker | Recorded initial commit hash `0e2f289` in progress tracker history table | Replaced `<pending>` placeholder with `0e2f289` in `TRACKER.md` |
-| `0b09e33` | docs(spec): fix typo in architecture diagram header | None | Corrected `PRIVILEATED` to `PRIVILEGED` in architecture diagram in `IMPLEMENTATION.md` |
-| `b9e7f9b` | docs(tracker): update commit history with spec typo fix | Recorded commit `0b09e33` in progress tracker history table | None |
-| `2d48875` | docs(spec): add missing architecture sections, prototypes, and testing strategy | Section 6 (Control Flow & State Transitions), Section 9 (Testing & Verification Plan), data structures (`flashux_format_options_t`, `flashux_partition_entry_t`, `flashux_partition_table_t`, `flashux_checksum_result_t`, `flashux_cli_options_t`), function prototypes (`flashux_log_*`, `flashux_device_lock/unlock`, `flashux_unmount_device_partitions`, `flashux_format_partition`, `flashux_partition_table_create`, `flashux_checksum_file`, `flashux_cli_parse_args/run_*`, `flashux_gui_app_run`, `flashux_ipc_client_*`) | Reorganized section headers to strictly conform to both `WORKFLOW.md` and `AGENTS.md` |
+| `0e2f289` | docs(initial-implementation): initialize architecture spec and progress tracker | feature/initial-implementation/IMPLEMENTATION.md: comprehensive technical and architectural specification; feature/initial-implementation/TRACKER.md: incremental todo tracker and commit log; ; Ref: feature/initial-implementation | See commit body |
+| `bc312a8` | docs(tracker): record initial documentation commit in progress tracker | Hash 0e2f289 in commit history table | Replaced <pending> placeholder with exact commit hash 0e2f289 |
+| `0b09e33` | docs(spec): fix typo in architecture diagram header | None | feature/initial-implementation/IMPLEMENTATION.md: corrected PRIVILEATED to PRIVILEGED |
+| `b9e7f9b` | docs(tracker): update commit history with spec typo fix | Commit row for 0b09e33 | None |
+| `2d48875` | docs(spec): add missing architecture sections, prototypes, and testing strategy | Section 6: Control Flow & State Transitions with stage diagram and IPC flow; Section 9: Testing & Verification Plan with loop device and sanitizer rules; Data structures: flashux_format_options_t, flashux_partition_entry_t, flashux_partition_table_t, flashux_checksum_result_t, flashux_cli_options_t; Function prototypes: flashux_log/flashux_log_* helpers, flashux_device_lock/unlock, flashux_unmount_device_partitions, flashux_format_partition, flashux_partition_table_create, flashux_checksum_file, flashux_cli_parse_args/run_*, flashux_gui_app_run, flashux_ipc_client_* | feature/initial-implementation/IMPLEMENTATION.md: expanded from 601 to 1058 lines with comprehensive C11 specifications |
+| `f19ac36` | docs(tracker): expand todo milestones and update branch commit history | Todos 3.5, 3.6, 3.7, 3.8, 5.5, 6.5, 7.5, 7.6, 7.7; Commit rows for bc312a8, b9e7f9b, and 2d48875 in commit history table | feature/initial-implementation/TRACKER.md: updated todo numbering and commit descriptions |
+| `cca7fb5` | docs(spec): define defensive foundation boundaries | Section 10 with IPC encoding, platform policy, lifecycle and verification rules | Clarified system disk protection and tracker self-hash bookkeeping |
+| `HEAD` | docs(tracker): record define defensive foundation boundaries | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
