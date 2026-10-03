@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 34.32%**
+**Overall Progress: 36.82%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -31,7 +31,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [70%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [0%]
-- [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [85%]
+- [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [ ] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [90%]
 - [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [0%]
 - [ ] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [0%]
@@ -64,7 +64,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 7.3 Implement CLI argument parsing and validation tests in `tests/test_cli_args.c` [0%]
 - [ ] 7.4 Implement progress calculation and cancellation tests in `tests/test_flasher.c` [0%]
 - [ ] 7.5 Implement filesystem formatting parameter and cluster tests in `tests/test_format.c` [0%]
-- [ ] 7.6 Implement MBR/GPT partition binary layout synthesis tests in `tests/test_partition.c` [0%]
+- [X] 7.6 Implement MBR/GPT partition binary layout synthesis tests in `tests/test_partition.c` [100%]
 - [ ] 7.7 Implement binary IPC header serialization/framing tests in `tests/test_ipc.c` [0%]
 - [ ] 7.8 Verify compiler diagnostics with zero warnings under `-Wall -Wextra -Wpedantic -Werror` [0%]
 - [ ] 7.9 Verify zero memory leaks via Valgrind and AddressSanitizer [0%]
@@ -124,4 +124,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `0165640` | feat(checksum): stream requested digests on independent workers | Concurrent hashing engine and deterministic hex outputs | Core target links the checksum implementation |
 | `b6a37ad` | docs(tracker): record stream requested digests on independent workers | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `1ba6b93` | feat(partition): synthesize aligned MBR and redundant GPT layouts | MBR, GPT, hybrid layouts, CRC32 and bounded descriptor writes | Public partition writes acquire a validated device lock; Linux reread remains unverified |
-| `HEAD` | docs(tracker): record synthesize aligned MBR and redundant GPT layouts | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `250633f` | docs(tracker): record synthesize aligned MBR and redundant GPT layouts | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `3d10e8e` | test(partition): verify sector layouts and reject overlapping entries | 512-byte and 4Kn file-backed partition regression coverage | Test suite includes independent binary-layout assertions |
+| `HEAD` | docs(tracker): record verify sector layouts and reject overlapping entries | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
