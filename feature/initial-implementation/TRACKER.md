@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 9.09%**
+**Overall Progress: 11.36%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -19,7 +19,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 2. Public API Headers & Data Models
 - [X] 2.1 Define core context, logging, and error codes in `include/flashux/core.h` [100%]
 - [X] 2.2 Define storage device, partition, bus enumeration, and locking structures in `include/flashux/device.h` [100%]
-- [ ] 2.3 Define flashing options, stages, performance metrics, and progress callbacks in `include/flashux/flasher.h` [0%]
+- [X] 2.3 Define flashing options, stages, performance metrics, and progress callbacks in `include/flashux/flasher.h` [100%]
 - [ ] 2.4 Define filesystem formatting interfaces and cluster size definitions in `include/flashux/format.h` [0%]
 - [ ] 2.5 Define MBR and GPT partition table generation abstractions in `include/flashux/partition.h` [0%]
 - [ ] 2.6 Define multi-threaded cryptographic checksum interfaces in `include/flashux/checksum.h` [0%]
@@ -98,4 +98,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `7cfbe2b` | feat(api): define core public interface | core types and documented public function declarations | No runtime behavior changed; header compilation verified |
 | `9d5dd61` | docs(tracker): record define core public interface | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `171e532` | feat(api): define device public interface | device types and documented public function declarations | No runtime behavior changed; header compilation verified |
-| `HEAD` | docs(tracker): record define device public interface | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `dcadfef` | docs(tracker): record define device public interface | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `a92461d` | feat(api): define flasher public interface | flasher types and documented public function declarations | No runtime behavior changed; header compilation verified |
+| `HEAD` | docs(tracker): record define flasher public interface | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
