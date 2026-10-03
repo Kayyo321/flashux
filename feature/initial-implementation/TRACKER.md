@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 76.36%**
+**Overall Progress: 77.95%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -44,7 +44,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 5. Graphical User Interface (`flashux-gui`)
 - [ ] 5.1 Implement GtkApplication lifecycle and application initialization in `src/gui/main.c` [90%]
-- [ ] 5.2 Build Rufus single-window layout (Device, Image, Partition, Target, File System) in `src/gui/app_window.c` [15%]
+- [ ] 5.2 Build Rufus single-window layout (Device, Image, Partition, Target, File System) in `src/gui/app_window.c` [85%]
 - [ ] 5.3 Implement dynamic device dropdown population and hotplug signal listeners in `src/gui/device_selector.c` [0%]
 - [ ] 5.4 Implement file chooser integration for ISO and raw disk images in `src/gui/app_window.c` [0%]
 - [ ] 5.5 Implement Rufus Windows user experience customization modal in `src/gui/win_dialog.c` [0%]
@@ -176,4 +176,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `3a73743` | test(ipc): exercise fragmented framing and descriptor ownership | Socketpair IPC framing and SCM_RIGHTS regression tests | Wire protocol tests require no privileged helper process |
 | `de9969b` | docs(tracker): record exercise fragmented framing and descriptor ownership | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `990a533` | feat(gui): establish native application and window lifecycle | GtkApplication entry point, window ownership and GUI build target | All four specified components now have Meson targets |
-| `HEAD` | docs(tracker): record establish native application and window lifecycle | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `718a873` | docs(tracker): record establish native application and window lifecycle | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `4354497` | feat(gui): build the single-window boot media workflow | Scrollable native boot-media controls with mode-aware sensitivity | Window retains a safe owning reference through application shutdown |
+| `HEAD` | docs(tracker): record build the single-window boot media workflow | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
