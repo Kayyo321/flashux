@@ -5,6 +5,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#if defined(__GNUC__) || defined(__clang__)
+#define FLASHUX_PRINTF(a, b) __attribute__((format(printf, a, b)))
+#else
+#define FLASHUX_PRINTF(a, b)
+#endif
+
 /**
  * @brief Standard Flashux error return codes.
  */
@@ -100,14 +106,38 @@ void flashux_log(
     flashux_log_level_t level,
     const char *format,
     ...
-);
+) FLASHUX_PRINTF(3, 4);
 
 /**
  * @brief Convenience logging wrappers conforming to AGENTS.md §2.3.
  */
-void flashux_log_error(flashux_context_t *ctx, const char *format, ...);
-void flashux_log_warn(flashux_context_t *ctx, const char *format, ...);
-void flashux_log_info(flashux_context_t *ctx, const char *format, ...);
-void flashux_log_debug(flashux_context_t *ctx, const char *format, ...);
+/**
+ * @brief Emit a error message through the context logger.
+ * @param[in] ctx Context, or NULL for stderr.
+ * @param[in] format Printf-style format string, followed by its arguments.
+ */
+void flashux_log_error(flashux_context_t *ctx, const char *format, ...)
+    FLASHUX_PRINTF(2, 3);
+/**
+ * @brief Emit a warn message through the context logger.
+ * @param[in] ctx Context, or NULL for stderr.
+ * @param[in] format Printf-style format string, followed by its arguments.
+ */
+void flashux_log_warn(flashux_context_t *ctx, const char *format, ...)
+    FLASHUX_PRINTF(2, 3);
+/**
+ * @brief Emit a info message through the context logger.
+ * @param[in] ctx Context, or NULL for stderr.
+ * @param[in] format Printf-style format string, followed by its arguments.
+ */
+void flashux_log_info(flashux_context_t *ctx, const char *format, ...)
+    FLASHUX_PRINTF(2, 3);
+/**
+ * @brief Emit a debug message through the context logger.
+ * @param[in] ctx Context, or NULL for stderr.
+ * @param[in] format Printf-style format string, followed by its arguments.
+ */
+void flashux_log_debug(flashux_context_t *ctx, const char *format, ...)
+    FLASHUX_PRINTF(2, 3);
 
 #endif /* FLASHUX_CORE_H */
