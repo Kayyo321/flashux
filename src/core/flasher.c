@@ -2,6 +2,7 @@
 #include "progress.h"
 #include "ipc_client.h"
 #include "helper_launcher.h"
+#include "device_internal.h"
 #include "common/wire.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -218,6 +219,17 @@ flashux_error_t flashux_flash_start_async(flashux_context_t *ctx,
         return FLASHUX_ERR_DEVICE_BUSY;
     }
     ctx->options = *options;
+    if (!options->dry_run) {
+        uint64_t current_sequence;
+        result = flashux_device_capture_sequence(options->target_device_path, &current_sequence);
+        if (result == FLASHUX_SUCCESS && options->expected_disk_sequence != 0 &&
+            options->expected_disk_sequence != current_sequence) { result = FLASHUX_ERR_NOT_FOUND; }
+        if (result != FLASHUX_SUCCESS) {
+            (void)pthread_mutex_unlock(&ctx->job_mutex);
+            return result;
+        }
+        ctx->options.expected_disk_sequence = current_sequence;
+    }
     ctx->progress_cb = progress_callback;
     ctx->progress_data = user_data;
     ctx->running = true;

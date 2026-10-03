@@ -123,6 +123,7 @@ flashux_error_t flashux_ipc_encode_options(const flashux_flash_options_t *option
     out[742] = options->win_custom.disable_telemetry;
     out[743] = options->win_custom.disable_bitlocker;
     memcpy(out + 744, options->win_custom.local_username, 64);
+    flashux_put_u64(out + 808, options->expected_disk_sequence);
     return FLASHUX_SUCCESS;
 }
 flashux_error_t flashux_ipc_decode_options(const unsigned char *in, size_t size,
@@ -136,7 +137,7 @@ flashux_error_t flashux_ipc_decode_options(const unsigned char *in, size_t size,
     for (unsigned i = 736; i < 744; ++i) {
         if (in[i] > 1) { return FLASHUX_ERR_IPC; }
     }
-    for (unsigned i = 808; i < FLASHUX_IPC_OPTIONS_SIZE; ++i) {
+    for (unsigned i = 816; i < FLASHUX_IPC_OPTIONS_SIZE; ++i) {
         if (in[i] != 0) { return FLASHUX_ERR_IPC; }
     }
     if (flashux_get_u32(in + 704) > FLASHUX_MODE_FREEDOS ||
@@ -154,6 +155,7 @@ flashux_error_t flashux_ipc_decode_options(const unsigned char *in, size_t size,
     options->cluster_size = flashux_get_u32(in + 720);
     options->bad_blocks_passes = flashux_get_u32(in + 724);
     options->persistence_size_bytes = flashux_get_u64(in + 728);
+    options->expected_disk_sequence = flashux_get_u64(in + 808);
     options->quick_format = in[736] != 0;
     options->dry_run = in[737] != 0;
     options->win_custom.bypass_tpm_secureboot_ram = in[738] != 0;

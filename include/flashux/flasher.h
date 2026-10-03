@@ -92,6 +92,7 @@ typedef struct {
     uint64_t persistence_size_bytes;/* 0 to disable, or size in bytes */
     flashux_windows_customizations_t win_custom;
     bool dry_run;                   /* Simulate writes without modifying disk */
+    uint64_t expected_disk_sequence;/* Linux kernel identity captured before confirmation */
 } flashux_flash_options_t;
 
 /**

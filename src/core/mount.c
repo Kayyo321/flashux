@@ -1,4 +1,4 @@
-#include "flashux/device.h"
+#include "device_internal.h"
 #include "flashux_config.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -9,6 +9,8 @@
 #if FLASHUX_LINUX
 #include <libmount/libmount.h>
 #include <sys/mount.h>
+#include <sys/ioctl.h>
+#include <linux/fs.h>
 #endif
 
 flashux_error_t flashux_device_lock(flashux_context_t *ctx, const flashux_device_t *device,
@@ -109,6 +111,24 @@ flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
     }
     mnt_free_iter(iter);
     mnt_free_table(table);
+    return result;
+#else
+    return FLASHUX_ERR_UNSUPPORTED;
+#endif
+}
+
+flashux_error_t flashux_device_capture_sequence(const char *path, uint64_t *sequence)
+{
+    if (path == NULL || sequence == NULL) { return FLASHUX_ERR_INVALID_ARG; }
+    *sequence = 0;
+#if FLASHUX_LINUX
+    struct stat st;
+    int fd = open(path, O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+    if (fd < 0) { return FLASHUX_ERR_NOT_FOUND; }
+    flashux_error_t result = fstat(fd, &st) == 0 && S_ISBLK(st.st_mode) &&
+        ioctl(fd, BLKGETDISKSEQ, sequence) == 0 && *sequence != 0 ?
+        FLASHUX_SUCCESS : FLASHUX_ERR_UNSUPPORTED;
+    (void)close(fd);
     return result;
 #else
     return FLASHUX_ERR_UNSUPPORTED;

@@ -1,4 +1,5 @@
 #include "app_window.h"
+#include "core/device_internal.h"
 #include <stdio.h>
 #include <string.h>
 static gboolean paint_progress(gpointer data)
@@ -87,7 +88,8 @@ flashux_error_t flashux_gui_collect(struct flashux_gui *gui, flashux_flash_optio
     options->dry_run = gtk_check_button_get_active(gui->dry_run);
     options->quick_format = true;
     options->win_custom = gui->win_custom;
-    return FLASHUX_SUCCESS;
+    return options->dry_run ? FLASHUX_SUCCESS :
+        flashux_device_capture_sequence(options->target_device_path, &options->expected_disk_sequence);
 }
 void flashux_gui_launch_options(struct flashux_gui *gui, const flashux_flash_options_t *options)
 {
