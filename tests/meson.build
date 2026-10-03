@@ -23,3 +23,6 @@ if gui_available and is_linux
 endif
 image_test = executable('test_image', 'test_image.c', dependencies: raw_dep)
 test('image', image_test)
+batch_test = executable('test_cli_batch', 'test_cli_batch.c', link_with: cli_batch,
+  dependencies: cli_args_dep)
+test('cli-batch', batch_test)
