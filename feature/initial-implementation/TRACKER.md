@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 94.77%**
+**Overall Progress: 95.23%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -30,7 +30,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [85%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [95%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [85%]
-- [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
+- [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [90%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
 - [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [95%]
@@ -222,4 +222,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `c82a62d` | feat(flasher): preflight and decode compressed dry runs | Cancellable compressed-image dry runs with decoded progress | Raw option validation delegates decoded capacity to the worker and helper |
 | `5f2bbbc` | docs(tracker): record preflight and decode compressed dry runs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `5765a69` | test(image): verify compression preflight and decoded readback | Cross-platform image stream and raw-copy regression suite | Test matrix now exercises five compressed image formats and pre-write failure safety |
-| `HEAD` | docs(tracker): record verify compression preflight and decoded readback | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `2402e53` | docs(tracker): record verify compression preflight and decoded readback | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `9d81830` | feat(format): zero validated targets before full formatting | Cancellable full-format zero pass and sparse-file zeroing regression | Formatting accepts quick or full requests while retaining parent-disk safety and fixed argv execution |
+| `HEAD` | docs(tracker): record zero validated targets before full formatting | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
