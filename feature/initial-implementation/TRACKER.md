@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 79.77%**
+**Overall Progress: 81.82%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -46,7 +46,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 5.1 Implement GtkApplication lifecycle and application initialization in `src/gui/main.c` [90%]
 - [ ] 5.2 Build Rufus single-window layout (Device, Image, Partition, Target, File System) in `src/gui/app_window.c` [85%]
 - [ ] 5.3 Implement dynamic device dropdown population and hotplug signal listeners in `src/gui/device_selector.c` [80%]
-- [ ] 5.4 Implement file chooser integration for ISO and raw disk images in `src/gui/app_window.c` [0%]
+- [ ] 5.4 Implement file chooser integration for ISO and raw disk images in `src/gui/app_window.c` [90%]
 - [ ] 5.5 Implement Rufus Windows user experience customization modal in `src/gui/win_dialog.c` [0%]
 - [ ] 5.6 Implement thread-safe progress bar and transfer speed updates via `g_idle_add` in `src/gui/progress_view.c` [0%]
 - [ ] 5.7 Implement destructive operation confirmation modals and warning alerts in `src/gui/dialogs.c` [0%]
@@ -180,4 +180,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `4354497` | feat(gui): build the single-window boot media workflow | Scrollable native boot-media controls with mode-aware sensitivity | Window retains a safe owning reference through application shutdown |
 | `39ef568` | docs(tracker): record build the single-window boot media workflow | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `8baa7ee` | feat(gui): populate protected devices and monitor hotplug events | Device dropdown, fixed-drive warning and udev listener | GUI releases monitoring resources and enforces minimum supported toolkit APIs |
-| `HEAD` | docs(tracker): record populate protected devices and monitor hotplug events | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `7da160f` | docs(tracker): record populate protected devices and monitor hotplug events | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `c404966` | feat(gui): select local images through asynchronous GTK dialogs | Async local image chooser and bounded image-entry updates | Select button now populates the boot image control safely |
+| `HEAD` | docs(tracker): record select local images through asynchronous GTK dialogs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
