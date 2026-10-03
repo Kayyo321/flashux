@@ -1,4 +1,5 @@
 #include "privileged_ops.h"
+#include "common/file_identity.h"
 #include "core/progress.h"
 #include "core/image_stream.h"
 #include "core/device_internal.h"
@@ -77,6 +78,10 @@ flashux_error_t flashux_raw_copy(int source_fd, int target_fd, uint32_t sector,
     result = flashux_image_decoded_size(source_fd, capacity / sector * sector, &total,
                                         cancel, cancel_data, progress_cb, progress_data);
     if (result != FLASHUX_SUCCESS) { return result; }
+    struct stat preflight;
+    if (fstat(source_fd, &preflight) != 0 || !flashux_file_unchanged(&source, &preflight)) {
+        return FLASHUX_ERR_IO;
+    }
     if (total > (uint64_t)INT64_MAX - sector ||
         (total + sector - 1) / sector * sector > capacity) { return FLASHUX_ERR_INVALID_ARG; }
     flashux_image_stream_t *stream = NULL;
@@ -157,8 +162,7 @@ flashux_error_t flashux_raw_copy(int source_fd, int target_fd, uint32_t sector,
     flashux_image_stream_close(&stream);
     struct stat after;
     if (result == FLASHUX_SUCCESS && (fstat(source_fd, &after) != 0 ||
-        source.st_size != after.st_size || source.st_mtime != after.st_mtime ||
-        source.st_ctime != after.st_ctime)) { result = FLASHUX_ERR_IO; }
+        !flashux_file_unchanged(&source, &after))) { result = FLASHUX_ERR_IO; }
     if (result != FLASHUX_SUCCESS) { (void)fsync(target_fd); }
     free(allocation);
     allocation = NULL;

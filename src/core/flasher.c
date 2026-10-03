@@ -1,4 +1,5 @@
 #include "internal.h"
+#include "common/file_identity.h"
 #include "progress.h"
 #include "image_stream.h"
 #include "ipc_client.h"
@@ -158,6 +159,9 @@ static flashux_error_t dry_run(flashux_context_t *ctx, flashux_progress_t *progr
     }
     if (result == FLASHUX_SUCCESS && bytes != total) { result = FLASHUX_ERR_CORRUPT_IMAGE; }
     flashux_image_stream_close(&stream);
+    struct stat after;
+    if (result == FLASHUX_SUCCESS && (fstat(fd, &after) != 0 ||
+        !flashux_file_unchanged(&source, &after))) { result = FLASHUX_ERR_IO; }
     (void)close(fd);
     return result;
 }

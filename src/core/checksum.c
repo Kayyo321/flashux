@@ -1,4 +1,5 @@
 #include "flashux/checksum.h"
+#include "common/file_identity.h"
 #include <openssl/evp.h>
 #include <pthread.h>
 #include <fcntl.h>
@@ -105,8 +106,7 @@ flashux_error_t flashux_checksum_file(flashux_context_t *ctx, const char *file_p
             }
         }
     }
-    if (fstat(fd, &after) != 0 || after.st_size != before.st_size ||
-        after.st_mtime != before.st_mtime || after.st_ctime != before.st_ctime) {
+    if (fstat(fd, &after) != 0 || !flashux_file_unchanged(&before, &after)) {
         result = FLASHUX_ERR_IO;
     }
     (void)close(fd);
