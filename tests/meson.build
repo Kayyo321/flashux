@@ -26,3 +26,7 @@ test('image', image_test)
 batch_test = executable('test_cli_batch', 'test_cli_batch.c', link_with: cli_batch,
   dependencies: cli_args_dep)
 test('cli-batch', batch_test)
+if is_linux
+  # Manual, nondestructive helper smoke probe; requires a running helper and Polkit.
+  executable('test_helper', 'test_helper.c', dependencies: flashux_dep)
+endif
