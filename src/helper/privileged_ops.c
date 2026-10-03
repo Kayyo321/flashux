@@ -1,5 +1,6 @@
 #include "privileged_ops.h"
 #include "core/progress.h"
+#include "core/device_internal.h"
 #include "flashux/device.h"
 #include "flashux_config.h"
 #include <stdlib.h>
@@ -169,7 +170,15 @@ flashux_error_t flashux_helper_flash(flashux_context_t *ctx,
         if (!flashux_device_is_safe_target(ctx, device, NULL, 0)) {
             result = FLASHUX_ERR_SYSTEM_DISK_PROTECT;
         } else {
-            result = flashux_unmount_device_partitions(ctx, device);
+            uint64_t sequence = 0;
+            result = flashux_device_capture_sequence(canonical, &sequence);
+            if (result == FLASHUX_SUCCESS &&
+                (sequence != options->expected_disk_sequence || sequence == 0)) {
+                result = FLASHUX_ERR_NOT_FOUND;
+            }
+            if (result == FLASHUX_SUCCESS) {
+                result = flashux_unmount_device_partitions(ctx, device);
+            }
             if (result == FLASHUX_SUCCESS) { result = flashux_device_lock(ctx, device, &target_fd); }
             if (result == FLASHUX_SUCCESS) {
 #if FLASHUX_LINUX

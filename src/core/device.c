@@ -142,6 +142,8 @@ bool flashux_device_is_safe_target(flashux_context_t *ctx, const flashux_device_
         reason = "Device is read-only";
     } else if (device->size_bytes == 0 || device->logical_sector_sz == 0) {
         reason = "Device geometry unavailable";
+    } else if (memchr(device->node_path, 0, sizeof(device->node_path)) == NULL) {
+        reason = "Invalid device path";
     } else if (device->node_path[0] == '\0') {
         reason = "Device path unavailable";
     }

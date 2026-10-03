@@ -16,7 +16,8 @@
 flashux_error_t flashux_device_lock(flashux_context_t *ctx, const flashux_device_t *device,
                                    int *lock_fd_out)
 {
-    if (ctx == NULL || device == NULL || lock_fd_out == NULL) {
+    if (ctx == NULL || device == NULL || lock_fd_out == NULL ||
+        memchr(device->node_path, 0, sizeof(device->node_path)) == NULL) {
         return FLASHUX_ERR_INVALID_ARG;
     }
     *lock_fd_out = -1;
@@ -75,10 +76,26 @@ void flashux_device_unlock(int *lock_fd)
 flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
                                                  const flashux_device_t *device)
 {
-    if (ctx == NULL || device == NULL || device->is_system_drive) {
+    if (ctx == NULL || device == NULL || device->is_system_drive ||
+        memchr(device->node_path, 0, sizeof(device->node_path)) == NULL) {
         return FLASHUX_ERR_INVALID_ARG;
     }
 #if FLASHUX_LINUX
+    flashux_device_t *fresh = NULL;
+    char canonical[4096];
+    flashux_error_t scan_result = flashux_device_list_scan(ctx, true, &fresh);
+    if (scan_result != FLASHUX_SUCCESS) { return scan_result; }
+    const flashux_device_t *validated = NULL;
+    if (realpath(device->node_path, canonical) != NULL) {
+        for (flashux_device_t *item = fresh; item != NULL; item = item->next) {
+            if (strcmp(item->node_path, canonical) == 0) { validated = item; break; }
+        }
+    }
+    if (!flashux_device_is_safe_target(ctx, validated, NULL, 0)) {
+        flashux_device_list_free(&fresh);
+        return FLASHUX_ERR_SYSTEM_DISK_PROTECT;
+    }
+    device = validated;
     struct libmnt_table *table = mnt_new_table_from_file("/proc/self/mountinfo");
     struct libmnt_iter *iter = mnt_new_iter(MNT_ITER_BACKWARD);
     struct libmnt_fs *fs;
@@ -90,6 +107,7 @@ flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
         if (iter != NULL) {
             mnt_free_iter(iter);
         }
+        flashux_device_list_free(&fresh);
         return FLASHUX_ERR_IO;
     }
     while (mnt_table_next_fs(table, iter, &fs) == 0) {
@@ -111,6 +129,7 @@ flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
     }
     mnt_free_iter(iter);
     mnt_free_table(table);
+    flashux_device_list_free(&fresh);
     return result;
 #else
     return FLASHUX_ERR_UNSUPPORTED;
