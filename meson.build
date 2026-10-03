@@ -17,6 +17,7 @@ gtk = dependency('gtk4', version: '>=4.10', required: get_option('gui'))
 adwaita = dependency('libadwaita-1', version: '>=1.4', required: get_option('gui'))
 config = configuration_data()
 config.set10('FLASHUX_LINUX', is_linux)
+config.set_quoted('FLASHUX_HELPER_PATH', get_option('prefix') / get_option('libexecdir') / 'flashux-helper')
 configure_file(output: 'flashux_config.h', configuration: config)
 core_deps = [threads, crypto]
 if is_linux
@@ -27,4 +28,5 @@ subdir('src/core')
 subdir('src/helper')
 subdir('src/cli')
 subdir('src/gui')
+subdir('data')
 subdir('tests')
