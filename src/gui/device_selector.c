@@ -59,6 +59,9 @@ static void fixed_toggled(GtkCheckButton *button, gpointer data)
         adw_message_dialog_set_response_appearance(ADW_MESSAGE_DIALOG(dialog), "list",
                                                    ADW_RESPONSE_DESTRUCTIVE);
         adw_message_dialog_set_close_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
+        gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), true);
+        g_object_set_data_full(G_OBJECT(dialog), "parent-window", g_object_ref(gui->window),
+                               g_object_unref);
         g_signal_connect(dialog, "response", G_CALLBACK(fixed_response), gui->window);
         gtk_window_present(GTK_WINDOW(dialog));
     } else { flashux_gui_refresh_devices(gui); }
