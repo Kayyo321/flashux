@@ -6,6 +6,7 @@ static gboolean close_window(GtkWindow *window, gpointer data)
     (void)window;
     gui->closed = true;
     flashux_context_free(&gui->ctx);
+    flashux_gui_progress_stop(gui);
     flashux_gui_device_monitor_stop(gui);
     return FALSE;
 }

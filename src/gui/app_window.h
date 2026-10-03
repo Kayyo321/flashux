@@ -3,6 +3,7 @@
 #include "flashux/flasher.h"
 #include <adwaita.h>
 #include <pthread.h>
+#include <stdatomic.h>
 struct flashux_gui {
     AdwApplication *application;
     GtkWindow *window;
@@ -31,7 +32,7 @@ struct flashux_gui {
     guint hotplug_source;
     void *udev;
     void *monitor;
-    bool closed;
+    atomic_bool closed;
     bool busy;
     flashux_windows_customizations_t win_custom;
 };
@@ -44,7 +45,9 @@ void flashux_gui_update_start(struct flashux_gui *gui);
 void flashux_gui_choose_image(GtkButton *button, gpointer data);
 void flashux_gui_customizations(GtkButton *button, gpointer data);
 void flashux_gui_start(GtkButton *button, gpointer data);
-void flashux_gui_launch(struct flashux_gui *gui);
+flashux_error_t flashux_gui_collect(struct flashux_gui *gui, flashux_flash_options_t *options);
+void flashux_gui_launch_options(struct flashux_gui *gui,
+                               const flashux_flash_options_t *options);
 void flashux_gui_progress(const flashux_progress_t *progress, void *data);
 void flashux_gui_progress_stop(struct flashux_gui *gui);
 #endif
