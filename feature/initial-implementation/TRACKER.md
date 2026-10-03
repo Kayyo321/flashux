@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 96.02%**
+**Overall Progress: 96.14%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -55,7 +55,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 6.1 Define binary wire protocol, message headers, and command opcodes in `src/helper/ipc_protocol.h` [100%]
 - [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [85%]
 - [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [70%]
-- [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [95%]
+- [X] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [100%]
 - [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [90%]
 
 ### 7. Unit Testing & Verification Harness
@@ -238,4 +238,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `2c05c94` | fix(gui): retain fixed-drive warning parent through response | Owned parent reference and parent-destruction behavior for fixed-drive warnings | Fixed-drive dialog callbacks no longer rely on an unowned window pointer |
 | `e907f9d` | docs(tracker): record retain fixed-drive warning parent through response | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `8986d66` | test(gui): exercise native modal state and warning cancellation | Native modal cancellation and customization regressions | Expanded GUI runtime suite covers modal ownership and session preference persistence |
-| `HEAD` | docs(tracker): record exercise native modal state and warning cancellation | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `0b7670d` | docs(tracker): record exercise native modal state and warning cancellation | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `fb91c62` | fix(ipc): preserve smoothed transfer speed in progress frames | Endian-independent speed field and malformed floating-point regression | Remote frontend progress retains the engine moving average instead of substituting average speed |
+| `HEAD` | docs(tracker): record preserve smoothed transfer speed in progress frames | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
