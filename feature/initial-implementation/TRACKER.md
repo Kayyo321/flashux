@@ -188,4 +188,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `c496ee6` | feat(gui): coalesce worker progress on the GTK main loop | Idle-dispatched progress, speed and ETA display plus async job completion | Close-time cleanup removes UI sources after joining the worker |
 | `1181306` | docs(tracker): record coalesce worker progress on the GTK main loop | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `45fce38` | feat(gui): confirm an immutable reviewed job before erasing | Reviewed-job confirmation, validation errors and cancellation controls | GUI start actions now use the shared asynchronous engine; modal allocations fail safely |
-| `HEAD` | docs(tracker): record confirm an immutable reviewed job before erasing | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `c203bbd` | docs(tracker): record confirm an immutable reviewed job before erasing | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `c112bfa` | chore(integration): install Polkit policy and desktop entry | Polkit action policy and native desktop launcher | Meson installation includes Linux authorization assets and GUI desktop entry |
+| `HEAD` | docs(tracker): record install Polkit policy and desktop entry | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
