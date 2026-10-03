@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
 struct fragmented {
     int fd;
     unsigned char bytes[20];
@@ -42,7 +43,11 @@ int main(void)
     struct stat duplicate;
     CHECK(fstat(fd, &original) == 0 && fstat(received, &duplicate) == 0);
     CHECK(original.st_ino == duplicate.st_ino && original.st_dev == duplicate.st_dev);
+    CHECK((fcntl(received, F_GETFD) & FD_CLOEXEC) != 0);
     CHECK(close(fd) == 0 && close(received) == 0);
+    unsigned char no_descriptor = 0x46;
+    CHECK(write(sockets[0], &no_descriptor, 1) == 1);
+    CHECK(flashux_ipc_receive_fd(sockets[1], &received) == FLASHUX_ERR_IPC && received == -1);
     flashux_flash_options_t options = {0};
     flashux_flash_options_t decoded;
     unsigned char option_bytes[FLASHUX_IPC_OPTIONS_SIZE];
@@ -73,6 +78,16 @@ int main(void)
           == FLASHUX_ERR_IPC);
     CHECK(close(sockets[0]) == 0);
     CHECK(flashux_ipc_receive(sockets[1], &header, payload, sizeof(payload)) == FLASHUX_ERR_IPC);
+    CHECK(flashux_ipc_send(sockets[1], FLASHUX_IPC_CMD_PING, 1, NULL, 0) == FLASHUX_ERR_IPC);
     CHECK(close(sockets[1]) == 0);
+    CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, sockets) == 0);
+    CHECK(write(sockets[0], fragmented.bytes, 3) == 3 && close(sockets[0]) == 0);
+    CHECK(flashux_ipc_receive(sockets[1], &header, payload, sizeof(payload)) == FLASHUX_ERR_IPC);
+    CHECK(close(sockets[1]) == 0);
+    CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, sockets) == 0);
+    CHECK(flashux_ipc_send(sockets[0], FLASHUX_IPC_MSG_OPERATION_RESULT, 1, payload, 4)
+          == FLASHUX_SUCCESS);
+    CHECK(flashux_ipc_receive(sockets[1], &header, payload, 3) == FLASHUX_ERR_IPC);
+    CHECK(close(sockets[0]) == 0 && close(sockets[1]) == 0);
     return 0;
 }
