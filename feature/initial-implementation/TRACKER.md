@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 37.05%**
+**Overall Progress: 38.64%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -30,7 +30,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [70%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [70%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
-- [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [0%]
+- [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
 - [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [0%]
@@ -128,4 +128,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `3d10e8e` | test(partition): verify sector layouts and reject overlapping entries | 512-byte and 4Kn file-backed partition regression coverage | Test suite includes independent binary-layout assertions |
 | `6a3d03b` | docs(tracker): record verify sector layouts and reject overlapping entries | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `6cbb131` | test(checksum): check standard digests and empty error outputs | Known-answer multihash tests and error-output assertions | Core checksum milestone verified on portable host |
-| `HEAD` | docs(tracker): record check standard digests and empty error outputs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `7c397c8` | docs(tracker): record check standard digests and empty error outputs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `18e7259` | feat(format): validate labels and dispatch native filesystem tools | FAT16/FAT32, NTFS, exFAT and ext4 quick-format dispatch and validation | Full zeroing remains unsupported; native formatter verification pending |
+| `HEAD` | docs(tracker): record validate labels and dispatch native filesystem tools | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
