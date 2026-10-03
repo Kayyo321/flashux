@@ -10,61 +10,15 @@
 #include <dirent.h>
 #include <sys/sysmacros.h>
 
-static bool related_device(struct udev *udev, dev_t mounted, dev_t target, unsigned depth)
+static bool related_device(dev_t mounted, dev_t target)
 {
-    struct udev_device *node;
-    struct udev_device *parent;
-    char slaves[512];
-    bool related = false;
-    if (mounted == target) {
-        return true;
-    }
-    if (depth > 16) {
-        return true; /* Unresolvable stacked topology is protected. */
-    }
-    node = udev_device_new_from_devnum(udev, 'b', mounted);
-    if (node == NULL) {
-        return true;
-    }
-    parent = udev_device_get_parent_with_subsystem_devtype(node, "block", "disk");
-    if (parent != NULL && udev_device_get_devnum(parent) == target) {
-        related = true;
-    }
-    if (snprintf(slaves, sizeof(slaves), "%s/slaves", udev_device_get_syspath(node)) < 0) {
-        related = true;
-    } else {
-        DIR *directory = opendir(slaves);
-        if (directory != NULL) {
-            struct dirent *entry;
-            while ((entry = readdir(directory)) != NULL) {
-                char link[1024];
-                struct udev_device *slave;
-                if (entry->d_name[0] == '.') {
-                    continue;
-                }
-                int count = snprintf(link, sizeof(link), "%s/%s", slaves, entry->d_name);
-                if (count < 0 || (size_t)count >= sizeof(link)) {
-                    related = true;
-                    break;
-                }
-                slave = udev_device_new_from_syspath(udev, link);
-                if (slave == NULL) {
-                    related = true;
-                } else {
-                    if (related_device(udev, udev_device_get_devnum(slave), target, depth + 1)) {
-                        related = true;
-                    }
-                    udev_device_unref(slave);
-                }
-            }
-            (void)closedir(directory);
-        }
-    }
-    udev_device_unref(node);
-    return related;
+    bool protected = true;
+    (void)flashux_device_topology_contains("/sys", major(mounted), minor(mounted),
+                                          major(target), minor(target), &protected);
+    return protected;
 }
 
-static bool system_device(struct udev *udev, dev_t target)
+static bool system_device(dev_t target)
 {
     static const char *const paths[] = {"/", "/boot", "/boot/efi", "/home", "/usr", "/var"};
     struct stat st;
@@ -72,7 +26,7 @@ static bool system_device(struct udev *udev, dev_t target)
     char line[1024];
     char source[512];
     for (size_t i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
-        if (stat(paths[i], &st) == 0 && related_device(udev, st.st_dev, target, 0)) {
+        if (stat(paths[i], &st) == 0 && related_device(st.st_dev, target)) {
             return true;
         }
     }
@@ -86,7 +40,7 @@ static bool system_device(struct udev *udev, dev_t target)
             (void)fclose(swap);
             return true;
         }
-        if (related_device(udev, S_ISBLK(st.st_mode) ? st.st_rdev : st.st_dev, target, 0)) {
+        if (related_device(S_ISBLK(st.st_mode) ? st.st_rdev : st.st_dev, target)) {
             (void)fclose(swap);
             return true;
         }
@@ -255,7 +209,7 @@ flashux_error_t flashux_device_list_scan(flashux_context_t *ctx, bool include_fi
             copy_property(device->serial, sizeof(device->serial),
                           udev_device_get_property_value(node, "ID_SERIAL_SHORT"));
             (void)flashux_device_geometry_from_sysfs(udev_device_get_syspath(node), device);
-            device->is_system_drive = system_device(udev, udev_device_get_devnum(node));
+            device->is_system_drive = system_device(udev_device_get_devnum(node));
             device->bus_type = usb ? FLASHUX_BUS_USB : FLASHUX_BUS_UNKNOWN;
             if (strncmp(udev_device_get_sysname(node), "loop", 4) == 0) {
                 device->bus_type = FLASHUX_BUS_VIRTUAL;
