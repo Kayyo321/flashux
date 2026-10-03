@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 90.11%**
+**Overall Progress: 94.55%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -66,8 +66,8 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 7.5 Implement filesystem formatting parameter and cluster tests in `tests/test_format.c` [100%]
 - [X] 7.6 Implement MBR/GPT partition binary layout synthesis tests in `tests/test_partition.c` [100%]
 - [ ] 7.7 Implement binary IPC header serialization/framing tests in `tests/test_ipc.c` [90%]
-- [ ] 7.8 Verify compiler diagnostics with zero warnings under `-Wall -Wextra -Wpedantic -Werror` [0%]
-- [ ] 7.9 Verify zero memory leaks via Valgrind and AddressSanitizer [0%]
+- [X] 7.8 Verify compiler diagnostics with zero warnings under `-Wall -Wextra -Wpedantic -Werror` [100%]
+- [ ] 7.9 Verify zero memory leaks via Valgrind and AddressSanitizer [95%]
 
 ---
 
@@ -210,4 +210,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `dc27230` | fix(safety): revalidate protection and identity before unmounting | Fresh unmount safety validation and bounded device-path checks | Replacement devices are rejected before partition unmounting |
 | `88547cf` | docs(tracker): record revalidate protection and identity before unmounting | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `cb5582e` | fix(helper): distinguish locked and reviewed disk sequence variables | Verified Linux sequence validation compilation | Renamed the inner locked disk sequence variable |
-| `HEAD` | docs(tracker): record distinguish locked and reviewed disk sequence variables | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `01d6c3e` | docs(tracker): record distinguish locked and reviewed disk sequence variables | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `801e6f6` | test(gui): release font backend caches for leak verification | Explicit test backend teardown and font dependency declarations | All nine Linux ASan/UBSan suites pass with leak detection enabled |
+| `HEAD` | docs(tracker): record release font backend caches for leak verification | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
