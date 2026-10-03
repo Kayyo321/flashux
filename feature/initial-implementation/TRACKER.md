@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 96.14%**
+**Overall Progress: 96.36%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -38,7 +38,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 4. Command-Line Interface (`flashux-cli`)
 - [X] 4.1 Implement POSIX command-line option parser (`getopt_long`) in `src/cli/cli_args.c` [100%]
-- [ ] 4.2 Implement non-interactive batch mode and structured JSON output in `src/cli/cli_batch.c` [90%]
+- [X] 4.2 Implement non-interactive batch mode and structured JSON output in `src/cli/cli_batch.c` [100%]
 - [ ] 4.3 Implement interactive curses/ncurses terminal dashboard in `src/cli/cli_interactive.c` [85%]
 - [X] 4.4 Implement CLI main entry point, signal handlers (`SIGINT`, `SIGTERM`), and exit routines in `src/cli/main.c` [100%]
 
@@ -242,4 +242,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `fb91c62` | fix(ipc): preserve smoothed transfer speed in progress frames | Endian-independent speed field and malformed floating-point regression | Remote frontend progress retains the engine moving average instead of substituting average speed |
 | `89c2cfb` | docs(tracker): record preserve smoothed transfer speed in progress frames | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `1d66922` | fix(cli): preserve valid Unicode in batch JSON records | Bounded UTF-8 validation for structured record strings | JSON output no longer reinterprets each UTF-8 byte as a separate codepoint |
-| `HEAD` | docs(tracker): record preserve valid Unicode in batch JSON records | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `88631a5` | docs(tracker): record preserve valid Unicode in batch JSON records | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `c3dce27` | test(cli): verify batch records and dry-run target preservation | Batch runner regression suite for JSON and confirmation safeguards | Batch implementation is now exercised independently of argument parsing |
+| `HEAD` | docs(tracker): record verify batch records and dry-run target preservation | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
