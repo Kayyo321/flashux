@@ -92,4 +92,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `4d50a3c` | chore(build): exclude generated Meson artifacts | Ignore rule for build directories | .gitignore excludes generated build artifacts |
 | `2964785` | docs(tracker): record exclude generated Meson artifacts | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `e4a2168` | chore(build): probe native component dependencies | Thread, crypto, curses, GTK and Linux dependency probes; generated platform config | Meson configuration now exposes gui feature option |
-| `HEAD` | docs(tracker): record probe native component dependencies | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `aa68390` | docs(tracker): record probe native component dependencies | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `7fbbe6e` | fix(build): defer source includes until headers exist | Successful platform dependency configuration | Removed premature include_directories declaration |
+| `HEAD` | docs(tracker): record defer source includes until headers exist | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
