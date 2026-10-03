@@ -1056,3 +1056,29 @@ Because this development environment is hosted on macOS:
 - Linux kernel-specific APIs (`libudev`, `libblkid`, `libmount`, `/sys/block`, `losetup`, Polkit) cannot be executed natively.
 - Code development proceeds with modular abstraction layers and mock data harnesses.
 - As explicitly instructed, the progress tracker (`TRACKER.md`) **will remain under 100%** until full integration testing is performed on a native Linux kernel target.
+
+## 10. Implementation Decisions and Verification Boundaries
+
+The initial foundation implements the public models above with these defensive refinements:
+
+- Linux dependencies are required on Linux; other hosts build the portable library, CLI, IPC,
+  and file-backed tests. Native GTK4/libadwaita is optional with explicit Meson feature selection.
+  Missing Linux facilities return `FLASHUX_ERR_UNSUPPORTED`, never fabricated device data.
+- System disk protection fails closed. Mounted and swap-backed device ancestry includes stacked
+  device slaves. No system-drive override is implemented in this foundation.
+- IPC uses explicit little-endian byte encoding rather than casting packed C structures. Payloads
+  are bounded to 65,536 bytes; paths and options are serialized field by field. Peer authorization
+  is checked for every privileged connection; arbitrary shell strings are never executed.
+- Raw flashing supports ordinary uncompressed raw files initially. ISO extraction, Windows To Go,
+  FreeDOS, decompression, Windows registry modification, and persistence execution belong to later
+  roadmap milestones. Their options are visible but rejected before destructive work when unsupported.
+- Formatting and partition operations validate their complete inputs before opening targets. The
+  privileged helper revalidates device identity and safety. Only sparse regular files are used by
+  automated tests; host physical disks are never write-tested.
+- Context destruction cancels and joins its worker. Logging invokes callbacks outside the logger
+  mutex, allowing callbacks to log recursively or change logger settings. Callers must keep callback
+  user data alive until work completes. Context destruction from its own callback is unsupported.
+- Tracker percentages represent implemented and verified work. Native Linux integration, GUI runtime
+  checks, and Valgrind remain explicit outstanding checks until actually run. ASan/UBSan portable
+  verification does not substitute for them. The tracker logs its own latest commit as `HEAD` to
+  avoid impossible recursive self-hash bookkeeping; the next update resolves that hash.
