@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 54.66%**
+**Overall Progress: 56.70%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -38,7 +38,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 4. Command-Line Interface (`flashux-cli`)
 - [ ] 4.1 Implement POSIX command-line option parser (`getopt_long`) in `src/cli/cli_args.c` [90%]
-- [ ] 4.2 Implement non-interactive batch mode and structured JSON output in `src/cli/cli_batch.c` [0%]
+- [ ] 4.2 Implement non-interactive batch mode and structured JSON output in `src/cli/cli_batch.c` [90%]
 - [ ] 4.3 Implement interactive curses/ncurses terminal dashboard in `src/cli/cli_interactive.c` [0%]
 - [ ] 4.4 Implement CLI main entry point, signal handlers (`SIGINT`, `SIGTERM`), and exit routines in `src/cli/main.c` [0%]
 
@@ -152,4 +152,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `dfea08a` | feat(cli): define parsed options and explicit confirmation flags | CLI options header with customization and confirmation state | No frontend execution yet |
 | `4868846` | docs(tracker): record define parsed options and explicit confirmation flags | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `4302edd` | feat(cli): parse bounded command options and mode constraints | POSIX CLI parser with safe size parsing and shared-option conversion | Meson builds a reusable CLI parser target |
-| `HEAD` | docs(tracker): record parse bounded command options and mode constraints | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `722f9a1` | docs(tracker): record parse bounded command options and mode constraints | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `20d4c81` | feat(cli): emit batch progress and device records as JSON | Batch job runner, device listing and JSON output helpers | CLI support targets now include batch execution |
+| `HEAD` | docs(tracker): record emit batch progress and device records as JSON | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
