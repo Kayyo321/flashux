@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 36.82%**
+**Overall Progress: 37.05%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -32,7 +32,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [0%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
-- [ ] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [90%]
+- [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
 - [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [0%]
 - [ ] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [0%]
 
@@ -126,4 +126,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `1ba6b93` | feat(partition): synthesize aligned MBR and redundant GPT layouts | MBR, GPT, hybrid layouts, CRC32 and bounded descriptor writes | Public partition writes acquire a validated device lock; Linux reread remains unverified |
 | `250633f` | docs(tracker): record synthesize aligned MBR and redundant GPT layouts | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `3d10e8e` | test(partition): verify sector layouts and reject overlapping entries | 512-byte and 4Kn file-backed partition regression coverage | Test suite includes independent binary-layout assertions |
-| `HEAD` | docs(tracker): record verify sector layouts and reject overlapping entries | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `6a3d03b` | docs(tracker): record verify sector layouts and reject overlapping entries | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `6cbb131` | test(checksum): check standard digests and empty error outputs | Known-answer multihash tests and error-output assertions | Core checksum milestone verified on portable host |
+| `HEAD` | docs(tracker): record check standard digests and empty error outputs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
