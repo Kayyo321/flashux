@@ -3,6 +3,7 @@
 #include "flashux_config.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #if FLASHUX_LINUX
 #include <libudev.h>
@@ -144,8 +145,10 @@ flashux_error_t flashux_format_partition(flashux_context_t *ctx,
     if (options->cluster_size != 0) {
         uint32_t size = options->cluster_size;
         if (options->fs_type <= FLASHUX_FS_FAT32) {
-            uint32_t sector = (uint32_t)strtoul(
-                udev_device_get_sysattr_value(parent, "queue/logical_block_size"), NULL, 10);
+            const char *sector_text = udev_device_get_sysattr_value(parent,
+                "queue/logical_block_size");
+            uint32_t sector = sector_text == NULL ? 0 :
+                (uint32_t)strtoul(sector_text, NULL, 10);
             if (sector == 0 || size < sector || size / sector > 128) {
                 result = FLASHUX_ERR_INVALID_ARG;
                 goto cleanup;
