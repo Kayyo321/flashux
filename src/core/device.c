@@ -1,4 +1,4 @@
-#include "flashux/device.h"
+#include "device_internal.h"
 #include "flashux_config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -254,12 +254,7 @@ flashux_error_t flashux_device_list_scan(flashux_context_t *ctx, bool include_fi
                           udev_device_get_property_value(node, "ID_MODEL"));
             copy_property(device->serial, sizeof(device->serial),
                           udev_device_get_property_value(node, "ID_SERIAL_SHORT"));
-            uint64_t sectors = read_number(node, "size");
-            device->size_bytes = sectors <= UINT64_MAX / 512 ? sectors * 512 : 0;
-            device->logical_sector_sz = (uint32_t)read_number(node, "queue/logical_block_size");
-            device->phys_sector_sz = (uint32_t)read_number(node, "queue/physical_block_size");
-            device->is_removable = removable;
-            device->is_read_only = read_number(node, "ro") != 0;
+            (void)flashux_device_geometry_from_sysfs(udev_device_get_syspath(node), device);
             device->is_system_drive = system_device(udev, udev_device_get_devnum(node));
             device->bus_type = usb ? FLASHUX_BUS_USB : FLASHUX_BUS_UNKNOWN;
             if (strncmp(udev_device_get_sysname(node), "loop", 4) == 0) {
