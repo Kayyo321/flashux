@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 73.41%**
+**Overall Progress: 76.36%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -14,7 +14,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 1. Build System & Scaffolding
 - [X] 1.1 Create top-level `meson.build` with C11 standard flags (`-std=c11`, `-Wall`, `-Wextra`, `-Wpedantic`, `-Werror`, `-D_GNU_SOURCE`, `-D_FILE_OFFSET_BITS=64`) [100%]
 - [X] 1.2 Configure project dependency probing (`threads`, `glib-2.0`, `gtk4`, `libadwaita-1`, `ncurses`, `udev`, `blkid`, `mount`) [100%]
-- [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [75%]
+- [X] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [100%]
 
 ### 2. Public API Headers & Data Models
 - [X] 2.1 Define core context, logging, and error codes in `include/flashux/core.h` [100%]
@@ -43,8 +43,8 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 4.4 Implement CLI main entry point, signal handlers (`SIGINT`, `SIGTERM`), and exit routines in `src/cli/main.c` [100%]
 
 ### 5. Graphical User Interface (`flashux-gui`)
-- [ ] 5.1 Implement GtkApplication lifecycle and application initialization in `src/gui/main.c` [0%]
-- [ ] 5.2 Build Rufus single-window layout (Device, Image, Partition, Target, File System) in `src/gui/app_window.c` [0%]
+- [ ] 5.1 Implement GtkApplication lifecycle and application initialization in `src/gui/main.c` [90%]
+- [ ] 5.2 Build Rufus single-window layout (Device, Image, Partition, Target, File System) in `src/gui/app_window.c` [15%]
 - [ ] 5.3 Implement dynamic device dropdown population and hotplug signal listeners in `src/gui/device_selector.c` [0%]
 - [ ] 5.4 Implement file chooser integration for ISO and raw disk images in `src/gui/app_window.c` [0%]
 - [ ] 5.5 Implement Rufus Windows user experience customization modal in `src/gui/win_dialog.c` [0%]
@@ -174,4 +174,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `394762a` | test(flasher): verify sparse raw copies dry runs and cancellation | Sparse-file raw engine and asynchronous job regression tests | Progress calculations verified without physical disk access |
 | `a2df7cf` | docs(tracker): record verify sparse raw copies dry runs and cancellation | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `3a73743` | test(ipc): exercise fragmented framing and descriptor ownership | Socketpair IPC framing and SCM_RIGHTS regression tests | Wire protocol tests require no privileged helper process |
-| `HEAD` | docs(tracker): record exercise fragmented framing and descriptor ownership | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `de9969b` | docs(tracker): record exercise fragmented framing and descriptor ownership | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `990a533` | feat(gui): establish native application and window lifecycle | GtkApplication entry point, window ownership and GUI build target | All four specified components now have Meson targets |
+| `HEAD` | docs(tracker): record establish native application and window lifecycle | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
