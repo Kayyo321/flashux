@@ -15,19 +15,19 @@
  * @brief Standard Flashux error return codes.
  */
 typedef enum {
-    FLASHUX_SUCCESS                 = 0,
-    FLASHUX_ERR_INVALID_ARG         = -1,
-    FLASHUX_ERR_NO_MEMORY           = -2,
-    FLASHUX_ERR_DEVICE_BUSY         = -3,
+    FLASHUX_SUCCESS = 0,
+    FLASHUX_ERR_INVALID_ARG = -1,
+    FLASHUX_ERR_NO_MEMORY = -2,
+    FLASHUX_ERR_DEVICE_BUSY = -3,
     FLASHUX_ERR_SYSTEM_DISK_PROTECT = -4,
-    FLASHUX_ERR_PERMISSION_DENIED   = -5,
-    FLASHUX_ERR_IO                  = -6,
-    FLASHUX_ERR_IPC                 = -7,
-    FLASHUX_ERR_NOT_FOUND           = -8,
-    FLASHUX_ERR_UNSUPPORTED         = -9,
-    FLASHUX_ERR_CANCELLED           = -10,
-    FLASHUX_ERR_CORRUPT_IMAGE       = -11,
-    FLASHUX_ERR_UNKNOWN             = -99
+    FLASHUX_ERR_PERMISSION_DENIED = -5,
+    FLASHUX_ERR_IO = -6,
+    FLASHUX_ERR_IPC = -7,
+    FLASHUX_ERR_NOT_FOUND = -8,
+    FLASHUX_ERR_UNSUPPORTED = -9,
+    FLASHUX_ERR_CANCELLED = -10,
+    FLASHUX_ERR_CORRUPT_IMAGE = -11,
+    FLASHUX_ERR_UNKNOWN = -99
 } flashux_error_t;
 
 /**
@@ -35,19 +35,15 @@ typedef enum {
  */
 typedef enum {
     FLASHUX_LOG_DEBUG = 0,
-    FLASHUX_LOG_INFO  = 1,
-    FLASHUX_LOG_WARN  = 2,
+    FLASHUX_LOG_INFO = 1,
+    FLASHUX_LOG_WARN = 2,
     FLASHUX_LOG_ERROR = 3
 } flashux_log_level_t;
 
 /**
  * @brief Custom log callback signature.
  */
-typedef void (*flashux_log_fn)(
-    flashux_log_level_t level,
-    const char *message,
-    void *user_data
-);
+typedef void (*flashux_log_fn)(flashux_log_level_t level, const char *message, void *user_data);
 
 /**
  * @brief Forward declaration of core context.
@@ -79,12 +75,8 @@ void flashux_context_free(flashux_context_t **ctx);
  * @param[in] callback Callback function pointer.
  * @param[in] user_data Opaque pointer passed to callback.
  */
-void flashux_context_set_logger(
-    flashux_context_t *ctx,
-    flashux_log_level_t min_level,
-    flashux_log_fn callback,
-    void *user_data
-);
+void flashux_context_set_logger(flashux_context_t *ctx, flashux_log_level_t min_level,
+                                flashux_log_fn callback, void *user_data);
 
 /**
  * @brief Convert a Flashux error code into a human-readable English string.
@@ -101,12 +93,8 @@ const char *flashux_strerror(flashux_error_t err);
  * @param[in] level Severity level.
  * @param[in] format Printf-style format string.
  */
-void flashux_log(
-    flashux_context_t *ctx,
-    flashux_log_level_t level,
-    const char *format,
-    ...
-) FLASHUX_PRINTF(3, 4);
+void flashux_log(flashux_context_t *ctx, flashux_log_level_t level, const char *format, ...)
+    FLASHUX_PRINTF(3, 4);
 
 /**
  * @brief Convenience logging wrappers conforming to AGENTS.md §2.3.
@@ -116,28 +104,24 @@ void flashux_log(
  * @param[in] ctx Context, or NULL for stderr.
  * @param[in] format Printf-style format string, followed by its arguments.
  */
-void flashux_log_error(flashux_context_t *ctx, const char *format, ...)
-    FLASHUX_PRINTF(2, 3);
+void flashux_log_error(flashux_context_t *ctx, const char *format, ...) FLASHUX_PRINTF(2, 3);
 /**
  * @brief Emit a warn message through the context logger.
  * @param[in] ctx Context, or NULL for stderr.
  * @param[in] format Printf-style format string, followed by its arguments.
  */
-void flashux_log_warn(flashux_context_t *ctx, const char *format, ...)
-    FLASHUX_PRINTF(2, 3);
+void flashux_log_warn(flashux_context_t *ctx, const char *format, ...) FLASHUX_PRINTF(2, 3);
 /**
  * @brief Emit a info message through the context logger.
  * @param[in] ctx Context, or NULL for stderr.
  * @param[in] format Printf-style format string, followed by its arguments.
  */
-void flashux_log_info(flashux_context_t *ctx, const char *format, ...)
-    FLASHUX_PRINTF(2, 3);
+void flashux_log_info(flashux_context_t *ctx, const char *format, ...) FLASHUX_PRINTF(2, 3);
 /**
  * @brief Emit a debug message through the context logger.
  * @param[in] ctx Context, or NULL for stderr.
  * @param[in] format Printf-style format string, followed by its arguments.
  */
-void flashux_log_debug(flashux_context_t *ctx, const char *format, ...)
-    FLASHUX_PRINTF(2, 3);
+void flashux_log_debug(flashux_context_t *ctx, const char *format, ...) FLASHUX_PRINTF(2, 3);
 
 #endif /* FLASHUX_CORE_H */
