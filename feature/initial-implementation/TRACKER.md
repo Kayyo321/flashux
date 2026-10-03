@@ -204,4 +204,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `7fc5360` | refactor(gui): share window components with runtime verification | GUI component library and declared toolkit baseline dependency | GUI executable retains the same application entry point |
 | `0a9b5d3` | docs(tracker): record share window components with runtime verification | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `cf20b6a` | test(gui): verify dry-run completion protected selection and close | Linux GUI runtime and shutdown regression executable | Virtual-display test confirms native window lifecycle without physical disk writes |
-| `HEAD` | docs(tracker): record verify dry-run completion protected selection and close | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `7d8ae4b` | docs(tracker): record verify dry-run completion protected selection and close | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `378d90f` | fix(gui): keep progress and action controls visible at normal sizes | Compact paired option rows and persistent action footer | Default window now keeps operational controls visible |
+| `HEAD` | docs(tracker): record keep progress and action controls visible at normal sizes | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
