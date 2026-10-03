@@ -9,7 +9,8 @@ static void interrupt_cli(int signal_number)
 }
 static void usage(void)
 {
-    (void)puts("Flashux 0.1.0 - native Linux boot media foundation\n"
+    (void)puts(
+        "Flashux 0.1.0 - native Linux boot media foundation\n"
         "Usage: flashux-cli --image IMAGE --device TARGET [--batch] [--yes | --dry-run]\n"
         "       flashux-cli --list-devices [--include-fixed]\n"
         "       flashux-cli --interactive [--image IMAGE] [--device TARGET]\n"
@@ -23,7 +24,8 @@ static void usage(void)
         "Raw jobs copy the image layout; partition/format selections apply to later ISO modes.\n"
         "Raw images may use gzip, xz, bzip2, zstd or a single-file ZIP archive.\n"
         "ISO extraction and setup customizations are not yet supported.\n"
-        "Dry runs decode the image and leave the target untouched; regular-file targets are allowed.");
+        "Dry runs decode the image and leave the target untouched; regular-file targets are "
+        "allowed.");
 }
 int main(int argc, char **argv)
 {
@@ -36,8 +38,14 @@ int main(int argc, char **argv)
         flashux_log_error(NULL, "%s", "Invalid arguments; use --help");
         return 2;
     }
-    if (options.help) { usage(); return 0; }
-    if (options.version) { (void)puts("flashux 0.1.0 (GPL-3.0)"); return 0; }
+    if (options.help) {
+        usage();
+        return 0;
+    }
+    if (options.version) {
+        (void)puts("flashux 0.1.0 (GPL-3.0)");
+        return 0;
+    }
     action.sa_handler = interrupt_cli;
     (void)sigemptyset(&action.sa_mask);
     (void)sigaction(SIGINT, &action, NULL);
@@ -46,9 +54,9 @@ int main(int argc, char **argv)
         flashux_log_error(NULL, "%s", "Unable to allocate context");
         return 1;
     }
-    int result = options.list_devices ? flashux_cli_list_devices(ctx, options.include_fixed) :
-        options.interactive ? flashux_cli_run_interactive(ctx, &options) :
-        flashux_cli_run_batch(ctx, &options);
+    int result = options.list_devices  ? flashux_cli_list_devices(ctx, options.include_fixed)
+                 : options.interactive ? flashux_cli_run_interactive(ctx, &options)
+                                       : flashux_cli_run_batch(ctx, &options);
     flashux_context_free(&ctx);
     return result;
 }

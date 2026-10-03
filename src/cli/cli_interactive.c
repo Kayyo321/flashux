@@ -42,20 +42,31 @@ static int select_device(flashux_context_t *ctx, char path[64], bool fixed)
         (void)mvprintw(0, 0, "Flashux - Select target (arrows, Enter, q to cancel)");
         for (flashux_device_t *device = list; device != NULL; device = device->next) {
             bool safe = flashux_device_is_safe_target(ctx, device, NULL, 0);
-            if (count == selected) { choice = device; (void)attron(A_REVERSE); }
+            if (count == selected) {
+                choice = device;
+                (void)attron(A_REVERSE);
+            }
             if (count < (size_t)(LINES > 4 ? LINES - 4 : 0)) {
                 (void)mvprintw((int)count + 2, 0, "%s %s %.1f GiB %s", device->node_path,
-                    device->model, (double)device->size_bytes / 1073741824.0,
-                    safe ? "" : "[PROTECTED]");
+                               device->model, (double)device->size_bytes / 1073741824.0,
+                               safe ? "" : "[PROTECTED]");
             }
-            if (count == selected) { (void)attroff(A_REVERSE); }
+            if (count == selected) {
+                (void)attroff(A_REVERSE);
+            }
             ++count;
         }
         (void)refresh();
         int key = getch();
-        if (key == 'q' || key == 27) { break; }
-        if (key == KEY_DOWN && selected + 1 < count) { ++selected; }
-        if (key == KEY_UP && selected > 0) { --selected; }
+        if (key == 'q' || key == 27) {
+            break;
+        }
+        if (key == KEY_DOWN && selected + 1 < count) {
+            ++selected;
+        }
+        if (key == KEY_UP && selected > 0) {
+            --selected;
+        }
         if (key == '\n' && choice != NULL && flashux_device_is_safe_target(ctx, choice, NULL, 0)) {
             (void)snprintf(path, 64, "%s", choice->node_path);
             status = 0;
@@ -75,14 +86,19 @@ int flashux_cli_run_interactive(flashux_context_t *ctx, const flashux_cli_option
         flashux_log_error(ctx, "%s", "Interactive mode requires a terminal");
         return 1;
     }
-    if (initscr() == NULL) { (void)pthread_mutex_destroy(&dashboard.mutex); return 1; }
+    if (initscr() == NULL) {
+        (void)pthread_mutex_destroy(&dashboard.mutex);
+        return 1;
+    }
     (void)cbreak();
     (void)noecho();
     (void)keypad(stdscr, true);
     (void)curs_set(0);
     flashux_context_set_logger(ctx, FLASHUX_LOG_WARN, tui_log, &dashboard);
     if (selected.device_path[0] == '\0' &&
-        select_device(ctx, selected.device_path, selected.include_fixed) != 0) { goto cleanup; }
+        select_device(ctx, selected.device_path, selected.include_fixed) != 0) {
+        goto cleanup;
+    }
     if (selected.image_path[0] == '\0') {
         (void)erase();
         (void)mvprintw(0, 0, "Image path: ");
@@ -91,7 +107,9 @@ int flashux_cli_run_interactive(flashux_context_t *ctx, const flashux_cli_option
         int status = getnstr(selected.image_path, (int)sizeof(selected.image_path) - 1);
         (void)noecho();
         (void)curs_set(0);
-        if (status == ERR) { goto cleanup; }
+        if (status == ERR) {
+            goto cleanup;
+        }
     }
     if (!selected.dry_run) {
         char confirmation[16] = {0};
@@ -101,12 +119,16 @@ int flashux_cli_run_interactive(flashux_context_t *ctx, const flashux_cli_option
         (void)echo();
         int status = getnstr(confirmation, (int)sizeof(confirmation) - 1);
         (void)noecho();
-        if (status == ERR || strcmp(confirmation, "ERASE") != 0) { goto cleanup; }
+        if (status == ERR || strcmp(confirmation, "ERASE") != 0) {
+            goto cleanup;
+        }
     }
     flashux_flash_options_t options;
     flashux_cli_to_flash(&selected, &options);
     flashux_error_t result = flashux_flash_start_async(ctx, &options, tui_progress, &dashboard);
-    if (result != FLASHUX_SUCCESS) { goto show_result; }
+    if (result != FLASHUX_SUCCESS) {
+        goto show_result;
+    }
     (void)timeout(100);
     while (flashux_flash_is_running(ctx)) {
         flashux_progress_t progress;
@@ -117,7 +139,7 @@ int flashux_cli_run_interactive(flashux_context_t *ctx, const flashux_cli_option
         (void)mvprintw(0, 0, "Flashux - %s", selected.device_path);
         (void)mvprintw(2, 0, "%s", progress.stage_description);
         (void)mvprintw(4, 0, "%.1f%%  %.1f MiB/s  ETA %u seconds", progress.percent_complete,
-                      progress.current_speed_bps / 1048576.0, progress.eta_seconds);
+                       progress.current_speed_bps / 1048576.0, progress.eta_seconds);
         (void)mvprintw(6, 0, "Press q or Escape to cancel");
         (void)refresh();
         int key = getch();
@@ -131,7 +153,9 @@ show_result:
     (void)mvprintw(0, 0, "%s", flashux_strerror(result));
     (void)mvprintw(2, 0, "Press any key to exit");
     (void)timeout(-1);
-    if (!flashux_cli_interrupted) { (void)getch(); }
+    if (!flashux_cli_interrupted) {
+        (void)getch();
+    }
     exit_code = result == FLASHUX_SUCCESS ? 0 : result == FLASHUX_ERR_CANCELLED ? 130 : 1;
 cleanup:
     flashux_context_set_logger(ctx, FLASHUX_LOG_INFO, NULL, NULL);

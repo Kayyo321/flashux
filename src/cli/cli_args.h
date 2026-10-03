@@ -7,25 +7,25 @@
  * @brief Parsed command-line flags and runtime options.
  */
 typedef struct {
-    bool interactive;               /* curses TUI mode */
-    bool batch_mode;                /* Non-interactive JSON output */
-    bool list_devices;              /* Enumerate devices and exit */
-    bool include_fixed;             /* Include non-removable drives */
-    char image_path[512];           /* Image path */
-    char device_path[64];           /* Target device */
-    char volume_label[128];         /* Label */
-    flashux_flash_mode_t mode;      /* Flash mode */
+    bool interactive;          /* curses TUI mode */
+    bool batch_mode;           /* Non-interactive JSON output */
+    bool list_devices;         /* Enumerate devices and exit */
+    bool include_fixed;        /* Include non-removable drives */
+    char image_path[512];      /* Image path */
+    char device_path[64];      /* Target device */
+    char volume_label[128];    /* Label */
+    flashux_flash_mode_t mode; /* Flash mode */
     flashux_partition_scheme_t part_scheme;
     flashux_target_system_t target_sys;
     flashux_fs_type_t fs_type;
-    uint32_t bad_blocks_passes;     /* Surface scan passes */
+    uint32_t bad_blocks_passes; /* Surface scan passes */
     bool yes;
     bool help;
     bool version;
     uint32_t cluster_size;
     uint64_t persistence_size_bytes;
     flashux_windows_customizations_t win_custom;
-    bool dry_run;                   /* Test mode */
+    bool dry_run; /* Test mode */
 } flashux_cli_options_t;
 
 /**
