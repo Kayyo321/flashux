@@ -18,7 +18,7 @@ if gui_available and is_linux
   gui_test = executable('test_gui', 'test_gui.c', dependencies: [gui_dep, dependency('pangoft2', include_type: 'system'), dependency('fontconfig', include_type: 'system')])
   xvfb = find_program('xvfb-run', required: false)
   if xvfb.found()
-    test('gui', xvfb, args: ['-a', gui_test], env: ['GTK_A11Y=none', 'GSK_RENDERER=cairo'])
+    test('gui', xvfb, args: ['-a', gui_test], env: ['GTK_A11Y=test', 'GSK_RENDERER=cairo'])
   endif
 endif
 image_test = executable('test_image', 'test_image.c', dependencies: raw_dep)

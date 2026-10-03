@@ -92,7 +92,7 @@ int main(void)
         g_object_unref(window);
     }
     CHECK(warning != NULL);
-    adw_message_dialog_response(warning, "cancel");
+    gtk_window_close(GTK_WINDOW(warning));
     g_object_unref(warning);
     pump(30);
     CHECK(!gtk_check_button_get_active(gui.include_fixed));
@@ -154,9 +154,13 @@ int main(void)
     (void)pthread_mutex_destroy(&gui.mutex);
     CHECK(close(image) == 0 && close(target) == 0);
     CHECK(unlink(image_path) == 0 && unlink(target_path) == 0);
+    pump(100);
+    CHECK(g_list_model_get_n_items(gtk_window_get_toplevels()) == 0);
+    gdk_display_close(gdk_display_get_default());
     PangoFontMap *font_map = pango_cairo_font_map_get_default();
     pango_fc_font_map_shutdown(PANGO_FC_FONT_MAP(font_map));
     pango_cairo_font_map_set_default(NULL);
+    pump(100);
     FcFini();
     return 0;
 }
