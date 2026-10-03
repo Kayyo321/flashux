@@ -18,7 +18,6 @@ adwaita = dependency('libadwaita-1', version: '>=1.4', required: get_option('gui
 config = configuration_data()
 config.set10('FLASHUX_LINUX', is_linux)
 configure_file(output: 'flashux_config.h', configuration: config)
-inc = include_directories('include', 'src', '.')
 core_deps = [threads, crypto]
 if is_linux
   core_deps += [udev, blkid, mount]
