@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 18.18%**
+**Overall Progress: 21.02%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -14,7 +14,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 1. Build System & Scaffolding
 - [X] 1.1 Create top-level `meson.build` with C11 standard flags (`-std=c11`, `-Wall`, `-Wextra`, `-Wpedantic`, `-Werror`, `-D_GNU_SOURCE`, `-D_FILE_OFFSET_BITS=64`) [100%]
 - [X] 1.2 Configure project dependency probing (`threads`, `glib-2.0`, `gtk4`, `libadwaita-1`, `ncurses`, `udev`, `blkid`, `mount`) [100%]
-- [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [0%]
+- [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [25%]
 
 ### 2. Public API Headers & Data Models
 - [X] 2.1 Define core context, logging, and error codes in `include/flashux/core.h` [100%]
@@ -25,7 +25,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 2.6 Define multi-threaded cryptographic checksum interfaces in `include/flashux/checksum.h` [100%]
 
 ### 3. Core Engine Implementation (`libflashux`)
-- [ ] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [0%]
+- [X] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [100%]
 - [ ] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [0%]
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [0%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [0%]
@@ -106,4 +106,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `540a66b` | feat(api): define partition public interface | partition types and documented public function declarations | No runtime behavior changed; header compilation verified |
 | `fa6800c` | docs(tracker): record define partition public interface | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `d325258` | feat(api): define checksum public interface | checksum types and documented public function declarations | No runtime behavior changed; header compilation verified |
-| `HEAD` | docs(tracker): record define checksum public interface | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `6a10bfd` | docs(tracker): record define checksum public interface | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `5b51560` | feat(core): implement owned context lifecycle | Context lifecycle, private synchronization state and libflashux target | Meson now builds and installs the core library and headers |
+| `HEAD` | docs(tracker): record implement owned context lifecycle | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
