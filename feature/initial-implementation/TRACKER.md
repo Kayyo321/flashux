@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 95.23%**
+**Overall Progress: 95.45%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -27,7 +27,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 3. Core Engine Implementation (`libflashux`)
 - [X] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [100%]
 - [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
-- [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [85%]
+- [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [95%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [95%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [85%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [90%]
@@ -226,4 +226,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `9d81830` | feat(format): zero validated targets before full formatting | Cancellable full-format zero pass and sparse-file zeroing regression | Formatting accepts quick or full requests while retaining parent-disk safety and fixed argv execution |
 | `52a6cd3` | docs(tracker): record zero validated targets before full formatting | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `97b78fe` | fix(partition): validate block geometry and GPT UUID encoding | Opened-descriptor capacity and sector validation with UUID regressions | Corrected GPT UUID byte order and filesystem-aware default partition type |
-| `HEAD` | docs(tracker): record validate block geometry and GPT UUID encoding | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `d6ad53f` | docs(tracker): record validate block geometry and GPT UUID encoding | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `95b33e5` | feat(device): inspect mounted partitions and classify storage buses | libmount partition metadata and complete storage bus classification | System-path inspection fails closed and sysfs numbers reject overflow |
+| `HEAD` | docs(tracker): record inspect mounted partitions and classify storage buses | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
