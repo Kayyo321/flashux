@@ -4,3 +4,5 @@ partition_test = executable('test_partition', 'test_partition.c', dependencies: 
 test('partition', partition_test)
 checksum_test = executable('test_checksum', 'test_checksum.c', dependencies: flashux_dep)
 test('checksum', checksum_test)
+device_test = executable('test_device', 'test_device.c', dependencies: flashux_dep)
+test('device', device_test)
