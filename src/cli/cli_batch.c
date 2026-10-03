@@ -3,15 +3,38 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <time.h>
+static size_t utf8_sequence(const unsigned char *text)
+{
+    unsigned char lead = text[0];
+    size_t size = lead >= 0xc2 && lead <= 0xdf ? 2 :
+        lead >= 0xe0 && lead <= 0xef ? 3 : lead >= 0xf0 && lead <= 0xf4 ? 4 : 0;
+    if (size == 0) { return 0; }
+    uint32_t codepoint = lead & (size == 2 ? 0x1fU : size == 3 ? 0x0fU : 0x07U);
+    for (size_t i = 1; i < size; ++i) {
+        if (text[i] < 0x80 || text[i] > 0xbf) { return 0; }
+        codepoint = (codepoint << 6) | (text[i] & 0x3fU);
+    }
+    if ((size == 3 && codepoint < 0x800) || (size == 4 && codepoint < 0x10000) ||
+        (codepoint >= 0xd800 && codepoint <= 0xdfff) || codepoint > 0x10ffff) { return 0; }
+    return size;
+}
 void flashux_cli_json_string(const char *text)
 {
     (void)putchar('"');
-    for (const unsigned char *p = (const unsigned char *)text; *p != 0; ++p) {
+    const unsigned char *p = (const unsigned char *)(text == NULL ? "" : text);
+    while (*p != 0) {
         if (*p == '"' || *p == '\\') {
             (void)putchar('\\');
-            (void)putchar(*p);
-        } else if (*p < 32 || *p >= 128) { (void)printf("\\u%04x", (unsigned)*p); }
-        else { (void)putchar(*p); }
+            (void)putchar(*p++);
+        } else if (*p < 32) { (void)printf("\\u%04x", (unsigned)*p++); }
+        else if (*p < 128) { (void)putchar(*p++); }
+        else {
+            size_t length = utf8_sequence(p);
+            if (length == 0) { (void)fputs("\\ufffd", stdout); ++p; }
+            else {
+                for (size_t i = 0; i < length; ++i) { (void)putchar(*p++); }
+            }
+        }
     }
     (void)putchar('"');
 }
