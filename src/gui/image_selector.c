@@ -29,11 +29,16 @@ void flashux_gui_choose_image(GtkButton *button, gpointer data)
     (void)button;
     GtkFileDialog *dialog = gtk_file_dialog_new();
     GtkFileFilter *filter = gtk_file_filter_new();
-    gtk_file_filter_set_name(filter, "Disk images (ISO, IMG, RAW)");
+    gtk_file_filter_set_name(filter, "Disk images and compressed raw images");
     gtk_file_filter_add_pattern(filter, "*.iso");
     gtk_file_filter_add_pattern(filter, "*.ISO");
     gtk_file_filter_add_pattern(filter, "*.img");
     gtk_file_filter_add_pattern(filter, "*.raw");
+    gtk_file_filter_add_pattern(filter, "*.gz");
+    gtk_file_filter_add_pattern(filter, "*.xz");
+    gtk_file_filter_add_pattern(filter, "*.bz2");
+    gtk_file_filter_add_pattern(filter, "*.zst");
+    gtk_file_filter_add_pattern(filter, "*.zip");
     GListStore *filters = g_list_store_new(GTK_TYPE_FILE_FILTER);
     g_list_store_append(filters, filter);
     gtk_file_dialog_set_filters(dialog, G_LIST_MODEL(filters));

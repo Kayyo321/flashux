@@ -21,8 +21,9 @@ static void usage(void)
         "         --match-regional-options --disable-telemetry --disable-bitlocker\n"
         "         --help --version\n"
         "Raw jobs copy the image layout; partition/format selections apply to later ISO modes.\n"
-        "This foundation rejects ISO extraction, compressed images and setup customizations.\n"
-        "Dry runs read the image and leave the target untouched; regular-file targets are allowed.");
+        "Raw images may use gzip, xz, bzip2, zstd or a single-file ZIP archive.\n"
+        "ISO extraction and setup customizations are not yet supported.\n"
+        "Dry runs decode the image and leave the target untouched; regular-file targets are allowed.");
 }
 int main(int argc, char **argv)
 {
