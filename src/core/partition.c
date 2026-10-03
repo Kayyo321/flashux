@@ -154,6 +154,19 @@ flashux_error_t flashux_partition_write_fd(int fd, const flashux_partition_table
         table->total_sectors * table->sector_size)) {
         return FLASHUX_ERR_INVALID_ARG;
     }
+    if (!S_ISREG(st.st_mode)) {
+#if FLASHUX_LINUX
+        uint64_t capacity = 0;
+        int sector = 0;
+        if (!S_ISBLK(st.st_mode) || ioctl(fd, BLKGETSIZE64, &capacity) != 0 ||
+            ioctl(fd, BLKSSZGET, &sector) != 0 || sector != (int)table->sector_size ||
+            capacity / table->sector_size != table->total_sectors) {
+            return FLASHUX_ERR_INVALID_ARG;
+        }
+#else
+        return FLASHUX_ERR_UNSUPPORTED;
+#endif
+    }
     for (size_t i = 0; i < table->entry_count; ++i) {
         const flashux_partition_entry_t *part = &table->entries[i];
         if (part->partition_number == 0 || part->partition_number > 16 ||
@@ -189,13 +202,13 @@ flashux_error_t flashux_partition_write_fd(int fd, const flashux_partition_table
         } else {
             unsigned char *entry = entries + 128 * (part->partition_number - 1);
             const char *guid = part->type_guid[0] != '\0' ? part->type_guid :
-                (part->is_bootable ? "c12a7328-f81f-11d2-ba4b-00a0c93ec93b" :
+                (part->is_bootable && part->fs_type <= FLASHUX_FS_FAT32 ? "c12a7328-f81f-11d2-ba4b-00a0c93ec93b" :
                  part->fs_type == FLASHUX_FS_EXT4 ? "0fc63daf-8483-4772-8e79-3d69d8477de4" :
                  "ebd0a0a2-b9e5-4433-87c0-68b6b72699c7");
             if (!parse_guid(guid, entry) || RAND_bytes(entry + 16, 16) != 1) {
                 return FLASHUX_ERR_INVALID_ARG;
             }
-            entry[22] = (unsigned char)((entry[22] & 15) | 0x40);
+            entry[23] = (unsigned char)((entry[23] & 15) | 0x40);
             entry[24] = (unsigned char)((entry[24] & 63) | 0x80);
             put64(entry + 32, part->start_lba);
             put64(entry + 40, part->start_lba + part->sector_count - 1);
@@ -222,6 +235,8 @@ flashux_error_t flashux_partition_write_fd(int fd, const flashux_partition_table
         if (RAND_bytes(disk_guid, 16) != 1) {
             return FLASHUX_ERR_UNKNOWN;
         }
+        disk_guid[7] = (unsigned char)((disk_guid[7] & 15) | 0x40);
+        disk_guid[8] = (unsigned char)((disk_guid[8] & 63) | 0x80);
         uint32_t crc = flashux_crc32(entries, sizeof(entries));
         gpt_header(primary, 1, table->total_sectors - 1, first, last, 2, disk_guid, crc);
         gpt_header(backup, table->total_sectors - 1, 1, first, last,
