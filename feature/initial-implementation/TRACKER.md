@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 2.27%**
+**Overall Progress: 4.55%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -13,7 +13,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 1. Build System & Scaffolding
 - [X] 1.1 Create top-level `meson.build` with C11 standard flags (`-std=c11`, `-Wall`, `-Wextra`, `-Wpedantic`, `-Werror`, `-D_GNU_SOURCE`, `-D_FILE_OFFSET_BITS=64`) [100%]
-- [ ] 1.2 Configure project dependency probing (`threads`, `glib-2.0`, `gtk4`, `libadwaita-1`, `ncurses`, `udev`, `blkid`, `mount`) [0%]
+- [X] 1.2 Configure project dependency probing (`threads`, `glib-2.0`, `gtk4`, `libadwaita-1`, `ncurses`, `udev`, `blkid`, `mount`) [100%]
 - [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [0%]
 
 ### 2. Public API Headers & Data Models
@@ -90,4 +90,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `81fbfc2` | chore(build): establish strict C11 Meson configuration | meson.build with C11 and all required compiler flags | No production targets yet; empty scaffold configuration verified |
 | `8dd6bae` | docs(tracker): record establish strict C11 Meson configuration | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `4d50a3c` | chore(build): exclude generated Meson artifacts | Ignore rule for build directories | .gitignore excludes generated build artifacts |
-| `HEAD` | docs(tracker): record exclude generated Meson artifacts | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `2964785` | docs(tracker): record exclude generated Meson artifacts | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `e4a2168` | chore(build): probe native component dependencies | Thread, crypto, curses, GTK and Linux dependency probes; generated platform config | Meson configuration now exposes gui feature option |
+| `HEAD` | docs(tracker): record probe native component dependencies | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
