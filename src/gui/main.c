@@ -20,6 +20,7 @@ int flashux_gui_app_run(int argc, char **argv)
     int result = g_application_run(G_APPLICATION(gui.application), argc, argv);
     flashux_context_free(&gui.ctx);
     if (gui.window != NULL) { g_object_set_data(G_OBJECT(gui.window), "flashux-state", NULL); }
+    g_clear_object(&gui.window);
     g_clear_object(&gui.application);
     (void)pthread_mutex_destroy(&gui.mutex);
     return result;
