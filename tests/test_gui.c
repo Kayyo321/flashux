@@ -12,6 +12,28 @@ static void pump(unsigned milliseconds)
         g_usleep(1000);
     }
 }
+static GtkWindow *window_with_title(const char *title)
+{
+    GListModel *windows = gtk_window_get_toplevels();
+    for (guint i = 0; i < g_list_model_get_n_items(windows); ++i) {
+        GtkWindow *window = g_list_model_get_item(windows, i);
+        if (g_strcmp0(gtk_window_get_title(window), title) == 0) { return window; }
+        g_object_unref(window);
+    }
+    return NULL;
+}
+static GtkWidget *control_with_label(GtkWidget *root, const char *label)
+{
+    const char *text = GTK_IS_CHECK_BUTTON(root) ? gtk_check_button_get_label(GTK_CHECK_BUTTON(root)) :
+        GTK_IS_BUTTON(root) ? gtk_button_get_label(GTK_BUTTON(root)) : NULL;
+    if (g_strcmp0(text, label) == 0) { return root; }
+    for (GtkWidget *child = gtk_widget_get_first_child(root); child != NULL;
+         child = gtk_widget_get_next_sibling(child)) {
+        GtkWidget *found = control_with_label(child, label);
+        if (found != NULL) { return found; }
+    }
+    return NULL;
+}
 static void screenshot(GtkWidget *widget)
 {
     const char *path = g_getenv("FLASHUX_GUI_SCREENSHOT");
@@ -46,6 +68,33 @@ int main(void)
     gtk_drop_down_set_selected(gui.mode, FLASHUX_MODE_ISO_EXTRACT);
     CHECK(gtk_widget_get_sensitive(GTK_WIDGET(gui.scheme)));
     gtk_drop_down_set_selected(gui.mode, FLASHUX_MODE_DD_RAW);
+    gtk_check_button_set_active(gui.include_fixed, true);
+    pump(30);
+    GListModel *windows = gtk_window_get_toplevels();
+    AdwMessageDialog *warning = NULL;
+    for (guint i = 0; i < g_list_model_get_n_items(windows); ++i) {
+        GtkWindow *window = g_list_model_get_item(windows, i);
+        if (ADW_IS_MESSAGE_DIALOG(window)) { warning = ADW_MESSAGE_DIALOG(window); break; }
+        g_object_unref(window);
+    }
+    CHECK(warning != NULL);
+    adw_message_dialog_response(warning, "cancel");
+    g_object_unref(warning);
+    pump(30);
+    CHECK(!gtk_check_button_get_active(gui.include_fixed));
+    flashux_gui_customizations(NULL, &gui);
+    pump(30);
+    GtkWindow *custom = window_with_title("Windows user experience");
+    CHECK(custom != NULL);
+    GtkWidget *privacy = control_with_label(GTK_WIDGET(custom), "Skip privacy questions and telemetry");
+    GtkWidget *save = control_with_label(GTK_WIDGET(custom), "Save options");
+    CHECK(privacy != NULL && save != NULL);
+    gtk_check_button_set_active(GTK_CHECK_BUTTON(privacy), true);
+    g_signal_emit_by_name(save, "clicked");
+    pump(30);
+    CHECK(gui.win_custom.disable_telemetry);
+    memset(&gui.win_custom, 0, sizeof(gui.win_custom));
+    g_object_unref(custom);
     flashux_gui_device_monitor_stop(&gui);
     char image_path[] = "/tmp/flashux-gui-image-XXXXXX";
     char target_path[] = "/tmp/flashux-gui-target-XXXXXX";
