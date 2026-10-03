@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 42.95%**
+**Overall Progress: 45.00%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -34,7 +34,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
 - [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [0%]
-- [ ] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [0%]
+- [ ] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [90%]
 
 ### 4. Command-Line Interface (`flashux-cli`)
 - [ ] 4.1 Implement POSIX command-line option parser (`getopt_long`) in `src/cli/cli_args.c` [0%]
@@ -134,4 +134,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `6aa72b8` | feat(ipc): encode bounded portable wire messages | Versioned header, flash-options and progress codecs with bounded socket transport | IPC structs remain in-memory models; progress doubles are derived at receiver |
 | `7289ca0` | docs(tracker): record encode bounded portable wire messages | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `b887083` | feat(ipc): connect authenticated helper clients with timeouts | IPC client lifecycle, command transport and bounded response handling | Core build includes client transport |
-| `HEAD` | docs(tracker): record connect authenticated helper clients with timeouts | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `63a61cf` | docs(tracker): record connect authenticated helper clients with timeouts | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `abba1ee` | feat(progress): calculate bounded throughput and smoothed ETA | Progress metric calculation and monotonic clock abstraction | Metrics use checked counters and bounded ETA |
+| `HEAD` | docs(tracker): record calculate bounded throughput and smoothed ETA | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
