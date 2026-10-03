@@ -200,4 +200,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `3b23027` | refactor(safety): make backing-disk topology independently testable | Portable sysfs ancestry traversal with bounded recursion | System-drive checks use explicit device-number topology rather than opaque udev traversal |
 | `1c6c5c4` | docs(tracker): record make backing-disk topology independently testable | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `acfd0a7` | test(safety): cover partition mapper and cyclic backing graphs | Mock system-drive ancestry tests including stacked devices and cycles | Device safety suite now verifies the actual topology algorithm |
-| `HEAD` | docs(tracker): record cover partition mapper and cyclic backing graphs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `ad1417c` | docs(tracker): record cover partition mapper and cyclic backing graphs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `7fc5360` | refactor(gui): share window components with runtime verification | GUI component library and declared toolkit baseline dependency | GUI executable retains the same application entry point |
+| `HEAD` | docs(tracker): record share window components with runtime verification | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
