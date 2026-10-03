@@ -13,13 +13,15 @@ int main(void)
     CHECK(fflush(stdout) == 0 && fseek(output, 0, SEEK_SET) == 0);
     char line[1024];
     CHECK(fgets(line, sizeof(line), output) != NULL);
-    CHECK(strcmp(line, "\"\\\"\\\\\\u000aGreek: \xce\xa9 invalid: \\ufffd\\ufffd truncated: \\ufffd\\ufffd\"") == 0);
+    CHECK(strcmp(line, "\"\\\"\\\\\\u000aGreek: \xce\xa9 invalid: \\ufffd\\ufffd truncated: "
+                       "\\ufffd\\ufffd\"") == 0);
     CHECK(ftruncate(fileno(output), 0) == 0 && fseek(output, 0, SEEK_SET) == 0);
     char source_path[] = "/tmp/flashux-batch-source-XXXXXX";
     char target_path[] = "/tmp/flashux-batch-target-XXXXXX";
     int source = mkstemp(source_path);
     int target = mkstemp(target_path);
-    CHECK(source >= 0 && target >= 0 && ftruncate(source, 65573) == 0 && ftruncate(target, 131072) == 0);
+    CHECK(source >= 0 && target >= 0 && ftruncate(source, 65573) == 0 &&
+          ftruncate(target, 131072) == 0);
     unsigned char mark = 0xad;
     CHECK(pwrite(target, &mark, 1, 0) == 1 && pwrite(target, &mark, 1, 131071) == 1);
     flashux_context_t *ctx = NULL;
@@ -33,8 +35,12 @@ int main(void)
     bool result = false;
     while (fgets(line, sizeof(line), output) != NULL) {
         CHECK(line[0] == '{' && strlen(line) > 2 && line[strlen(line) - 2] == '}');
-        if (strstr(line, "\"event\":\"progress\"") != NULL) { progress = true; }
-        if (strstr(line, "\"event\":\"result\",\"code\":0") != NULL) { result = true; }
+        if (strstr(line, "\"event\":\"progress\"") != NULL) {
+            progress = true;
+        }
+        if (strstr(line, "\"event\":\"result\",\"code\":0") != NULL) {
+            result = true;
+        }
     }
     CHECK(progress && result);
     unsigned char got = 0;

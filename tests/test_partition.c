@@ -4,8 +4,8 @@
 #include <string.h>
 static uint32_t get32(const unsigned char *in)
 {
-    return (uint32_t)in[0] | ((uint32_t)in[1] << 8) |
-        ((uint32_t)in[2] << 16) | ((uint32_t)in[3] << 24);
+    return (uint32_t)in[0] | ((uint32_t)in[1] << 8) | ((uint32_t)in[2] << 16) |
+           ((uint32_t)in[3] << 24);
 }
 static void exercise(uint32_t sector_size)
 {
@@ -35,12 +35,12 @@ static void exercise(uint32_t sector_size)
     CHECK(flashux_crc32(header, 92) == crc);
     CHECK(pread(fd, array, sizeof(array), 2 * sector_size) == (ssize_t)sizeof(array));
     CHECK(get32(header + 88) == flashux_crc32(array, sizeof(array)));
-    static const unsigned char esp[] = {0x28,0x73,0x2a,0xc1,0x1f,0xf8,0xd2,0x11};
+    static const unsigned char esp[] = {0x28, 0x73, 0x2a, 0xc1, 0x1f, 0xf8, 0xd2, 0x11};
     CHECK(memcmp(array, esp, sizeof(esp)) == 0);
     CHECK((array[23] & 0xf0) == 0x40 && (array[24] & 0xc0) == 0x80);
     CHECK((header[63] & 0xf0) == 0x40 && (header[64] & 0xc0) == 0x80);
-    CHECK(pread(fd, backup, sector_size, (off_t)((table.total_sectors - 1) * sector_size))
-          == (ssize_t)sector_size);
+    CHECK(pread(fd, backup, sector_size, (off_t)((table.total_sectors - 1) * sector_size)) ==
+          (ssize_t)sector_size);
     CHECK(memcmp(backup + 56, header + 56, 16) == 0);
     CHECK(get32(backup + 88) == get32(header + 88));
     table.entry_count = 2;

@@ -41,7 +41,9 @@ int main(void)
     while (bytes < 1048613) {
         ssize_t count = pread(fd, buffer, sizeof(buffer), bytes);
         CHECK(count > 0);
-        for (ssize_t i = 0; i < count; ++i) { CHECK(buffer[i] == 0); }
+        for (ssize_t i = 0; i < count; ++i) {
+            CHECK(buffer[i] == 0);
+        }
         bytes += count;
     }
     CHECK(close(fd) == 0);

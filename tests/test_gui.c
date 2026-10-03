@@ -8,7 +8,8 @@ static void pump(unsigned milliseconds)
 {
     gint64 until = g_get_monotonic_time() + (gint64)milliseconds * 1000;
     while (g_get_monotonic_time() < until) {
-        while (g_main_context_iteration(NULL, false)) { }
+        while (g_main_context_iteration(NULL, false)) {
+        }
         g_usleep(1000);
     }
 }
@@ -17,31 +18,41 @@ static GtkWindow *window_with_title(const char *title)
     GListModel *windows = gtk_window_get_toplevels();
     for (guint i = 0; i < g_list_model_get_n_items(windows); ++i) {
         GtkWindow *window = g_list_model_get_item(windows, i);
-        if (g_strcmp0(gtk_window_get_title(window), title) == 0) { return window; }
+        if (g_strcmp0(gtk_window_get_title(window), title) == 0) {
+            return window;
+        }
         g_object_unref(window);
     }
     return NULL;
 }
 static GtkWidget *control_with_label(GtkWidget *root, const char *label)
 {
-    const char *text = GTK_IS_CHECK_BUTTON(root) ? gtk_check_button_get_label(GTK_CHECK_BUTTON(root)) :
-        GTK_IS_BUTTON(root) ? gtk_button_get_label(GTK_BUTTON(root)) : NULL;
-    if (g_strcmp0(text, label) == 0) { return root; }
+    const char *text = GTK_IS_CHECK_BUTTON(root)
+                           ? gtk_check_button_get_label(GTK_CHECK_BUTTON(root))
+                       : GTK_IS_BUTTON(root) ? gtk_button_get_label(GTK_BUTTON(root))
+                                             : NULL;
+    if (g_strcmp0(text, label) == 0) {
+        return root;
+    }
     for (GtkWidget *child = gtk_widget_get_first_child(root); child != NULL;
          child = gtk_widget_get_next_sibling(child)) {
         GtkWidget *found = control_with_label(child, label);
-        if (found != NULL) { return found; }
+        if (found != NULL) {
+            return found;
+        }
     }
     return NULL;
 }
 static void screenshot(GtkWidget *widget)
 {
     const char *path = g_getenv("FLASHUX_GUI_SCREENSHOT");
-    if (path == NULL) { return; }
+    if (path == NULL) {
+        return;
+    }
     GdkPaintable *paintable = gtk_widget_paintable_new(widget);
     GtkSnapshot *snapshot = gtk_snapshot_new();
-    gdk_paintable_snapshot(paintable, GDK_SNAPSHOT(snapshot),
-        (double)gtk_widget_get_width(widget), (double)gtk_widget_get_height(widget));
+    gdk_paintable_snapshot(paintable, GDK_SNAPSHOT(snapshot), (double)gtk_widget_get_width(widget),
+                           (double)gtk_widget_get_height(widget));
     GskRenderNode *node = gtk_snapshot_free_to_node(snapshot);
     CHECK(node != NULL);
     GskRenderer *renderer = gtk_native_get_renderer(GTK_NATIVE(widget));
@@ -74,7 +85,10 @@ int main(void)
     AdwMessageDialog *warning = NULL;
     for (guint i = 0; i < g_list_model_get_n_items(windows); ++i) {
         GtkWindow *window = g_list_model_get_item(windows, i);
-        if (ADW_IS_MESSAGE_DIALOG(window)) { warning = ADW_MESSAGE_DIALOG(window); break; }
+        if (ADW_IS_MESSAGE_DIALOG(window)) {
+            warning = ADW_MESSAGE_DIALOG(window);
+            break;
+        }
         g_object_unref(window);
     }
     CHECK(warning != NULL);
@@ -86,7 +100,8 @@ int main(void)
     pump(30);
     GtkWindow *custom = window_with_title("Windows user experience");
     CHECK(custom != NULL);
-    GtkWidget *privacy = control_with_label(GTK_WIDGET(custom), "Skip privacy questions and telemetry");
+    GtkWidget *privacy =
+        control_with_label(GTK_WIDGET(custom), "Skip privacy questions and telemetry");
     GtkWidget *save = control_with_label(GTK_WIDGET(custom), "Save options");
     CHECK(privacy != NULL && save != NULL);
     gtk_check_button_set_active(GTK_CHECK_BUTTON(privacy), true);
@@ -119,7 +134,9 @@ int main(void)
     screenshot(GTK_WIDGET(gui.window));
     flashux_gui_start(NULL, &gui);
     CHECK(gui.busy);
-    for (unsigned i = 0; i < 100 && gui.busy; ++i) { pump(10); }
+    for (unsigned i = 0; i < 100 && gui.busy; ++i) {
+        pump(10);
+    }
     CHECK(!gui.busy && gtk_progress_bar_get_fraction(gui.progress) == 1.0);
     CHECK(strcmp(gtk_label_get_text(gui.status), "Success") == 0);
     CHECK(!gtk_widget_get_sensitive(GTK_WIDGET(gui.cancel)));
