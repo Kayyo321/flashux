@@ -1,4 +1,6 @@
 #include "format_internal.h"
+#include "wipe.h"
+#include "internal.h"
 #include "flashux/device.h"
 #include "flashux_config.h"
 #include <string.h>
@@ -56,8 +58,16 @@ flashux_error_t flashux_format_validate(const flashux_format_options_t *options,
         }
         label[i] = (char)c;
     }
-    return options->quick_format ? FLASHUX_SUCCESS : FLASHUX_ERR_UNSUPPORTED;
+    return FLASHUX_SUCCESS;
 }
+
+#if FLASHUX_LINUX
+static bool format_cancelled(void *data)
+{
+    flashux_context_t *ctx = data;
+    return atomic_load(&ctx->cancel);
+}
+#endif
 
 flashux_error_t flashux_format_partition(flashux_context_t *ctx,
                                         const flashux_format_options_t *options)
@@ -100,7 +110,7 @@ flashux_error_t flashux_format_partition(flashux_context_t *ctx,
     if (result != FLASHUX_SUCCESS) {
         goto cleanup;
     }
-    part_fd = open(options->partition_path, O_RDWR | O_CLOEXEC | O_NOFOLLOW);
+    part_fd = open(options->partition_path, O_RDWR | O_EXCL | O_CLOEXEC | O_NOFOLLOW);
     struct stat opened;
     if (part_fd < 0 || fstat(part_fd, &opened) != 0 || opened.st_rdev != st.st_rdev) {
         result = FLASHUX_ERR_DEVICE_BUSY;
@@ -173,6 +183,14 @@ flashux_error_t flashux_format_partition(flashux_context_t *ctx,
     char path_env[] = "PATH=/usr/sbin:/usr/bin:/sbin:/bin";
     char locale_env[] = "LC_ALL=C";
     char *environment[] = {path_env, locale_env, NULL};
+    if (error == 0 && access(executable, X_OK) != 0) { error = errno; }
+    if (error == 0 && !options->quick_format) {
+        result = flashux_zero_fd(part_fd, format_cancelled, ctx);
+        if (result != FLASHUX_SUCCESS) {
+            (void)posix_spawn_file_actions_destroy(&actions);
+            goto cleanup;
+        }
+    }
     if (error == 0) {
         error = posix_spawn(&child, executable, &actions, NULL, args, environment);
     }
