@@ -240,4 +240,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `8986d66` | test(gui): exercise native modal state and warning cancellation | Native modal cancellation and customization regressions | Expanded GUI runtime suite covers modal ownership and session preference persistence |
 | `0b7670d` | docs(tracker): record exercise native modal state and warning cancellation | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `fb91c62` | fix(ipc): preserve smoothed transfer speed in progress frames | Endian-independent speed field and malformed floating-point regression | Remote frontend progress retains the engine moving average instead of substituting average speed |
-| `HEAD` | docs(tracker): record preserve smoothed transfer speed in progress frames | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `89c2cfb` | docs(tracker): record preserve smoothed transfer speed in progress frames | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `1d66922` | fix(cli): preserve valid Unicode in batch JSON records | Bounded UTF-8 validation for structured record strings | JSON output no longer reinterprets each UTF-8 byte as a separate codepoint |
+| `HEAD` | docs(tracker): record preserve valid Unicode in batch JSON records | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
