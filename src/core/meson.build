@@ -4,3 +4,6 @@ libflashux = static_library('flashux', core_sources, include_directories: inc,
 flashux_dep = declare_dependency(link_with: libflashux, include_directories: inc,
   dependencies: core_deps)
 install_subdir('../../include/flashux', install_dir: get_option('includedir'))
+raw_engine = static_library('flashux-raw', '../helper/privileged_ops.c',
+  include_directories: inc, dependencies: flashux_dep)
+raw_dep = declare_dependency(link_with: raw_engine, dependencies: flashux_dep)
