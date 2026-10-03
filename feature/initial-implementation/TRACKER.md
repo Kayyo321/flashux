@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 95.57%**
+**Overall Progress: 96.02%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -47,9 +47,9 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 5.2 Build Rufus single-window layout (Device, Image, Partition, Target, File System) in `src/gui/app_window.c` [100%]
 - [ ] 5.3 Implement dynamic device dropdown population and hotplug signal listeners in `src/gui/device_selector.c` [80%]
 - [ ] 5.4 Implement file chooser integration for ISO and raw disk images in `src/gui/app_window.c` [90%]
-- [ ] 5.5 Implement Rufus Windows user experience customization modal in `src/gui/win_dialog.c` [85%]
+- [X] 5.5 Implement Rufus Windows user experience customization modal in `src/gui/win_dialog.c` [100%]
 - [X] 5.6 Implement thread-safe progress bar and transfer speed updates via `g_idle_add` in `src/gui/progress_view.c` [100%]
-- [ ] 5.7 Implement destructive operation confirmation modals and warning alerts in `src/gui/dialogs.c` [90%]
+- [ ] 5.7 Implement destructive operation confirmation modals and warning alerts in `src/gui/dialogs.c` [95%]
 
 ### 6. Privileged Backend Helper & IPC Subsystem (`flashux-helper`)
 - [X] 6.1 Define binary wire protocol, message headers, and command opcodes in `src/helper/ipc_protocol.h` [100%]
@@ -236,4 +236,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `f3a436a` | feat(frontend): expose supported compressed image inputs | Compressed-image chooser patterns and CLI usage guidance | Removed obsolete claim that all compressed images are unsupported |
 | `cb1b0e2` | docs(tracker): record expose supported compressed image inputs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `2c05c94` | fix(gui): retain fixed-drive warning parent through response | Owned parent reference and parent-destruction behavior for fixed-drive warnings | Fixed-drive dialog callbacks no longer rely on an unowned window pointer |
-| `HEAD` | docs(tracker): record retain fixed-drive warning parent through response | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `e907f9d` | docs(tracker): record retain fixed-drive warning parent through response | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `8986d66` | test(gui): exercise native modal state and warning cancellation | Native modal cancellation and customization regressions | Expanded GUI runtime suite covers modal ownership and session preference persistence |
+| `HEAD` | docs(tracker): record exercise native modal state and warning cancellation | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
