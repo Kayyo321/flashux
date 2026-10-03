@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 46.93%**
+**Overall Progress: 48.64%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -56,7 +56,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [0%]
 - [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [0%]
 - [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [90%]
-- [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [0%]
+- [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [75%]
 
 ### 7. Unit Testing & Verification Harness
 - [X] 7.1 Implement core context and logging unit tests in `tests/test_core.c` [100%]
@@ -140,4 +140,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `a2bda15` | feat(flasher): define observable asynchronous completion ownership | Doxygen-documented wait and running-query API; join ownership state | Context model now tracks in-progress joins |
 | `a342d23` | docs(tracker): record define observable asynchronous completion ownership | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `7c4bfde` | feat(flasher): validate and run cancellable raw image jobs | Flash validation, asynchronous state machine, cancellation and dry-run source reader | Core now orchestrates raw jobs while rejecting unimplemented setup features |
-| `HEAD` | docs(tracker): record validate and run cancellable raw image jobs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `a16cbd4` | docs(tracker): record validate and run cancellable raw image jobs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `c9157b1` | feat(helper): copy aligned raw sectors and verify readback | Aligned raw engine with sparse-file seam, capacity checks and helper device orchestration | Privileged engine built separately from libflashux; Linux block execution pending |
+| `HEAD` | docs(tracker): record copy aligned raw sectors and verify readback | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
