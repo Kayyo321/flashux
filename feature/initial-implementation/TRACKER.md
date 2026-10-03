@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 58.64%**
+**Overall Progress: 61.48%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -14,7 +14,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 1. Build System & Scaffolding
 - [X] 1.1 Create top-level `meson.build` with C11 standard flags (`-std=c11`, `-Wall`, `-Wextra`, `-Wpedantic`, `-Werror`, `-D_GNU_SOURCE`, `-D_FILE_OFFSET_BITS=64`) [100%]
 - [X] 1.2 Configure project dependency probing (`threads`, `glib-2.0`, `gtk4`, `libadwaita-1`, `ncurses`, `udev`, `blkid`, `mount`) [100%]
-- [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [50%]
+- [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [75%]
 
 ### 2. Public API Headers & Data Models
 - [X] 2.1 Define core context, logging, and error codes in `include/flashux/core.h` [100%]
@@ -40,7 +40,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 4.1 Implement POSIX command-line option parser (`getopt_long`) in `src/cli/cli_args.c` [90%]
 - [ ] 4.2 Implement non-interactive batch mode and structured JSON output in `src/cli/cli_batch.c` [90%]
 - [ ] 4.3 Implement interactive curses/ncurses terminal dashboard in `src/cli/cli_interactive.c` [85%]
-- [ ] 4.4 Implement CLI main entry point, signal handlers (`SIGINT`, `SIGTERM`), and exit routines in `src/cli/main.c` [0%]
+- [X] 4.4 Implement CLI main entry point, signal handlers (`SIGINT`, `SIGTERM`), and exit routines in `src/cli/main.c` [100%]
 
 ### 5. Graphical User Interface (`flashux-gui`)
 - [ ] 5.1 Implement GtkApplication lifecycle and application initialization in `src/gui/main.c` [0%]
@@ -160,4 +160,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `959abdf` | fix(device): use the pkg-config blkid include layout | Verified Linux device translation-unit compilation | Corrected blkid include path |
 | `2db4a03` | docs(tracker): record use the pkg-config blkid include layout | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `bf15bf0` | fix(format): check missing Linux sector attributes safely | Linux formatter translation-unit and suite verification | Added stdlib declaration and null-safe sector parsing |
-| `HEAD` | docs(tracker): record check missing Linux sector attributes safely | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `0d0205d` | docs(tracker): record check missing Linux sector attributes safely | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `d370b46` | feat(cli): route signals and frontend execution modes | CLI executable and SIGINT/SIGTERM lifecycle handling | Meson installs flashux-cli; help smoke check passes |
+| `HEAD` | docs(tracker): record route signals and frontend execution modes | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
