@@ -192,4 +192,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `c112bfa` | chore(integration): install Polkit policy and desktop entry | Polkit action policy and native desktop launcher | Meson installation includes Linux authorization assets and GUI desktop entry |
 | `84199e6` | docs(tracker): record install Polkit policy and desktop entry | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `f5e22d0` | feat(helper): launch the installed backend through pkexec | Polkit helper launcher and child process reaping | Actual frontend jobs can request privilege authorization automatically |
-| `HEAD` | docs(tracker): record launch the installed backend through pkexec | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `daf655f` | docs(tracker): record launch the installed backend through pkexec | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `afef781` | fix(safety): retain kernel disk identity across confirmation and IPC | Expected disk sequence token and helper descriptor identity validation | Raw jobs reject replacement devices before any writes |
+| `HEAD` | docs(tracker): record retain kernel disk identity across confirmation and IPC | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
