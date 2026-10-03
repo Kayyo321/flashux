@@ -1,6 +1,7 @@
 #include "internal.h"
 #include "progress.h"
 #include "ipc_client.h"
+#include "helper_launcher.h"
 #include "common/wire.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -137,7 +138,8 @@ static flashux_error_t remote_job(flashux_context_t *ctx, flashux_progress_t *pr
     unsigned char payload[FLASHUX_IPC_MAX_PAYLOAD];
     flashux_error_t result = flashux_ipc_encode_options(&ctx->options, options);
     if (result == FLASHUX_SUCCESS) {
-        result = flashux_ipc_client_connect(ctx, FLASHUX_IPC_SOCKET_PATH, &client);
+        report(ctx, progress, FLASHUX_STAGE_VERIFYING_LOCK, "Waiting for helper authorization");
+        result = flashux_helper_connect_or_launch(ctx, &client);
     }
     if (result == FLASHUX_SUCCESS) {
         result = flashux_ipc_client_send_cmd(client, FLASHUX_IPC_CMD_START_FLASH,
