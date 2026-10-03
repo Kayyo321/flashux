@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 4.55%**
+**Overall Progress: 6.82%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -17,7 +17,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [0%]
 
 ### 2. Public API Headers & Data Models
-- [ ] 2.1 Define core context, logging, and error codes in `include/flashux/core.h` [0%]
+- [X] 2.1 Define core context, logging, and error codes in `include/flashux/core.h` [100%]
 - [ ] 2.2 Define storage device, partition, bus enumeration, and locking structures in `include/flashux/device.h` [0%]
 - [ ] 2.3 Define flashing options, stages, performance metrics, and progress callbacks in `include/flashux/flasher.h` [0%]
 - [ ] 2.4 Define filesystem formatting interfaces and cluster size definitions in `include/flashux/format.h` [0%]
@@ -94,4 +94,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `e4a2168` | chore(build): probe native component dependencies | Thread, crypto, curses, GTK and Linux dependency probes; generated platform config | Meson configuration now exposes gui feature option |
 | `aa68390` | docs(tracker): record probe native component dependencies | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `7fbbe6e` | fix(build): defer source includes until headers exist | Successful platform dependency configuration | Removed premature include_directories declaration |
-| `HEAD` | docs(tracker): record defer source includes until headers exist | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `17e2fdf` | docs(tracker): record defer source includes until headers exist | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `7cfbe2b` | feat(api): define core public interface | core types and documented public function declarations | No runtime behavior changed; header compilation verified |
+| `HEAD` | docs(tracker): record define core public interface | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
