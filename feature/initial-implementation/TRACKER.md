@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 30.34%**
+**Overall Progress: 32.39%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -32,7 +32,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [0%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [0%]
-- [ ] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [0%]
+- [ ] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [90%]
 - [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [0%]
 - [ ] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [0%]
 
@@ -120,4 +120,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `af33877` | feat(device): lock validated devices and unmount partitions | Exclusive device descriptors, identity validation and libmount unmount dispatcher | Unsupported hosts reject block mutation; Linux runtime verification pending |
 | `e34f502` | docs(tracker): record lock validated devices and unmount partitions | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `a3bb9be` | test(core): verify concurrent reentrant logging and ownership | Always-active test assertions and concurrent core regression executable | Meson now runs the core suite on every verification cycle |
-| `HEAD` | docs(tracker): record verify concurrent reentrant logging and ownership | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `725d1ab` | docs(tracker): record verify concurrent reentrant logging and ownership | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `0165640` | feat(checksum): stream requested digests on independent workers | Concurrent hashing engine and deterministic hex outputs | Core target links the checksum implementation |
+| `HEAD` | docs(tracker): record stream requested digests on independent workers | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
