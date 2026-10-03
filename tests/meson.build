@@ -12,3 +12,5 @@ format_test = executable('test_format', 'test_format.c', dependencies: flashux_d
 test('format', format_test)
 flasher_test = executable('test_flasher', 'test_flasher.c', dependencies: raw_dep)
 test('flasher', flasher_test)
+ipc_test = executable('test_ipc', 'test_ipc.c', dependencies: flashux_dep)
+test('ipc', ipc_test)
