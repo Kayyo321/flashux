@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 15.91%**
+**Overall Progress: 18.18%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -22,7 +22,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 2.3 Define flashing options, stages, performance metrics, and progress callbacks in `include/flashux/flasher.h` [100%]
 - [X] 2.4 Define filesystem formatting interfaces and cluster size definitions in `include/flashux/format.h` [100%]
 - [X] 2.5 Define MBR and GPT partition table generation abstractions in `include/flashux/partition.h` [100%]
-- [ ] 2.6 Define multi-threaded cryptographic checksum interfaces in `include/flashux/checksum.h` [0%]
+- [X] 2.6 Define multi-threaded cryptographic checksum interfaces in `include/flashux/checksum.h` [100%]
 
 ### 3. Core Engine Implementation (`libflashux`)
 - [ ] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [0%]
@@ -104,4 +104,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `e4daf36` | feat(api): define format public interface | format types and documented public function declarations | No runtime behavior changed; header compilation verified |
 | `6b1ed4e` | docs(tracker): record define format public interface | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `540a66b` | feat(api): define partition public interface | partition types and documented public function declarations | No runtime behavior changed; header compilation verified |
-| `HEAD` | docs(tracker): record define partition public interface | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `fa6800c` | docs(tracker): record define partition public interface | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `d325258` | feat(api): define checksum public interface | checksum types and documented public function declarations | No runtime behavior changed; header compilation verified |
+| `HEAD` | docs(tracker): record define checksum public interface | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
