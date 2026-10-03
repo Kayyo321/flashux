@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 97.27%**
+**Overall Progress: 97.61%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -33,13 +33,13 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [90%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
-- [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [95%]
+- [X] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [100%]
 - [X] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [100%]
 
 ### 4. Command-Line Interface (`flashux-cli`)
 - [X] 4.1 Implement POSIX command-line option parser (`getopt_long`) in `src/cli/cli_args.c` [100%]
 - [X] 4.2 Implement non-interactive batch mode and structured JSON output in `src/cli/cli_batch.c` [100%]
-- [ ] 4.3 Implement interactive curses/ncurses terminal dashboard in `src/cli/cli_interactive.c` [85%]
+- [ ] 4.3 Implement interactive curses/ncurses terminal dashboard in `src/cli/cli_interactive.c` [95%]
 - [X] 4.4 Implement CLI main entry point, signal handlers (`SIGINT`, `SIGTERM`), and exit routines in `src/cli/main.c` [100%]
 
 ### 5. Graphical User Interface (`flashux-gui`)
@@ -276,4 +276,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `afa890d` | docs(ipc): describe the explicit progress speed encoding | Accurate progress wire-format comment | Removed obsolete comment implying all floating metrics are derived |
 | `fbe3acb` | docs(tracker): record describe the explicit progress speed encoding | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `a6c1745` | fix(build): install lowercase flashux pkg-config module | Explicit flashux.pc package filename | Corrected the generated module name from the human-readable display name |
-| `HEAD` | docs(tracker): record install lowercase flashux pkg-config module | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `d114113` | docs(tracker): record install lowercase flashux pkg-config module | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `c62c67f` | docs(usage): document build install raw jobs and verification limits | Complete Linux and macOS build, installation and usage guide | Replaced the placeholder README with implementation-grounded capability documentation |
+| `HEAD` | docs(tracker): record document build install raw jobs and verification limits | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
