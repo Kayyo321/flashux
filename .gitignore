@@ -53,3 +53,10 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Out-of-tree Meson builds and test artifacts
+/build*/
+
+# Local editor and desktop metadata
+.DS_Store
+.idea/
