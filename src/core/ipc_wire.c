@@ -194,7 +194,7 @@ void flashux_ipc_encode_progress(const flashux_progress_t *progress,
     flashux_put_u64(out + 12, progress->total_bytes);
     flashux_put_u64(out + 20, progress->elapsed_nanos);
     flashux_put_u32(out + 28, progress->eta_seconds);
-    /* Derive floating metrics at the receiver; no ABI-dependent doubles on wire. */
+    /* Speed uses explicit binary64 bits; percentage and average derive at the receiver. */
     uint64_t speed_bits = 0;
     memcpy(&speed_bits, &progress->current_speed_bps, sizeof(speed_bits));
     flashux_put_u64(out + 32, speed_bits);
