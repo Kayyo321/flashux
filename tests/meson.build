@@ -10,3 +10,5 @@ args_test = executable('test_cli_args', 'test_cli_args.c', dependencies: cli_arg
 test('cli-args', args_test)
 format_test = executable('test_format', 'test_format.c', dependencies: flashux_dep)
 test('format', format_test)
+flasher_test = executable('test_flasher', 'test_flasher.c', dependencies: raw_dep)
+test('flasher', flasher_test)
