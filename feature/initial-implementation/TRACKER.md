@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 45.00%**
+**Overall Progress: 46.93%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -33,7 +33,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
-- [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [0%]
+- [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [85%]
 - [ ] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [90%]
 
 ### 4. Command-Line Interface (`flashux-cli`)
@@ -138,4 +138,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `abba1ee` | feat(progress): calculate bounded throughput and smoothed ETA | Progress metric calculation and monotonic clock abstraction | Metrics use checked counters and bounded ETA |
 | `4aebc9d` | docs(tracker): record calculate bounded throughput and smoothed ETA | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `a2bda15` | feat(flasher): define observable asynchronous completion ownership | Doxygen-documented wait and running-query API; join ownership state | Context model now tracks in-progress joins |
-| `HEAD` | docs(tracker): record define observable asynchronous completion ownership | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `a342d23` | docs(tracker): record define observable asynchronous completion ownership | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `7c4bfde` | feat(flasher): validate and run cancellable raw image jobs | Flash validation, asynchronous state machine, cancellation and dry-run source reader | Core now orchestrates raw jobs while rejecting unimplemented setup features |
+| `HEAD` | docs(tracker): record validate and run cancellable raw image jobs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
