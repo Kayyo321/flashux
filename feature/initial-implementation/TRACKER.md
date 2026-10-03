@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 40.91%**
+**Overall Progress: 42.95%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -55,7 +55,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 6.1 Define binary wire protocol, message headers, and command opcodes in `src/helper/ipc_protocol.h` [100%]
 - [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [0%]
 - [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [0%]
-- [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [0%]
+- [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [90%]
 - [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [0%]
 
 ### 7. Unit Testing & Verification Harness
@@ -132,4 +132,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `18e7259` | feat(format): validate labels and dispatch native filesystem tools | FAT16/FAT32, NTFS, exFAT and ext4 quick-format dispatch and validation | Full zeroing remains unsupported; native formatter verification pending |
 | `06143cf` | docs(tracker): record validate labels and dispatch native filesystem tools | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `6aa72b8` | feat(ipc): encode bounded portable wire messages | Versioned header, flash-options and progress codecs with bounded socket transport | IPC structs remain in-memory models; progress doubles are derived at receiver |
-| `HEAD` | docs(tracker): record encode bounded portable wire messages | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `7289ca0` | docs(tracker): record encode bounded portable wire messages | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `b887083` | feat(ipc): connect authenticated helper clients with timeouts | IPC client lifecycle, command transport and bounded response handling | Core build includes client transport |
+| `HEAD` | docs(tracker): record connect authenticated helper clients with timeouts | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
