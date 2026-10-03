@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 48.64%**
+**Overall Progress: 50.23%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -54,7 +54,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 6. Privileged Backend Helper & IPC Subsystem (`flashux-helper`)
 - [X] 6.1 Define binary wire protocol, message headers, and command opcodes in `src/helper/ipc_protocol.h` [100%]
 - [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [0%]
-- [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [0%]
+- [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [70%]
 - [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [90%]
 - [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [75%]
 
@@ -144,4 +144,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `c9157b1` | feat(helper): copy aligned raw sectors and verify readback | Aligned raw engine with sparse-file seam, capacity checks and helper device orchestration | Privileged engine built separately from libflashux; Linux block execution pending |
 | `3623c7e` | docs(tracker): record copy aligned raw sectors and verify readback | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `f4dfabd` | feat(ipc): pass frontend-opened image descriptors securely | Image descriptor transport with leak-safe ancillary validation | Raw dispatch sends a source descriptor; root socket permissions permit Polkit-gated clients |
-| `HEAD` | docs(tracker): record pass frontend-opened image descriptors securely | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `a1ea742` | docs(tracker): record pass frontend-opened image descriptors securely | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `73db555` | feat(helper): authorize socket peers through Polkit | Linux SO_PEERCRED and Polkit authorization gate | Portable hosts reject privilege authorization explicitly |
+| `HEAD` | docs(tracker): record authorize socket peers through Polkit | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
