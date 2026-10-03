@@ -56,3 +56,7 @@ dkms.conf
 
 # Out-of-tree Meson builds and test artifacts
 /build*/
+
+# Local editor and desktop metadata
+.DS_Store
+.idea/
