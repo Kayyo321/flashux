@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 95.45%**
+**Overall Progress: 95.57%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -29,7 +29,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [95%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [95%]
-- [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [85%]
+- [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [90%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [90%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
@@ -228,4 +228,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `97b78fe` | fix(partition): validate block geometry and GPT UUID encoding | Opened-descriptor capacity and sector validation with UUID regressions | Corrected GPT UUID byte order and filesystem-aware default partition type |
 | `d6ad53f` | docs(tracker): record validate block geometry and GPT UUID encoding | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `95b33e5` | feat(device): inspect mounted partitions and classify storage buses | libmount partition metadata and complete storage bus classification | System-path inspection fails closed and sysfs numbers reject overflow |
-| `HEAD` | docs(tracker): record inspect mounted partitions and classify storage buses | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `8e5513f` | docs(tracker): record inspect mounted partitions and classify storage buses | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `b5fd714` | fix(mount): match unmount targets by kernel device identity | Kernel identity comparison for every target and child partition mount | Removed reliance on mount source path equality |
+| `HEAD` | docs(tracker): record match unmount targets by kernel device identity | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
