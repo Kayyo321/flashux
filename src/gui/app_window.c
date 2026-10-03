@@ -18,6 +18,19 @@ static GtkWidget *field(GtkBox *box, const char *title, GtkWidget *control)
     gtk_box_append(box, control);
     return control;
 }
+static void paired_fields(GtkBox *box, const char *left_title, GtkWidget *left_control,
+                           const char *right_title, GtkWidget *right_control)
+{
+    GtkWidget *row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
+    GtkWidget *left = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+    GtkWidget *right = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+    gtk_box_set_homogeneous(GTK_BOX(row), true);
+    field(GTK_BOX(left), left_title, left_control);
+    field(GTK_BOX(right), right_title, right_control);
+    gtk_box_append(GTK_BOX(row), left);
+    gtk_box_append(GTK_BOX(row), right);
+    gtk_box_append(box, row);
+}
 void flashux_gui_update_start(struct flashux_gui *gui)
 {
     bool raw = gtk_drop_down_get_selected(gui->mode) == FLASHUX_MODE_DD_RAW;
@@ -96,10 +109,10 @@ void flashux_gui_window_create(struct flashux_gui *gui)
     gtk_drop_down_set_selected(gui->scheme, FLASHUX_PARTITION_SCHEME_GPT);
     gtk_drop_down_set_selected(gui->target, FLASHUX_TARGET_UEFI_NON_CSM);
     gtk_drop_down_set_selected(gui->filesystem, FLASHUX_FS_FAT32);
-    field(box, "Partition scheme", GTK_WIDGET(gui->scheme));
-    field(box, "Target system", GTK_WIDGET(gui->target));
-    field(box, "File system", GTK_WIDGET(gui->filesystem));
-    field(box, "Cluster size (bytes)", GTK_WIDGET(gui->cluster));
+    paired_fields(box, "Partition scheme", GTK_WIDGET(gui->scheme),
+                  "Target system", GTK_WIDGET(gui->target));
+    paired_fields(box, "File system", GTK_WIDGET(gui->filesystem),
+                  "Cluster size (bytes)", GTK_WIDGET(gui->cluster));
     gui->label = GTK_ENTRY(gtk_entry_new());
     gtk_entry_set_max_length(gui->label, 127);
     field(box, "Volume label", GTK_WIDGET(gui->label));
@@ -107,6 +120,13 @@ void flashux_gui_window_create(struct flashux_gui *gui)
     gtk_box_append(box, GTK_WIDGET(gui->customize));
     gui->dry_run = GTK_CHECK_BUTTON(gtk_check_button_new_with_label("Dry run (leave target unchanged)"));
     gtk_box_append(box, GTK_WIDGET(gui->dry_run));
+    GtkWidget *footer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_widget_set_margin_top(footer, 12);
+    gtk_widget_set_margin_bottom(footer, 20);
+    gtk_widget_set_margin_start(footer, 24);
+    gtk_widget_set_margin_end(footer, 24);
+    gtk_box_append(GTK_BOX(outer), footer);
+    box = GTK_BOX(footer);
     gui->progress = GTK_PROGRESS_BAR(gtk_progress_bar_new());
     gtk_progress_bar_set_show_text(gui->progress, true);
     gtk_box_append(box, GTK_WIDGET(gui->progress));
