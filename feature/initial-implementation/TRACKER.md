@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 68.52%**
+**Overall Progress: 71.36%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -33,8 +33,8 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
 - [X] 3.8 Implement cryptographic checksum hashing engine in `src/core/checksum.c` [100%]
-- [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [85%]
-- [ ] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [90%]
+- [ ] 3.9 Implement flashing options validation and job state machine in `src/core/flasher.c` [90%]
+- [X] 3.10 Implement progress math, ETA computation, and moving average speed tracking in `src/core/flasher.c` [100%]
 
 ### 4. Command-Line Interface (`flashux-cli`)
 - [X] 4.1 Implement POSIX command-line option parser (`getopt_long`) in `src/cli/cli_args.c` [100%]
@@ -56,13 +56,13 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [80%]
 - [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [70%]
 - [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [90%]
-- [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [75%]
+- [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [85%]
 
 ### 7. Unit Testing & Verification Harness
 - [X] 7.1 Implement core context and logging unit tests in `tests/test_core.c` [100%]
 - [ ] 7.2 Implement mock device enumeration and system disk protection tests in `tests/test_device.c` [85%]
 - [X] 7.3 Implement CLI argument parsing and validation tests in `tests/test_cli_args.c` [100%]
-- [ ] 7.4 Implement progress calculation and cancellation tests in `tests/test_flasher.c` [0%]
+- [X] 7.4 Implement progress calculation and cancellation tests in `tests/test_flasher.c` [100%]
 - [X] 7.5 Implement filesystem formatting parameter and cluster tests in `tests/test_format.c` [100%]
 - [X] 7.6 Implement MBR/GPT partition binary layout synthesis tests in `tests/test_partition.c` [100%]
 - [ ] 7.7 Implement binary IPC header serialization/framing tests in `tests/test_ipc.c` [0%]
@@ -170,4 +170,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `27ea904` | test(cli): reject truncation overflow and conflicting modes | CLI parser regression tests for boundary and mode handling | Argument parser milestone validated on portable host |
 | `4f11d07` | docs(tracker): record reject truncation overflow and conflicting modes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `fadff34` | test(format): check labels cluster limits and unsupported modes | Filesystem-option boundary regression tests | Validation suite runs independently of external mkfs tools |
-| `HEAD` | docs(tracker): record check labels cluster limits and unsupported modes | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `782a114` | docs(tracker): record check labels cluster limits and unsupported modes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `394762a` | test(flasher): verify sparse raw copies dry runs and cancellation | Sparse-file raw engine and asynchronous job regression tests | Progress calculations verified without physical disk access |
+| `HEAD` | docs(tracker): record verify sparse raw copies dry runs and cancellation | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
