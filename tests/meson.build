@@ -15,7 +15,7 @@ test('flasher', flasher_test)
 ipc_test = executable('test_ipc', 'test_ipc.c', dependencies: flashux_dep)
 test('ipc', ipc_test)
 if gui_available and is_linux
-  gui_test = executable('test_gui', 'test_gui.c', dependencies: gui_dep)
+  gui_test = executable('test_gui', 'test_gui.c', dependencies: [gui_dep, dependency('pangoft2', include_type: 'system'), dependency('fontconfig', include_type: 'system')])
   xvfb = find_program('xvfb-run', required: false)
   if xvfb.found()
     test('gui', xvfb, args: ['-a', gui_test], env: ['GTK_A11Y=none', 'GSK_RENDERER=cairo'])

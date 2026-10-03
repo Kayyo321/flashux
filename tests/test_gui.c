@@ -1,6 +1,8 @@
 #include "test.h"
 #include "gui/app_window.h"
 #include <string.h>
+#include <pango/pangofc-fontmap.h>
+#include <fontconfig/fontconfig.h>
 #include <unistd.h>
 static void pump(unsigned milliseconds)
 {
@@ -86,5 +88,9 @@ int main(void)
     (void)pthread_mutex_destroy(&gui.mutex);
     CHECK(close(image) == 0 && close(target) == 0);
     CHECK(unlink(image_path) == 0 && unlink(target_path) == 0);
+    PangoFontMap *font_map = pango_cairo_font_map_get_default();
+    pango_fc_font_map_shutdown(PANGO_FC_FONT_MAP(font_map));
+    pango_cairo_font_map_set_default(NULL);
+    FcFini();
     return 0;
 }
