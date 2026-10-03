@@ -264,4 +264,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `e568916` | refactor(tests): apply mandated C layout to tests sources | Consistent repository C layout in tests | Normalized braces, indentation, declaration wrapping and comments without changing behavior |
 | `06e9473` | docs(tracker): record apply mandated C layout to tests sources | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `bb09eaf` | chore(build): retain strict diagnostics through Meson warning options | Meson-native strict diagnostic configuration | Removed duplicate warning switches from add_project_arguments |
-| `HEAD` | docs(tracker): record retain strict diagnostics through Meson warning options | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `714891b` | docs(tracker): record retain strict diagnostics through Meson warning options | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `74cf461` | chore(build): install core library pkg-config metadata | Installable pkg-config metadata for libflashux | Core library installs now expose reproducible consumer compilation flags |
+| `HEAD` | docs(tracker): record install core library pkg-config metadata | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
