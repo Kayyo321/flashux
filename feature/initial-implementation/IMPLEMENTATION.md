@@ -46,7 +46,7 @@ Prior to this feature, Linux lacked a unified, native tool offering full parity 
                                            | IPC Protocol + Polkit Authorization
                                            v
 +-----------------------------------------------------------------------------------+
-|                                PRIVILEATED LAYER                                   |
+|                                 PRIVILEGED LAYER                                  |
 |                                                                                   |
 |  +------------------------------------------------------------------------------+ |
 |  |                          flashux-helper (Root Daemon)                        | |
