@@ -8,3 +8,5 @@ device_test = executable('test_device', 'test_device.c', dependencies: flashux_d
 test('device', device_test)
 args_test = executable('test_cli_args', 'test_cli_args.c', dependencies: cli_args_dep)
 test('cli-args', args_test)
+format_test = executable('test_format', 'test_format.c', dependencies: flashux_dep)
+test('format', format_test)
