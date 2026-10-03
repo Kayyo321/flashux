@@ -230,4 +230,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `95b33e5` | feat(device): inspect mounted partitions and classify storage buses | libmount partition metadata and complete storage bus classification | System-path inspection fails closed and sysfs numbers reject overflow |
 | `8e5513f` | docs(tracker): record inspect mounted partitions and classify storage buses | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `b5fd714` | fix(mount): match unmount targets by kernel device identity | Kernel identity comparison for every target and child partition mount | Removed reliance on mount source path equality |
-| `HEAD` | docs(tracker): record match unmount targets by kernel device identity | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `e51da1c` | docs(tracker): record match unmount targets by kernel device identity | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `d5ef093` | fix(image): detect source changes with nanosecond precision | Portable source identity helper for macOS and Linux timestamps | Replaced second-resolution source-change checks and added pre-write stability verification |
+| `HEAD` | docs(tracker): record detect source changes with nanosecond precision | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
