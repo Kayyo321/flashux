@@ -6,6 +6,7 @@ static gboolean close_window(GtkWindow *window, gpointer data)
     (void)window;
     gui->closed = true;
     flashux_context_free(&gui->ctx);
+    flashux_gui_device_monitor_stop(gui);
     return FALSE;
 }
 static GtkWidget *field(GtkBox *box, const char *title, GtkWidget *control)
@@ -25,7 +26,10 @@ void flashux_gui_update_start(struct flashux_gui *gui)
     gtk_widget_set_sensitive(GTK_WIDGET(gui->cluster), !raw && !gui->busy);
     gtk_widget_set_sensitive(GTK_WIDGET(gui->label), !raw && !gui->busy);
     bool image = gtk_editable_get_text(GTK_EDITABLE(gui->image))[0] != '\0';
-    bool selected = gtk_drop_down_get_selected(gui->device_choice) != GTK_INVALID_LIST_POSITION;
+    guint position = gtk_drop_down_get_selected(gui->device_choice);
+    flashux_device_t *device = gui->devices;
+    for (guint i = 0; device != NULL && i < position; ++i) { device = device->next; }
+    bool selected = device != NULL && flashux_device_is_safe_target(gui->ctx, device, NULL, 0);
     gtk_widget_set_sensitive(GTK_WIDGET(gui->start), image && selected && !gui->busy);
 }
 static void selection_changed(GObject *object, GParamSpec *parameter, gpointer data)
@@ -121,5 +125,6 @@ void flashux_gui_window_create(struct flashux_gui *gui)
     g_signal_connect(gui->device_choice, "notify::selected", G_CALLBACK(selection_changed), gui);
     g_signal_connect(gui->image, "changed", G_CALLBACK(image_changed), gui);
     adw_application_window_set_content(ADW_APPLICATION_WINDOW(gui->window), outer);
+    flashux_gui_device_monitor_start(gui);
     flashux_gui_update_start(gui);
 }

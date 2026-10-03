@@ -19,6 +19,7 @@ int flashux_gui_app_run(int argc, char **argv)
     g_signal_connect(gui.application, "activate", G_CALLBACK(activate), &gui);
     int result = g_application_run(G_APPLICATION(gui.application), argc, argv);
     flashux_context_free(&gui.ctx);
+    flashux_gui_device_monitor_stop(&gui);
     if (gui.window != NULL) { g_object_set_data(G_OBJECT(gui.window), "flashux-state", NULL); }
     g_clear_object(&gui.window);
     g_clear_object(&gui.application);
