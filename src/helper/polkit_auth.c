@@ -11,8 +11,10 @@ flashux_error_t flashux_helper_authorize(int client_fd)
     struct ucred peer;
     socklen_t size = sizeof(peer);
     GError *error = NULL;
-    if (getsockopt(client_fd, SOL_SOCKET, SO_PEERCRED, &peer, &size) != 0 ||
-        size != sizeof(peer) || peer.pid <= 0) { return FLASHUX_ERR_PERMISSION_DENIED; }
+    if (getsockopt(client_fd, SOL_SOCKET, SO_PEERCRED, &peer, &size) != 0 || size != sizeof(peer) ||
+        peer.pid <= 0) {
+        return FLASHUX_ERR_PERMISSION_DENIED;
+    }
     PolkitAuthority *authority = polkit_authority_get_sync(NULL, &error);
     if (authority == NULL) {
         g_clear_error(&error);
@@ -26,9 +28,11 @@ flashux_error_t flashux_helper_authorize(int client_fd)
     PolkitAuthorizationResult *authorization = polkit_authority_check_authorization_sync(
         authority, subject, "org.flashux.write-device", NULL,
         POLKIT_CHECK_AUTHORIZATION_FLAGS_ALLOW_USER_INTERACTION, NULL, &error);
-    bool allowed = authorization != NULL &&
-        polkit_authorization_result_get_is_authorized(authorization);
-    if (authorization != NULL) { g_object_unref(authorization); }
+    bool allowed =
+        authorization != NULL && polkit_authorization_result_get_is_authorized(authorization);
+    if (authorization != NULL) {
+        g_object_unref(authorization);
+    }
     g_object_unref(subject);
     g_object_unref(authority);
     g_clear_error(&error);

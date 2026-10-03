@@ -34,9 +34,13 @@ static bool should_cancel(void *data)
 {
     struct connection *connection = data;
     struct pollfd descriptor = {connection->fd, POLLIN, 0};
-    if (stopping || connection->cancelled || connection->disconnected) { return true; }
+    if (stopping || connection->cancelled || connection->disconnected) {
+        return true;
+    }
     int ready = poll(&descriptor, 1, 0);
-    if (ready < 0 && errno == EINTR) { return stopping != 0; }
+    if (ready < 0 && errno == EINTR) {
+        return stopping != 0;
+    }
     if (ready < 0 || (descriptor.revents & (POLLHUP | POLLERR | POLLNVAL)) != 0) {
         connection->disconnected = true;
         return true;
@@ -44,7 +48,8 @@ static bool should_cancel(void *data)
     if (ready > 0) {
         flashux_ipc_header_t header;
         unsigned char payload[1];
-        if (flashux_ipc_receive(connection->fd, &header, payload, sizeof(payload)) != FLASHUX_SUCCESS ||
+        if (flashux_ipc_receive(connection->fd, &header, payload, sizeof(payload)) !=
+                FLASHUX_SUCCESS ||
             header.msg_type != FLASHUX_IPC_CMD_CANCEL_FLASH || header.payload_len != 0 ||
             header.sequence_id <= connection->last_command) {
             connection->disconnected = true;
@@ -60,8 +65,8 @@ static void send_progress(const flashux_progress_t *progress, void *data)
     struct connection *connection = data;
     unsigned char payload[FLASHUX_IPC_PROGRESS_SIZE];
     flashux_ipc_encode_progress(progress, payload);
-    if (flashux_ipc_send(connection->fd, FLASHUX_IPC_MSG_PROGRESS_UPDATE,
-                         connection->sequence, payload, sizeof(payload)) != FLASHUX_SUCCESS) {
+    if (flashux_ipc_send(connection->fd, FLASHUX_IPC_MSG_PROGRESS_UPDATE, connection->sequence,
+                         payload, sizeof(payload)) != FLASHUX_SUCCESS) {
         connection->disconnected = true;
     }
 }
@@ -73,11 +78,15 @@ static void serve(flashux_context_t *ctx, int fd)
     (void)setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
     (void)setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
     flashux_error_t result = flashux_helper_authorize(fd);
-    if (result != FLASHUX_SUCCESS) { return; }
+    if (result != FLASHUX_SUCCESS) {
+        return;
+    }
     while (!stopping) {
         flashux_ipc_header_t header;
         result = flashux_ipc_receive(fd, &header, payload, sizeof(payload));
-        if (result != FLASHUX_SUCCESS || header.sequence_id <= connection.last_command) { break; }
+        if (result != FLASHUX_SUCCESS || header.sequence_id <= connection.last_command) {
+            break;
+        }
         connection.sequence = header.sequence_id;
         connection.last_command = header.sequence_id;
         connection.cancelled = false;
@@ -87,18 +96,27 @@ static void serve(flashux_context_t *ctx, int fd)
             flashux_flash_options_t options;
             int source_fd = -1;
             result = flashux_ipc_decode_options(payload, header.payload_len, &options);
-            if (result == FLASHUX_SUCCESS) { result = flashux_ipc_receive_fd(fd, &source_fd); }
+            if (result == FLASHUX_SUCCESS) {
+                result = flashux_ipc_receive_fd(fd, &source_fd);
+            }
             if (result == FLASHUX_SUCCESS) {
                 result = flashux_helper_flash(ctx, &options, source_fd, send_progress, &connection,
                                               should_cancel, &connection);
             }
-            if (source_fd >= 0) { (void)close(source_fd); }
-        } else { result = FLASHUX_ERR_UNSUPPORTED; }
+            if (source_fd >= 0) {
+                (void)close(source_fd);
+            }
+        } else {
+            result = FLASHUX_ERR_UNSUPPORTED;
+        }
         unsigned char status[4];
         flashux_put_u32(status, (uint32_t)-(int)result);
-        if (connection.disconnected || flashux_ipc_send(fd, FLASHUX_IPC_MSG_OPERATION_RESULT,
-            connection.sequence, status, sizeof(status)) != FLASHUX_SUCCESS ||
-            result == FLASHUX_ERR_IPC) { break; }
+        if (connection.disconnected ||
+            flashux_ipc_send(fd, FLASHUX_IPC_MSG_OPERATION_RESULT, connection.sequence, status,
+                             sizeof(status)) != FLASHUX_SUCCESS ||
+            result == FLASHUX_ERR_IPC) {
+            break;
+        }
     }
 }
 #endif
@@ -122,13 +140,19 @@ int main(int argc, char **argv)
         flashux_log_error(NULL, "%s", "Helper requires a secure root-owned /run/flashux");
         return 1;
     }
-    if (flashux_context_new(&ctx) != FLASHUX_SUCCESS) { return 1; }
+    if (flashux_context_new(&ctx) != FLASHUX_SUCCESS) {
+        return 1;
+    }
     server = socket(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0);
-    if (server < 0) { goto cleanup; }
+    if (server < 0) {
+        goto cleanup;
+    }
     address.sun_family = AF_UNIX;
     (void)snprintf(address.sun_path, sizeof(address.sun_path), "%s", FLASHUX_IPC_SOCKET_PATH);
     /* Bind never removes an existing pathname, avoiding competing helper races. */
-    if (bind(server, (const struct sockaddr *)&address, sizeof(address)) != 0) { goto cleanup; }
+    if (bind(server, (const struct sockaddr *)&address, sizeof(address)) != 0) {
+        goto cleanup;
+    }
     if (chmod(FLASHUX_IPC_SOCKET_PATH, 0666) != 0 || listen(server, 4) != 0) {
         (void)unlink(FLASHUX_IPC_SOCKET_PATH);
         goto cleanup;
@@ -141,19 +165,31 @@ int main(int argc, char **argv)
     while (!stopping) {
         struct pollfd wait_fd = {server, POLLIN, 0};
         int ready = poll(&wait_fd, 1, once ? 60000 : 1000);
-        if (ready < 0 && errno == EINTR) { continue; }
-        if (ready < 0 || (once && ready == 0)) { break; }
-        if (ready == 0) { continue; }
+        if (ready < 0 && errno == EINTR) {
+            continue;
+        }
+        if (ready < 0 || (once && ready == 0)) {
+            break;
+        }
+        if (ready == 0) {
+            continue;
+        }
         int client = accept4(server, NULL, NULL, SOCK_CLOEXEC);
-        if (client < 0) { continue; }
+        if (client < 0) {
+            continue;
+        }
         serve(ctx, client);
         (void)close(client);
-        if (once) { break; }
+        if (once) {
+            break;
+        }
     }
     (void)unlink(FLASHUX_IPC_SOCKET_PATH);
     result = 0;
 cleanup:
-    if (server >= 0) { (void)close(server); }
+    if (server >= 0) {
+        (void)close(server);
+    }
     flashux_context_free(&ctx);
     return result;
 #else
