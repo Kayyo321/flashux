@@ -224,4 +224,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `5765a69` | test(image): verify compression preflight and decoded readback | Cross-platform image stream and raw-copy regression suite | Test matrix now exercises five compressed image formats and pre-write failure safety |
 | `2402e53` | docs(tracker): record verify compression preflight and decoded readback | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `9d81830` | feat(format): zero validated targets before full formatting | Cancellable full-format zero pass and sparse-file zeroing regression | Formatting accepts quick or full requests while retaining parent-disk safety and fixed argv execution |
-| `HEAD` | docs(tracker): record zero validated targets before full formatting | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `52a6cd3` | docs(tracker): record zero validated targets before full formatting | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `97b78fe` | fix(partition): validate block geometry and GPT UUID encoding | Opened-descriptor capacity and sector validation with UUID regressions | Corrected GPT UUID byte order and filesystem-aware default partition type |
+| `HEAD` | docs(tracker): record validate block geometry and GPT UUID encoding | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
