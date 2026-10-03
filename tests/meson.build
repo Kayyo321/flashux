@@ -6,3 +6,5 @@ checksum_test = executable('test_checksum', 'test_checksum.c', dependencies: fla
 test('checksum', checksum_test)
 device_test = executable('test_device', 'test_device.c', dependencies: flashux_dep)
 test('device', device_test)
+args_test = executable('test_cli_args', 'test_cli_args.c', dependencies: cli_args_dep)
+test('cli-args', args_test)
