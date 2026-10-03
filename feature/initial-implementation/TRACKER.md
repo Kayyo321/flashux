@@ -272,4 +272,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `7f7e54f` | chore(tests): build the manual Linux authorization probe | Linux test_helper build target | Default unit tests remain independent of root credentials and a running Polkit daemon |
 | `7d810a1` | docs(tracker): record build the manual Linux authorization probe | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `e19522b` | test(gui): tear down native test backends without suppressions | Explicit native test-backend teardown and closed-window assertions | GUI test uses the GTK test accessibility backend instead of disabling ownership-bearing contexts |
-| `HEAD` | docs(tracker): record tear down native test backends without suppressions | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `ca0ac79` | docs(tracker): record tear down native test backends without suppressions | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `afa890d` | docs(ipc): describe the explicit progress speed encoding | Accurate progress wire-format comment | Removed obsolete comment implying all floating metrics are derived |
+| `HEAD` | docs(tracker): record describe the explicit progress speed encoding | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
