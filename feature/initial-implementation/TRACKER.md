@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 88.41%**
+**Overall Progress: 88.98%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -28,7 +28,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [100%]
 - [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
 - [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [85%]
-- [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [85%]
+- [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [95%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [95%]
@@ -60,7 +60,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 7. Unit Testing & Verification Harness
 - [X] 7.1 Implement core context and logging unit tests in `tests/test_core.c` [100%]
-- [ ] 7.2 Implement mock device enumeration and system disk protection tests in `tests/test_device.c` [85%]
+- [X] 7.2 Implement mock device enumeration and system disk protection tests in `tests/test_device.c` [100%]
 - [X] 7.3 Implement CLI argument parsing and validation tests in `tests/test_cli_args.c` [100%]
 - [X] 7.4 Implement progress calculation and cancellation tests in `tests/test_flasher.c` [100%]
 - [X] 7.5 Implement filesystem formatting parameter and cluster tests in `tests/test_format.c` [100%]
@@ -198,4 +198,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `b96f9f6` | fix(build): isolate toolkit headers from application diagnostics | System include treatment for toolkit dependencies | Linux GCC GUI compilation now respects application warning policy |
 | `e0ca5f3` | docs(tracker): record isolate toolkit headers from application diagnostics | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `3b23027` | refactor(safety): make backing-disk topology independently testable | Portable sysfs ancestry traversal with bounded recursion | System-drive checks use explicit device-number topology rather than opaque udev traversal |
-| `HEAD` | docs(tracker): record make backing-disk topology independently testable | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `1c6c5c4` | docs(tracker): record make backing-disk topology independently testable | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `acfd0a7` | test(safety): cover partition mapper and cyclic backing graphs | Mock system-drive ancestry tests including stacked devices and cycles | Device safety suite now verifies the actual topology algorithm |
+| `HEAD` | docs(tracker): record cover partition mapper and cyclic backing graphs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
