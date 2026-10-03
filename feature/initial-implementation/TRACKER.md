@@ -108,4 +108,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `d325258` | feat(api): define checksum public interface | checksum types and documented public function declarations | No runtime behavior changed; header compilation verified |
 | `6a10bfd` | docs(tracker): record define checksum public interface | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `5b51560` | feat(core): implement owned context lifecycle | Context lifecycle, private synchronization state and libflashux target | Meson now builds and installs the core library and headers |
-| `HEAD` | docs(tracker): record implement owned context lifecycle | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `300042f` | docs(tracker): record implement owned context lifecycle | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `08f970c` | feat(logging): validate printf arguments at call sites | Printf format attributes and complete logger wrapper Doxygen | Logging declarations now validate format and argument compatibility |
+| `HEAD` | docs(tracker): record validate printf arguments at call sites | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
