@@ -1,2 +1,3 @@
 cli_args = static_library('flashux-cli-args', 'cli_args.c', dependencies: flashux_dep)
 cli_args_dep = declare_dependency(link_with: cli_args, dependencies: flashux_dep)
+cli_batch = static_library('flashux-cli-batch', 'cli_batch.c', dependencies: cli_args_dep)
