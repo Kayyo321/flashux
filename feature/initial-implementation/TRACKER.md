@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 61.48%**
+**Overall Progress: 61.82%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -27,7 +27,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 3. Core Engine Implementation (`libflashux`)
 - [X] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [100%]
 - [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
-- [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [70%]
+- [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [85%]
 - [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [70%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [70%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [70%]
@@ -162,4 +162,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `bf15bf0` | fix(format): check missing Linux sector attributes safely | Linux formatter translation-unit and suite verification | Added stdlib declaration and null-safe sector parsing |
 | `0d0205d` | docs(tracker): record check missing Linux sector attributes safely | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `d370b46` | feat(cli): route signals and frontend execution modes | CLI executable and SIGINT/SIGTERM lifecycle handling | Meson installs flashux-cli; help smoke check passes |
-| `HEAD` | docs(tracker): record route signals and frontend execution modes | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `cadbb54` | docs(tracker): record route signals and frontend execution modes | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `416e23c` | fix(device): fail closed on malformed sysfs geometry | Strict sysfs geometry parser and safe defaults | Enumeration uses checked geometry including 512-byte sysfs unit conversion |
+| `HEAD` | docs(tracker): record fail closed on malformed sysfs geometry | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
