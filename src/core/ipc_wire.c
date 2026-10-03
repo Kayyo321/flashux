@@ -2,6 +2,7 @@
 #include "common/wire.h"
 #include <string.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <math.h>
@@ -196,5 +197,76 @@ flashux_error_t flashux_ipc_decode_progress(const unsigned char *in, size_t size
         (double)progress->bytes_processed * 1e9 / (double)progress->elapsed_nanos;
     progress->current_speed_bps = progress->average_speed_bps;
     memcpy(progress->stage_description, in + 40, 128);
+    return FLASHUX_SUCCESS;
+}
+
+flashux_error_t flashux_ipc_send_fd(int socket_fd, int file_fd)
+{
+    unsigned char marker = 0x46;
+    struct iovec io = {&marker, 1};
+    union { struct cmsghdr alignment; unsigned char bytes[CMSG_SPACE(sizeof(int))]; } control;
+    struct msghdr message = {0};
+    memset(&control, 0, sizeof(control));
+    message.msg_iov = &io;
+    message.msg_iovlen = 1;
+    message.msg_control = control.bytes;
+    message.msg_controllen = sizeof(control.bytes);
+    struct cmsghdr *header = CMSG_FIRSTHDR(&message);
+    header->cmsg_level = SOL_SOCKET;
+    header->cmsg_type = SCM_RIGHTS;
+    header->cmsg_len = CMSG_LEN(sizeof(int));
+    memcpy(CMSG_DATA(header), &file_fd, sizeof(file_fd));
+    ssize_t sent;
+#ifdef MSG_NOSIGNAL
+    do { sent = sendmsg(socket_fd, &message, MSG_NOSIGNAL); } while (sent < 0 && errno == EINTR);
+#else
+    int enabled = 1;
+    (void)setsockopt(socket_fd, SOL_SOCKET, SO_NOSIGPIPE, &enabled, sizeof(enabled));
+    do { sent = sendmsg(socket_fd, &message, 0); } while (sent < 0 && errno == EINTR);
+#endif
+    return sent == 1 ? FLASHUX_SUCCESS : FLASHUX_ERR_IPC;
+}
+flashux_error_t flashux_ipc_receive_fd(int socket_fd, int *file_fd)
+{
+    unsigned char marker = 0;
+    struct iovec io = {&marker, 1};
+    union { struct cmsghdr alignment; unsigned char bytes[CMSG_SPACE(sizeof(int))]; } control;
+    struct msghdr message = {0};
+    if (file_fd == NULL) { return FLASHUX_ERR_INVALID_ARG; }
+    *file_fd = -1;
+    memset(&control, 0, sizeof(control));
+    message.msg_iov = &io;
+    message.msg_iovlen = 1;
+    message.msg_control = control.bytes;
+    message.msg_controllen = sizeof(control.bytes);
+    ssize_t got;
+    do { got = recvmsg(socket_fd, &message, 0); } while (got < 0 && errno == EINTR);
+    struct cmsghdr *header = CMSG_FIRSTHDR(&message);
+    bool valid = got == 1 && marker == 0x46 && (message.msg_flags & (MSG_CTRUNC | MSG_TRUNC)) == 0;
+    for (; header != NULL; header = CMSG_NXTHDR(&message, header)) {
+        if (header->cmsg_level == SOL_SOCKET && header->cmsg_type == SCM_RIGHTS &&
+            header->cmsg_len >= CMSG_LEN(sizeof(int))) {
+            size_t count = (header->cmsg_len - CMSG_LEN(0)) / sizeof(int);
+            for (size_t i = 0; i < count; ++i) {
+                int received;
+                memcpy(&received, CMSG_DATA(header) + i * sizeof(int), sizeof(received));
+                if (*file_fd == -1 && count == 1 && valid) {
+                    *file_fd = received;
+                } else {
+                    (void)close(received);
+                    valid = false;
+                }
+            }
+        } else { valid = false; }
+    }
+    if (!valid || *file_fd == -1) {
+        if (*file_fd >= 0) { (void)close(*file_fd); *file_fd = -1; }
+        return FLASHUX_ERR_IPC;
+    }
+    if (fcntl(*file_fd, F_SETFD, FD_CLOEXEC) != 0) {
+        (void)close(*file_fd);
+        *file_fd = -1;
+        return FLASHUX_ERR_IPC;
+    }
     return FLASHUX_SUCCESS;
 }

@@ -143,6 +143,15 @@ static flashux_error_t remote_job(flashux_context_t *ctx, flashux_progress_t *pr
         result = flashux_ipc_client_send_cmd(client, FLASHUX_IPC_CMD_START_FLASH,
                                             options, sizeof(options));
     }
+    if (result == FLASHUX_SUCCESS) {
+        int source_fd = open(ctx->options.source_image_path, O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+        if (source_fd < 0) { result = FLASHUX_ERR_NOT_FOUND; }
+        else {
+            result = flashux_ipc_send_fd(flashux_ipc_client_fd(client), source_fd);
+            (void)close(source_fd);
+        }
+    }
+    uint64_t last_message = flashux_monotonic_nanos();
     bool sent_cancel = false;
     while (result == FLASHUX_SUCCESS) {
         if (atomic_load(&ctx->cancel) && !sent_cancel) {
@@ -154,7 +163,14 @@ static flashux_error_t remote_job(flashux_context_t *ctx, flashux_progress_t *pr
         int ready = poll(&wait_fd, 1, 100);
         if (ready < 0 && errno == EINTR) { continue; }
         if (ready < 0) { result = FLASHUX_ERR_IPC; break; }
-        if (ready == 0) { continue; }
+        if (ready == 0) {
+            if (flashux_monotonic_nanos() - last_message > UINT64_C(30000000000)) {
+                result = FLASHUX_ERR_IPC;
+                break;
+            }
+            continue;
+        }
+        last_message = flashux_monotonic_nanos();
         flashux_ipc_header_t header;
         result = flashux_ipc_client_recv_msg(client, &header, payload, sizeof(payload));
         if (result != FLASHUX_SUCCESS) { break; }

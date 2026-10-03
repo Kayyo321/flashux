@@ -49,4 +49,6 @@ void flashux_ipc_encode_progress(const flashux_progress_t *progress,
                                 unsigned char out[FLASHUX_IPC_PROGRESS_SIZE]);
 flashux_error_t flashux_ipc_decode_progress(const unsigned char *in, size_t size,
                                           flashux_progress_t *progress);
+flashux_error_t flashux_ipc_send_fd(int socket_fd, int file_fd);
+flashux_error_t flashux_ipc_receive_fd(int socket_fd, int *file_fd);
 #endif /* FLASHUX_IPC_PROTOCOL_H */

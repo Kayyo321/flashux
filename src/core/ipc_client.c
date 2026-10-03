@@ -40,7 +40,7 @@ flashux_error_t flashux_ipc_client_connect(flashux_context_t *ctx, const char *s
         return FLASHUX_ERR_IPC;
     }
 #if FLASHUX_LINUX
-    if (st.st_uid != 0 || (st.st_mode & 0022) != 0) {
+    if (st.st_uid != 0) {
         return FLASHUX_ERR_PERMISSION_DENIED;
     }
 #endif
