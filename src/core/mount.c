@@ -96,6 +96,11 @@ flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
         return FLASHUX_ERR_SYSTEM_DISK_PROTECT;
     }
     device = validated;
+    struct stat disk_node;
+    if (stat(device->node_path, &disk_node) != 0 || !S_ISBLK(disk_node.st_mode)) {
+        flashux_device_list_free(&fresh);
+        return FLASHUX_ERR_NOT_FOUND;
+    }
     struct libmnt_table *table = mnt_new_table_from_file("/proc/self/mountinfo");
     struct libmnt_iter *iter = mnt_new_iter(MNT_ITER_BACKWARD);
     struct libmnt_fs *fs;
@@ -117,10 +122,17 @@ flashux_error_t flashux_unmount_device_partitions(flashux_context_t *ctx,
             result = FLASHUX_ERR_IO;
             break;
         }
-        bool matched = strcmp(source, device->node_path) == 0;
+        dev_t mounted = mnt_fs_get_devno(fs);
+        bool matched = mounted == disk_node.st_rdev;
         for (flashux_partition_t *part = device->partitions; part != NULL; part = part->next) {
-            matched = matched || strcmp(source, part->node_path) == 0;
+            struct stat part_node;
+            if (stat(part->node_path, &part_node) != 0 || !S_ISBLK(part_node.st_mode)) {
+                result = FLASHUX_ERR_NOT_FOUND;
+                break;
+            }
+            matched = matched || mounted == part_node.st_rdev;
         }
+        if (result != FLASHUX_SUCCESS) { break; }
         if (matched && umount2(target, 0) != 0) {
             flashux_log_error(ctx, "Unable to unmount %s", target);
             result = FLASHUX_ERR_DEVICE_BUSY;
