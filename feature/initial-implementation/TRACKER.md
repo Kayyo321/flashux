@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 50.23%**
+**Overall Progress: 52.61%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -14,7 +14,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 1. Build System & Scaffolding
 - [X] 1.1 Create top-level `meson.build` with C11 standard flags (`-std=c11`, `-Wall`, `-Wextra`, `-Wpedantic`, `-Werror`, `-D_GNU_SOURCE`, `-D_FILE_OFFSET_BITS=64`) [100%]
 - [X] 1.2 Configure project dependency probing (`threads`, `glib-2.0`, `gtk4`, `libadwaita-1`, `ncurses`, `udev`, `blkid`, `mount`) [100%]
-- [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [25%]
+- [ ] 1.3 Configure directory tree targets for `libflashux`, `flashux-cli`, `flashux-gui`, `flashux-helper`, and `tests/` [50%]
 
 ### 2. Public API Headers & Data Models
 - [X] 2.1 Define core context, logging, and error codes in `include/flashux/core.h` [100%]
@@ -53,7 +53,7 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 
 ### 6. Privileged Backend Helper & IPC Subsystem (`flashux-helper`)
 - [X] 6.1 Define binary wire protocol, message headers, and command opcodes in `src/helper/ipc_protocol.h` [100%]
-- [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [0%]
+- [ ] 6.2 Implement UNIX domain socket server and event loop in `src/helper/helper_main.c` [80%]
 - [ ] 6.3 Implement Polkit peer credential verification (`SO_PEERCRED`) in `src/helper/polkit_auth.c` [70%]
 - [ ] 6.4 Implement client-side IPC transport and command dispatch in `src/core/ipc_client.c` [90%]
 - [ ] 6.5 Implement privileged write engine and device operations in `src/helper/privileged_ops.c` [75%]
@@ -146,4 +146,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `f4dfabd` | feat(ipc): pass frontend-opened image descriptors securely | Image descriptor transport with leak-safe ancillary validation | Raw dispatch sends a source descriptor; root socket permissions permit Polkit-gated clients |
 | `a1ea742` | docs(tracker): record pass frontend-opened image descriptors securely | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `73db555` | feat(helper): authorize socket peers through Polkit | Linux SO_PEERCRED and Polkit authorization gate | Portable hosts reject privilege authorization explicitly |
-| `HEAD` | docs(tracker): record authorize socket peers through Polkit | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `ce91411` | docs(tracker): record authorize socket peers through Polkit | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `0375315` | feat(helper): serve authorized jobs and cooperative cancellation | Helper executable, command loop, progress streaming and shutdown handling | Meson now installs the privileged helper in libexec |
+| `HEAD` | docs(tracker): record serve authorized jobs and cooperative cancellation | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
