@@ -6,6 +6,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <math.h>
+#include <float.h>
+_Static_assert(sizeof(double) == 8 && DBL_MANT_DIG == 53 && DBL_MAX_EXP == 1024,
+               "IPC progress requires IEEE 754 binary64");
 
 static bool valid_type(uint16_t type)
 {
@@ -177,6 +180,9 @@ void flashux_ipc_encode_progress(const flashux_progress_t *progress,
     flashux_put_u64(out + 20, progress->elapsed_nanos);
     flashux_put_u32(out + 28, progress->eta_seconds);
     /* Derive floating metrics at the receiver; no ABI-dependent doubles on wire. */
+    uint64_t speed_bits = 0;
+    memcpy(&speed_bits, &progress->current_speed_bps, sizeof(speed_bits));
+    flashux_put_u64(out + 32, speed_bits);
     memcpy(out + 40, progress->stage_description, 128);
 }
 flashux_error_t flashux_ipc_decode_progress(const unsigned char *in, size_t size,
@@ -197,7 +203,11 @@ flashux_error_t flashux_ipc_decode_progress(const unsigned char *in, size_t size
         100.0 * (double)progress->bytes_processed / (double)progress->total_bytes;
     progress->average_speed_bps = progress->elapsed_nanos == 0 ? 0 :
         (double)progress->bytes_processed * 1e9 / (double)progress->elapsed_nanos;
-    progress->current_speed_bps = progress->average_speed_bps;
+    uint64_t speed_bits = flashux_get_u64(in + 32);
+    memcpy(&progress->current_speed_bps, &speed_bits, sizeof(speed_bits));
+    if (!isfinite(progress->current_speed_bps) || progress->current_speed_bps < 0) {
+        return FLASHUX_ERR_IPC;
+    }
     memcpy(progress->stage_description, in + 40, 128);
     return FLASHUX_SUCCESS;
 }
