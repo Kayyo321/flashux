@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 23.30%**
+**Overall Progress: 25.80%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -27,8 +27,8 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 ### 3. Core Engine Implementation (`libflashux`)
 - [X] 3.1 Implement context lifecycle (`flashux_context_new`, `flashux_context_free`) in `src/core/core.c` [100%]
 - [X] 3.2 Implement thread-safe logging and error string translation in `src/core/logging.c` [100%]
-- [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [0%]
-- [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [0%]
+- [ ] 3.3 Implement block device probing and sysfs parsing in `src/core/device.c` [70%]
+- [ ] 3.4 Implement host system drive protection and mount inspection algorithm in `src/core/device.c` [40%]
 - [ ] 3.5 Implement exclusive device locking (`flock`/`O_EXCL`) and partition unmounting in `src/core/mount.c` [0%]
 - [ ] 3.6 Implement filesystem formatting dispatchers (FAT, NTFS, exFAT, ext4) in `src/core/format.c` [0%]
 - [ ] 3.7 Implement MBR and GPT partition table binary layout synthesis in `src/core/partition.c` [0%]
@@ -112,4 +112,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `08f970c` | feat(logging): validate printf arguments at call sites | Printf format attributes and complete logger wrapper Doxygen | Logging declarations now validate format and argument compatibility |
 | `986cd5d` | docs(tracker): record validate printf arguments at call sites | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `8d40a3e` | feat(logging): dispatch structured messages outside locks | Severity filtering, bounded logging callbacks and error descriptions | Core build includes the structured logging subsystem |
-| `HEAD` | docs(tracker): record dispatch structured messages outside locks | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `691ae5a` | docs(tracker): record dispatch structured messages outside locks | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `e3eacdd` | feat(device): enumerate Linux disk and partition metadata | udev enumeration, partition metadata ownership and conservative safety filtering | Core target includes device discovery; native Linux paths await integration verification |
+| `HEAD` | docs(tracker): record enumerate Linux disk and partition metadata | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
