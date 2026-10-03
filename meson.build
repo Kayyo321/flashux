@@ -25,4 +25,5 @@ endif
 inc = include_directories('include', 'src', '.')
 subdir('src/core')
 subdir('src/helper')
+subdir('src/cli')
 subdir('tests')
