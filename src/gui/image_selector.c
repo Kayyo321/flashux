@@ -11,7 +11,9 @@ static void image_selected(GObject *object, GAsyncResult *result, gpointer data)
         if (gui != NULL && !gui->closed && path != NULL) {
             if (strlen(path) < sizeof(((flashux_flash_options_t *)0)->source_image_path)) {
                 gtk_editable_set_text(GTK_EDITABLE(gui->image), path);
-            } else { gtk_label_set_text(gui->status, "The image path is too long"); }
+            } else {
+                gtk_label_set_text(gui->status, "The image path is too long");
+            }
         }
         g_free(path);
         path = NULL;

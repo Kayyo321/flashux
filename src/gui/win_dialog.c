@@ -21,16 +21,19 @@ static void save_customizations(GtkButton *button, gpointer data)
     (void)button;
     if (gui != NULL && !gui->closed) {
         const char *username = gtk_editable_get_text(GTK_EDITABLE(dialog->username));
-        if (strlen(username) >= sizeof(gui->win_custom.local_username)) { return; }
+        if (strlen(username) >= sizeof(gui->win_custom.local_username)) {
+            return;
+        }
         gui->win_custom.bypass_tpm_secureboot_ram = gtk_check_button_get_active(dialog->checks[0]);
         gui->win_custom.bypass_online_account = gtk_check_button_get_active(dialog->checks[1]);
         gui->win_custom.match_regional_options = gtk_check_button_get_active(dialog->checks[2]);
         gui->win_custom.disable_telemetry = gtk_check_button_get_active(dialog->checks[3]);
         gui->win_custom.disable_bitlocker = gtk_check_button_get_active(dialog->checks[4]);
         gui->win_custom.create_local_account = gtk_check_button_get_active(dialog->local);
-        (void)g_strlcpy(gui->win_custom.local_username, username, sizeof(gui->win_custom.local_username));
+        (void)g_strlcpy(gui->win_custom.local_username, username,
+                        sizeof(gui->win_custom.local_username));
         gtk_label_set_text(gui->status, "Windows setup options are saved for this session. "
-                           "Windows media creation is not yet supported.");
+                                        "Windows media creation is not yet supported.");
     }
     gtk_window_destroy(window);
 }
@@ -39,7 +42,9 @@ void flashux_gui_customizations(GtkButton *button, gpointer data)
     struct flashux_gui *gui = data;
     (void)button;
     struct customization_dialog *dialog = g_try_new0(struct customization_dialog, 1);
-    if (dialog == NULL) { return; }
+    if (dialog == NULL) {
+        return;
+    }
     dialog->parent = g_object_ref(gui->window);
     GtkWindow *window = GTK_WINDOW(gtk_window_new());
     gtk_window_set_title(window, "Windows user experience");
@@ -52,17 +57,18 @@ void flashux_gui_customizations(GtkButton *button, gpointer data)
     gtk_widget_set_margin_bottom(body, 20);
     gtk_widget_set_margin_start(body, 20);
     gtk_widget_set_margin_end(body, 20);
-    GtkWidget *notice = gtk_label_new("These options require the planned Windows installer engine. "
-        "They cannot be applied by the initial raw-image foundation.");
+    GtkWidget *notice =
+        gtk_label_new("These options require the planned Windows installer engine. "
+                      "They cannot be applied by the initial raw-image foundation.");
     gtk_label_set_wrap(GTK_LABEL(notice), true);
     gtk_box_append(GTK_BOX(body), notice);
     static const char *const labels[] = {
         "Remove TPM, Secure Boot and RAM requirements", "Remove online account requirement",
-        "Match regional options", "Skip privacy questions and telemetry", "Disable automatic BitLocker"
-    };
-    bool values[] = {gui->win_custom.bypass_tpm_secureboot_ram, gui->win_custom.bypass_online_account,
-        gui->win_custom.match_regional_options, gui->win_custom.disable_telemetry,
-        gui->win_custom.disable_bitlocker};
+        "Match regional options", "Skip privacy questions and telemetry",
+        "Disable automatic BitLocker"};
+    bool values[] = {gui->win_custom.bypass_tpm_secureboot_ram,
+                     gui->win_custom.bypass_online_account, gui->win_custom.match_regional_options,
+                     gui->win_custom.disable_telemetry, gui->win_custom.disable_bitlocker};
     for (unsigned i = 0; i < 5; ++i) {
         dialog->checks[i] = GTK_CHECK_BUTTON(gtk_check_button_new_with_label(labels[i]));
         gtk_check_button_set_active(dialog->checks[i], values[i]);

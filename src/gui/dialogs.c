@@ -36,7 +36,9 @@ void flashux_gui_start(GtkButton *button, gpointer data)
     flashux_flash_options_t options;
     char reason[256] = {0};
     (void)button;
-    if (gui->busy || gui->closed) { return; }
+    if (gui->busy || gui->closed) {
+        return;
+    }
     flashux_error_t result = flashux_gui_collect(gui, &options);
     if (result == FLASHUX_SUCCESS) {
         result = flashux_flash_validate_options(gui->ctx, &options, reason, sizeof(reason));
@@ -45,18 +47,27 @@ void flashux_gui_start(GtkButton *button, gpointer data)
         cannot_start(gui, reason[0] != '\0' ? reason : flashux_strerror(result));
         return;
     }
-    if (options.dry_run) { flashux_gui_launch_options(gui, &options); return; }
+    if (options.dry_run) {
+        flashux_gui_launch_options(gui, &options);
+        return;
+    }
     struct reviewed_job *review = g_try_new0(struct reviewed_job, 1);
-    if (review == NULL) { cannot_start(gui, "Out of memory"); return; }
+    if (review == NULL) {
+        cannot_start(gui, "Out of memory");
+        return;
+    }
     review->parent = g_object_ref(gui->window);
     review->options = options;
     char body[1024];
-    (void)g_snprintf(body, sizeof(body), "All data on %s will be destroyed.\n\nImage: %s\n\n"
-        "Review the target before continuing.", options.target_device_path, options.source_image_path);
+    (void)g_snprintf(body, sizeof(body),
+                     "All data on %s will be destroyed.\n\nImage: %s\n\n"
+                     "Review the target before continuing.",
+                     options.target_device_path, options.source_image_path);
     GtkWidget *dialog = adw_message_dialog_new(gui->window, "Erase selected device?", body);
-    adw_message_dialog_add_responses(ADW_MESSAGE_DIALOG(dialog), "cancel", "Cancel",
-                                     "erase", "Erase and write", NULL);
-    adw_message_dialog_set_response_appearance(ADW_MESSAGE_DIALOG(dialog), "erase", ADW_RESPONSE_DESTRUCTIVE);
+    adw_message_dialog_add_responses(ADW_MESSAGE_DIALOG(dialog), "cancel", "Cancel", "erase",
+                                     "Erase and write", NULL);
+    adw_message_dialog_set_response_appearance(ADW_MESSAGE_DIALOG(dialog), "erase",
+                                               ADW_RESPONSE_DESTRUCTIVE);
     adw_message_dialog_set_default_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
     adw_message_dialog_set_close_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), true);

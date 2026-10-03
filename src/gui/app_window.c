@@ -19,7 +19,7 @@ static GtkWidget *field(GtkBox *box, const char *title, GtkWidget *control)
     return control;
 }
 static void paired_fields(GtkBox *box, const char *left_title, GtkWidget *left_control,
-                           const char *right_title, GtkWidget *right_control)
+                          const char *right_title, GtkWidget *right_control)
 {
     GtkWidget *row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
     GtkWidget *left = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
@@ -42,7 +42,9 @@ void flashux_gui_update_start(struct flashux_gui *gui)
     bool image = gtk_editable_get_text(GTK_EDITABLE(gui->image))[0] != '\0';
     guint position = gtk_drop_down_get_selected(gui->device_choice);
     flashux_device_t *device = gui->devices;
-    for (guint i = 0; device != NULL && i < position; ++i) { device = device->next; }
+    for (guint i = 0; device != NULL && i < position; ++i) {
+        device = device->next;
+    }
     bool selected = device != NULL && flashux_device_is_safe_target(gui->ctx, device, NULL, 0);
     gtk_widget_set_sensitive(GTK_WIDGET(gui->start), image && selected && !gui->busy);
 }
@@ -89,19 +91,22 @@ void flashux_gui_window_create(struct flashux_gui *gui)
     gtk_box_append(GTK_BOX(image_row), GTK_WIDGET(gui->image));
     gtk_box_append(GTK_BOX(image_row), GTK_WIDGET(gui->browse));
     field(box, "Boot selection", image_row);
-    static const char *const modes[] = {"Raw image (DD)", "ISO extraction", "Windows To Go", "FreeDOS", NULL};
+    static const char *const modes[] = {"Raw image (DD)", "ISO extraction", "Windows To Go",
+                                        "FreeDOS", NULL};
     gui->mode = GTK_DROP_DOWN(gtk_drop_down_new_from_strings(modes));
     gtk_box_append(box, GTK_WIDGET(gui->mode));
     GtkWidget *notice = gtk_label_new("Raw mode copies the image layout. ISO extraction and "
-                                     "Windows setup features are planned for later releases.");
+                                      "Windows setup features are planned for later releases.");
     gtk_label_set_wrap(GTK_LABEL(notice), true);
     gtk_label_set_xalign(GTK_LABEL(notice), 0);
     gtk_widget_add_css_class(notice, "dim-label");
     gtk_box_append(box, notice);
     static const char *const schemes[] = {"MBR", "GPT", "Hybrid MBR/GPT", NULL};
     static const char *const targets[] = {"BIOS / CSM", "UEFI", "UEFI:NTFS", NULL};
-    static const char *const filesystems[] = {"FAT16", "FAT32", "NTFS", "exFAT", "ext4", "UDF", NULL};
-    static const char *const clusters[] = {"Default", "512", "1024", "2048", "4096", "8192", "16384", "32768", "65536", NULL};
+    static const char *const filesystems[] = {"FAT16", "FAT32", "NTFS", "exFAT",
+                                              "ext4",  "UDF",   NULL};
+    static const char *const clusters[] = {"Default", "512",   "1024",  "2048",  "4096",
+                                           "8192",    "16384", "32768", "65536", NULL};
     gui->scheme = GTK_DROP_DOWN(gtk_drop_down_new_from_strings(schemes));
     gui->target = GTK_DROP_DOWN(gtk_drop_down_new_from_strings(targets));
     gui->filesystem = GTK_DROP_DOWN(gtk_drop_down_new_from_strings(filesystems));
@@ -109,16 +114,17 @@ void flashux_gui_window_create(struct flashux_gui *gui)
     gtk_drop_down_set_selected(gui->scheme, FLASHUX_PARTITION_SCHEME_GPT);
     gtk_drop_down_set_selected(gui->target, FLASHUX_TARGET_UEFI_NON_CSM);
     gtk_drop_down_set_selected(gui->filesystem, FLASHUX_FS_FAT32);
-    paired_fields(box, "Partition scheme", GTK_WIDGET(gui->scheme),
-                  "Target system", GTK_WIDGET(gui->target));
-    paired_fields(box, "File system", GTK_WIDGET(gui->filesystem),
-                  "Cluster size (bytes)", GTK_WIDGET(gui->cluster));
+    paired_fields(box, "Partition scheme", GTK_WIDGET(gui->scheme), "Target system",
+                  GTK_WIDGET(gui->target));
+    paired_fields(box, "File system", GTK_WIDGET(gui->filesystem), "Cluster size (bytes)",
+                  GTK_WIDGET(gui->cluster));
     gui->label = GTK_ENTRY(gtk_entry_new());
     gtk_entry_set_max_length(gui->label, 127);
     field(box, "Volume label", GTK_WIDGET(gui->label));
     gui->customize = GTK_BUTTON(gtk_button_new_with_label("Windows user experience…"));
     gtk_box_append(box, GTK_WIDGET(gui->customize));
-    gui->dry_run = GTK_CHECK_BUTTON(gtk_check_button_new_with_label("Dry run (leave target unchanged)"));
+    gui->dry_run =
+        GTK_CHECK_BUTTON(gtk_check_button_new_with_label("Dry run (leave target unchanged)"));
     gtk_box_append(box, GTK_WIDGET(gui->dry_run));
     GtkWidget *footer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_widget_set_margin_top(footer, 12);
