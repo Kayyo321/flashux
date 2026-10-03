@@ -246,4 +246,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `c3dce27` | test(cli): verify batch records and dry-run target preservation | Batch runner regression suite for JSON and confirmation safeguards | Batch implementation is now exercised independently of argument parsing |
 | `328412d` | docs(tracker): record verify batch records and dry-run target preservation | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `131480d` | test(ipc): reject incomplete frames and missing descriptors safely | Malformed transport and descriptor lifecycle regressions | Framing verification now includes disconnect, capacity and descriptor boundary cases |
-| `HEAD` | docs(tracker): record reject incomplete frames and missing descriptors safely | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `6e0923d` | docs(tracker): record reject incomplete frames and missing descriptors safely | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `eb27746` | chore(style): codify repository C indentation and column limits | clang-format and EditorConfig settings matching agent guidelines | Source formatting can now be applied consistently across all C modules |
+| `HEAD` | docs(tracker): record codify repository C indentation and column limits | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
