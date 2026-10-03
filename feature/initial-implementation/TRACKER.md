@@ -234,4 +234,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `d5ef093` | fix(image): detect source changes with nanosecond precision | Portable source identity helper for macOS and Linux timestamps | Replaced second-resolution source-change checks and added pre-write stability verification |
 | `d86fab4` | docs(tracker): record detect source changes with nanosecond precision | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `f3a436a` | feat(frontend): expose supported compressed image inputs | Compressed-image chooser patterns and CLI usage guidance | Removed obsolete claim that all compressed images are unsupported |
-| `HEAD` | docs(tracker): record expose supported compressed image inputs | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `cb1b0e2` | docs(tracker): record expose supported compressed image inputs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `2c05c94` | fix(gui): retain fixed-drive warning parent through response | Owned parent reference and parent-destruction behavior for fixed-drive warnings | Fixed-drive dialog callbacks no longer rely on an unowned window pointer |
+| `HEAD` | docs(tracker): record retain fixed-drive warning parent through response | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
