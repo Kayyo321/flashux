@@ -214,4 +214,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `801e6f6` | test(gui): release font backend caches for leak verification | Explicit test backend teardown and font dependency declarations | All nine Linux ASan/UBSan suites pass with leak detection enabled |
 | `79a3ddb` | docs(tracker): record release font backend caches for leak verification | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `e906d82` | chore(workspace): ignore local editor and Finder metadata | IDE and Finder ignore patterns | Local metadata is excluded from source control |
-| `HEAD` | docs(tracker): record ignore local editor and Finder metadata | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `41e095b` | docs(tracker): record ignore local editor and Finder metadata | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `0f90e2b` | feat(image): decode bounded compressed image streams | Native bounded image decoder and cancellable decoded-capacity preflight | Core build now requires native libarchive with built-in compression filters |
+| `HEAD` | docs(tracker): record decode bounded compressed image streams | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
