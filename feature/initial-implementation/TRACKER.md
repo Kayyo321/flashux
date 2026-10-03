@@ -1,6 +1,6 @@
 # Feature: Initial GUI/CLI Application Foundation
 
-**Overall Progress: 88.98%**
+**Overall Progress: 89.77%**
 
 ## Overview
 Establish the foundational build system (Meson + Ninja), the core shared library (`libflashux`), the command-line interface (`flashux-cli`), the GTK 4 / libadwaita graphical interface (`flashux-gui`), and the privileged backend helper daemon (`flashux-helper`) with IPC protocol in pure C (C11).
@@ -43,12 +43,12 @@ Establish the foundational build system (Meson + Ninja), the core shared library
 - [X] 4.4 Implement CLI main entry point, signal handlers (`SIGINT`, `SIGTERM`), and exit routines in `src/cli/main.c` [100%]
 
 ### 5. Graphical User Interface (`flashux-gui`)
-- [ ] 5.1 Implement GtkApplication lifecycle and application initialization in `src/gui/main.c` [90%]
-- [ ] 5.2 Build Rufus single-window layout (Device, Image, Partition, Target, File System) in `src/gui/app_window.c` [85%]
+- [X] 5.1 Implement GtkApplication lifecycle and application initialization in `src/gui/main.c` [100%]
+- [X] 5.2 Build Rufus single-window layout (Device, Image, Partition, Target, File System) in `src/gui/app_window.c` [100%]
 - [ ] 5.3 Implement dynamic device dropdown population and hotplug signal listeners in `src/gui/device_selector.c` [80%]
 - [ ] 5.4 Implement file chooser integration for ISO and raw disk images in `src/gui/app_window.c` [90%]
 - [ ] 5.5 Implement Rufus Windows user experience customization modal in `src/gui/win_dialog.c` [85%]
-- [ ] 5.6 Implement thread-safe progress bar and transfer speed updates via `g_idle_add` in `src/gui/progress_view.c` [90%]
+- [X] 5.6 Implement thread-safe progress bar and transfer speed updates via `g_idle_add` in `src/gui/progress_view.c` [100%]
 - [ ] 5.7 Implement destructive operation confirmation modals and warning alerts in `src/gui/dialogs.c` [90%]
 
 ### 6. Privileged Backend Helper & IPC Subsystem (`flashux-helper`)
@@ -202,4 +202,6 @@ commits are created. Entries retain the additions and modifications from each de
 | `acfd0a7` | test(safety): cover partition mapper and cyclic backing graphs | Mock system-drive ancestry tests including stacked devices and cycles | Device safety suite now verifies the actual topology algorithm |
 | `ad1417c` | docs(tracker): record cover partition mapper and cyclic backing graphs | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
 | `7fc5360` | refactor(gui): share window components with runtime verification | GUI component library and declared toolkit baseline dependency | GUI executable retains the same application entry point |
-| `HEAD` | docs(tracker): record share window components with runtime verification | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
+| `0a9b5d3` | docs(tracker): record share window components with runtime verification | Detailed audit entries for every preceding branch commit | Incremental milestone percentages and overall completion |
+| `cf20b6a` | test(gui): verify dry-run completion protected selection and close | Linux GUI runtime and shutdown regression executable | Virtual-display test confirms native window lifecycle without physical disk writes |
+| `HEAD` | docs(tracker): record verify dry-run completion protected selection and close | Audit entry for preceding implementation commit | Incremental progress and exhaustive branch history |
